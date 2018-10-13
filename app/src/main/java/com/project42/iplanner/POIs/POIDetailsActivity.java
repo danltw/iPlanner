@@ -1,11 +1,11 @@
 package com.project42.iplanner.POIs;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.os.Bundle;
 
 import com.project42.iplanner.R;
 
-public class POIDetailsActivity extends AppCompatActivity {
+public class POIDetailsActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

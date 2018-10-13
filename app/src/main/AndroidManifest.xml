@@ -15,20 +15,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".HomeActivity">
+        <activity
+            android:name=".Home.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Accounts.LoginActivity" />
-        <activity android:name=".POIs.ViewPOIsActivity" />
-        <activity android:name=".Itineraries.ViewItinerariesActivity" />
-        <activity android:name=".Itineraries.ItineraryDetailsActivity" />
-        <activity android:name=".Bookmarks.ViewBookmarksActivity" />
-        <activity android:name=".Accounts.ProfileDetailsActivity" />
-        <activity android:name=".Accounts.RegisterActivity"></activity>
+        <!--<activity android:name=".Accounts.LoginActivity" />-->
+        <!--<activity android:name=".POIs.ViewPOIsActivity" />-->
+        <!--<activity android:name=".Itineraries.ViewItinerariesActivity" />-->
+        <!--<activity android:name=".Itineraries.ItineraryDetailsActivity" />-->
+        <!--<activity android:name=".Bookmarks.ViewBookmarksActivity" />-->
+        <!--<activity android:name=".Accounts.ProfileDetailsActivity" />-->
+        <!--<activity android:name=".Accounts.RegisterActivity" />-->
+
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@menu/navigation" />
     </application>
 
 </manifest>
