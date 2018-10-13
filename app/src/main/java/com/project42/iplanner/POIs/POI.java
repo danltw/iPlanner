@@ -30,6 +30,22 @@ public class POI {
 
     private double PSI;
 
+    public POI(int locationID, String locationName, String address, int postalCode, double rating, double cost, String startHrs,
+               String endHrs, String openingDays, String description, double UVI, double PSI) {
+        this.locationID = locationID;
+        this.locationName = locationName;
+        this.address = address;
+        this.postalCode = postalCode;
+        this.rating = rating;
+        this.cost = cost;
+        this.startHrs = startHrs;
+        this.endHrs = endHrs;
+        this.openingDays = openingDays;
+        this.description = description;
+        this.UVI = UVI;
+        this.PSI = PSI;
+    }
+
     public int getLocationID() {
         return locationID;
     }

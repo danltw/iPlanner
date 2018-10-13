@@ -1,7 +1,10 @@
 package com.project42.iplanner.Itineraries;
 
+import com.project42.iplanner.POIs.POI;
+
 import java.sql.Time;
 import java.util.Date;
+import java.util.HashMap;
 
 public class Itinerary {
 

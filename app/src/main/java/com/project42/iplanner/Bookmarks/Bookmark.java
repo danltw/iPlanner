@@ -1,5 +1,7 @@
 package com.project42.iplanner.Bookmarks;
 
+import com.project42.iplanner.POIs.POI;
+
 public class Bookmark {
 
     private int bookmarkID;
