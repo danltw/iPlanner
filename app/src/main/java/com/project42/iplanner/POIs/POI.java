@@ -10,7 +10,7 @@ public class POI {
 
     private int postalCode;
 
-    public enum EvnType {INDOOR, OUTDOOR}
+    public enum EvnType {INDOOR, OUTDOOR};
 
     private double rating;
 

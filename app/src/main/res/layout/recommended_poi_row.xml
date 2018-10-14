@@ -24,7 +24,13 @@
                 <!--android:scaleType="fitXY" />-->
 
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/poiid"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/poiname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lines="2"
@@ -32,20 +38,20 @@
                 android:textSize="11dp" />
 
             <TextView
-                android:id="@+id/price"
+                android:id="@+id/poiprice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/title"
+                android:layout_toRightOf="@id/poiname"
                 android:layout_marginRight="10dp"
                 android:gravity="right"
                 android:textColor="@color/colorAccent"
                 android:textSize="11dp" />
 
             <TextView
-                android:id="@+id/rating"
+                android:id="@+id/poirating"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/price"
+                android:layout_below="@id/poiprice"
                 android:layout_marginRight="10dp"
                 android:gravity="right"
                 android:textColor="@color/colorAccent"
