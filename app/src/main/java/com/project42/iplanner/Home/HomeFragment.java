@@ -1,8 +1,11 @@
 package com.project42.iplanner.Home;
 
+import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -22,13 +25,19 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import com.project42.iplanner.JSON.JSONParser;
 import com.project42.iplanner.POIs.POI;
 import com.project42.iplanner.SingletonClass.MyApplication;
 import com.project42.iplanner.R;
@@ -38,8 +47,25 @@ import com.project42.iplanner.R;
  */
 public class HomeFragment extends Fragment {
 
+    // Progress Dialog
+    private ProgressDialog pDialog;
+
+    // Creating JSON Parser object
+    JSONParser jParser = new JSONParser();
+
     private static final String TAG = HomeFragment.class.getSimpleName();
-    private static final String URL = "https://api.androidhive.info/json/movies_2017.json";
+    private static final String URL = "http://project42-iplanner.000webhostapp.com/get_recommended_poi.php";
+
+    // JSON Node names
+    private static final String TAG_SUCCESS = "success";
+    private static final String TAG_POI = "poi";
+    private static final String TAG_LOCATION_ID = "location_id";
+    private static final String TAG_LOCATION_NAME = "location_name";
+    private static final String TAG_LOCATION_COST = "location_cost";
+    private static final String TAG_LOCATION_RATING = "location_rating";
+
+    // POI JSONArray
+    JSONArray poi = null;
 
     private RecyclerView recyclerView;
     private List<POI> poiList;
@@ -64,54 +90,15 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+//         Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         recyclerView = view.findViewById(R.id.recycler_view);
-        poiList = new ArrayList<>();
         pAdapter = new POIAdapter(getActivity(), poiList);
 
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 3);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(8), true));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(pAdapter);
-        recyclerView.setNestedScrollingEnabled(false);
-
-        fetchPOI();
+        new LoadRecommendedPOI().execute();
 
         return view;
-    }
-
-    private void fetchPOI() {
-        JsonArrayRequest request = new JsonArrayRequest(URL,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        if (response == null) {
-                            Toast.makeText(getActivity(), "Couldn't fetch the store items! Pleas try again.", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-
-                        List<POI> items = new Gson().fromJson(response.toString(), new TypeToken<List<POI>>() {
-                        }.getType());
-
-                        poiList.clear();
-                        poiList.addAll(items);
-
-                        // refreshing recycler view
-                        pAdapter.notifyDataSetChanged();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                // error in getting json
-                Log.e(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getActivity(), "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        MyApplication.getInstance().addToRequestQueue(request);
     }
 
     public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
@@ -163,7 +150,7 @@ public class HomeFragment extends Fragment {
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             public TextView name, price, rating;
-            public ImageView thumbnail;
+//            public ImageView thumbnail;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -206,4 +193,85 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    class LoadRecommendedPOI extends AsyncTask<String, String, String> {
+
+        /**
+         * Before starting background thread Show Progress Dialog
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(getActivity());
+            pDialog.setMessage("Loading POIs. Please wait...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+
+        /**
+         * getting All poi from url
+         */
+        protected String doInBackground(String... args) {
+            ContentValues params = new ContentValues();
+            // getting JSON string from URL
+            JSONObject json = null;
+            try {
+                json = jParser.makeHttpRequest(URL, "GET", params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ArrayList<POI> recpoi = new ArrayList<POI>();
+            // Check your log cat for JSON response
+            Log.d("Recommended POI: ", json.toString());
+
+            try {
+                // Checking for SUCCESS TAG
+                int success = json.getInt(TAG_SUCCESS);
+
+                if (success == 1) {
+                    // poi found
+                    // Getting Array of poi
+                    poi = json.getJSONArray(TAG_POI);
+
+                    // looping through All poi
+                    for (int i = 0; i < poi.length(); i++) {
+                        JSONObject c = poi.getJSONObject(i);
+
+                        // Storing each json item in variable
+                        recpoi.get(i).setLocationID(c.getInt(TAG_LOCATION_ID));
+                        recpoi.get(i).setLocationName(c.getString(TAG_LOCATION_NAME));
+                        recpoi.get(i).setCost(c.getDouble(TAG_LOCATION_COST));
+                        recpoi.get(i).setRating(c.getDouble(TAG_LOCATION_RATING));
+
+                        poiList.add(recpoi.get(i));
+                    }
+                } else {
+                    // no poi found
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog after getting all POI
+            pDialog.dismiss();
+            getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 3);
+                    recyclerView.setLayoutManager(mLayoutManager);
+                    recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(8), true));
+                    recyclerView.setItemAnimator(new DefaultItemAnimator());
+                    recyclerView.setAdapter(pAdapter);
+                    recyclerView.setNestedScrollingEnabled(false);
+                }
+            });
+        }
+    }
 }
