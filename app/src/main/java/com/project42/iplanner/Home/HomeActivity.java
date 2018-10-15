@@ -1,6 +1,5 @@
 package com.project42.iplanner.Home;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -10,22 +9,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.google.gson.JsonParser;
 import com.project42.iplanner.R;
 
 import com.project42.iplanner.Accounts.ProfileFragment;
 import com.project42.iplanner.Bookmarks.BookmarkFragment;
 import com.project42.iplanner.Itineraries.ItineraryFragment;
-import com.project42.iplanner.Home.HomeFragment;
+import com.project42.iplanner.Chats.ChatFragment;
 
-import org.apache.http.NameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -40,7 +30,6 @@ public class HomeActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        //toolbar.setTitle("Recommended");
         loadFragment(new HomeFragment());
 
     }
@@ -53,22 +42,22 @@ public class HomeActivity extends AppCompatActivity {
             Fragment fragment;
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-//                    toolbar.setTitle("Home");
                     fragment = new HomeFragment();
                     loadFragment(fragment);
                     return true;
                 case R.id.navigation_itinerary:
-//                    toolbar.setTitle("Itinerary");
                     fragment = new ItineraryFragment();
                     loadFragment(fragment);
                     return true;
                 case R.id.navigation_bookmark:
-//                    toolbar.setTitle("Bookmark");
                     fragment = new BookmarkFragment();
                     loadFragment(fragment);
                     return true;
+                case R.id.navigation_chats:
+                    fragment = new ChatFragment();
+                    loadFragment(fragment);
+                    return true;
                 case R.id.navigation_profile:
-//                    toolbar.setTitle("Profile");
                     fragment = new ProfileFragment();
                     loadFragment(fragment);
                     return true;

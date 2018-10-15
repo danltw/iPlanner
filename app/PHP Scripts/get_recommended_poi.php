@@ -11,7 +11,7 @@ $db = new DB_CONNECT();
 $con = mysqli_connect(DB_SERVER, DB_USER, DB_PASSWORD) or die(mysqli_error($con));
 
 // Get locations from poi table
-$result = mysqli_query($con, "SELECT * FROM id7469667_iplanner.poi");
+$result = mysqli_query($con, "SELECT * FROM id7469667_iplanner.poi WHERE UVI < 9 AND PSI < 100");
 
 if($result == true)
 {
@@ -20,10 +20,20 @@ if($result == true)
     {
         $poi = array();
 
-        $poi["location_id"] = $row["location_id"];
-        $poi["location_name"] = $row["location_name"];
-        $poi["location_cost"] = $row["location_cost"];
-        $poi["location_rating"] = $row["location_cost"];
+        $poi["locationID"] = $row["location_id"];
+        $poi["locationName"] = $row["location_name"];
+        $poi["address"] = $row["location_address"];
+        $poi["postalCode"] = $row["location_postalcode"];
+        $poi["evnType"] = $row["evn_type"];
+        $poi["rating"] = $row["location_rating"];
+        $poi["cost"] = $row["location_cost"];
+        $poi["startHrs"] = $row["start_hrs"];
+        $poi["endHrs"] = $row["end_hrs"];
+        $poi["openingDays"] = $row["opening_days"];
+        $poi["description"] = $row["location_desc"];
+        $poi["weatherType"] = $row["weather_type"];
+        $poi["UVI"] = $row["UVI"];
+        $poi["PSI"] = $row["PSI"];
 
         array_push($response["POI"], $poi);
     }
