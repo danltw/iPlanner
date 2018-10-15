@@ -2,6 +2,7 @@ package com.project42.iplanner.Home;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,11 +11,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -70,6 +74,7 @@ public class HomeFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_view);
         poiList = new ArrayList<>();
 
+        getData();
         adapter = new POIAdapter(getActivity(), poiList);
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -82,8 +87,6 @@ public class HomeFragment extends Fragment {
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setAdapter(adapter);
 
-        getData();
-
         return view;
     }
 
@@ -92,29 +95,32 @@ public class HomeFragment extends Fragment {
             final ProgressDialog progressDialog = new ProgressDialog(getActivity());
             progressDialog.setMessage("Loading...");
             progressDialog.show();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response)
+            {
+                try {
+                    JSONArray array = response.getJSONArray("poi");
 
-            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(URL, new Response.Listener<JSONArray>() {
-                @Override
-                public void onResponse(JSONArray response) {
-                    for (int i = 0; i < response.length(); i++) {
-                        try {
-                            JSONObject jsonObject = response.getJSONObject(i);
-
-                            POI poi = new POI(0,null,null,0,0.0,0.0,null,null,null,null,0.0,0.0);
-                            poi.setLocationID(jsonObject.getInt("location_id"));
-                            poi.setLocationName(jsonObject.getString("location_name"));
-                            poi.setCost(jsonObject.getDouble("location_cost"));
-                            poi.setRating(jsonObject.getDouble("location_rating"));
-
-                            poiList.add(poi);
-                        } catch (JSONException e) {
+                    for(int i=0; i<array.length();i++)
+                    {
+                        JSONObject jsonObject = array.getJSONObject(i);
+                        POI poi = new POI(0,null,null,0,0.0,0.0,null,null,null,null,0.0,0.0);
+                        poi.setLocationID(jsonObject.getInt("locationID"));
+                        poi.setLocationName(jsonObject.getString("locationName"));
+                        poi.setCost(jsonObject.getDouble("cost"));
+                        poi.setRating(jsonObject.getDouble("rating"));
+                        poiList.add(poi);
+                    }
+                }
+                catch (JSONException e)
+                {
                             e.printStackTrace();
                             progressDialog.dismiss();
-                        }
-                    }
+                }
                     adapter.notifyDataSetChanged();
                     progressDialog.dismiss();
-                }
+            }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
@@ -123,6 +129,6 @@ public class HomeFragment extends Fragment {
                 }
             });
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-            requestQueue.add(jsonArrayRequest);
+            requestQueue.add(jsonObjectRequest);
         }
 }
