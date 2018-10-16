@@ -7,7 +7,7 @@ class DB_Functions {
     // constructor
     function __construct() {
         // include db connect class
-require_once(__DIR__.'/include/DB_Connect.php');
+require_once(__DIR__.'/DB_Connect.php');
 
 // connecting to db
 $db = new DB_CONNECT();

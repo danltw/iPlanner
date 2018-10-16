@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__.'/include/DB_Connect.php');
+require_once(__DIR__.'/include/DB_Functions.php');
 $db = new DB_Functions();
 
 // json response array
