@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.project42.iplanner.Groups.CreateGroupChannelFragment;
 import com.project42.iplanner.Groups.GroupChannelActivity;
+import com.project42.iplanner.Groups.GroupChannelListFragment;
 import com.project42.iplanner.R;
 import com.project42.iplanner.Utilities.*;
 import com.sendbird.android.AdminMessage;
@@ -80,6 +81,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private GroupChannel mChannel;
     private String mChannelUrl;
+    private String mChannelTitle;
     private PreviousMessageListQuery mPrevMessageListQuery;
 
     private boolean mIsTyping;
@@ -105,10 +107,27 @@ public class ChatActivity extends AppCompatActivity {
             // Get channel URL from GroupChannelListFragment.
             // ensure channel exists before opening activity
             Intent intent = getIntent();
-            String chnlURL = intent.getStringExtra(CreateGroupChannelFragment.EXTRA_NEW_CHANNEL_URL);
-            if (!TextUtils.isEmpty(chnlURL)) {
-                mChannelUrl = chnlURL;
+            String newChnlURL = intent.getStringExtra(CreateGroupChannelFragment.EXTRA_NEW_CHANNEL_URL);
+            String newChnlTitle = intent.getStringExtra(CreateGroupChannelFragment.EXTRA_NEW_CHANNEL_TITLE);
+            String currChnlURL = intent.getStringExtra(GroupChannelListFragment.EXTRA_GROUP_CHANNEL_URL);
+            String currChnlTitle = intent.getStringExtra(GroupChannelListFragment.EXTRA_GROUP_TITLE);
+            if (!TextUtils.isEmpty(newChnlURL) && !TextUtils.isEmpty(newChnlTitle)) {
+                mChannelUrl = newChnlURL;
+                mChannelTitle = newChnlTitle;
             }
+            else if (!TextUtils.isEmpty(currChnlURL) && !TextUtils.isEmpty(currChnlTitle)) {
+                mChannelUrl = currChnlURL;
+                mChannelTitle = currChnlTitle;
+            }
+            else
+                finish();
+        }
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setTitle(mChannelTitle);
+            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_left_white_24_dp);
         }
 
         Log.d(LOG_TAG, mChannelUrl);
@@ -162,6 +181,7 @@ public class ChatActivity extends AppCompatActivity {
 
         mMessageEditText = (EditText) rootView.findViewById(R.id.edittext_chat);
         mMessageSendButton = (Button) rootView.findViewById(R.id.button_chat_send);
+
         //mUploadFileButton = (ImageButton) rootView.findViewById(R.id.button_group_chat_upload);
 
         mMessageEditText.addTextChangedListener(new TextWatcher() {

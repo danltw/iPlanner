@@ -35,6 +35,7 @@
         <!--<activity android:name=".Accounts.ProfileDetailsActivity" />-->
         <!--<activity android:name=".Accounts.RegisterActivity" />-->
         <activity android:name=".Chats.ChatActivity"/>
+        <activity android:name=".Groups.GroupChannelActivity"/>
         <meta-data
             android:name="com.google.android.actions"
             android:resource="@menu/navigation" />

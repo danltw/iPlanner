@@ -32,6 +32,7 @@ import static android.support.v4.content.ContextCompat.getSystemService;
 public class CreateGroupChannelFragment extends Fragment {
 
     public static final String EXTRA_NEW_CHANNEL_URL = "EXTRA_NEW_CHANNEL_URL";
+    public static final String EXTRA_NEW_CHANNEL_TITLE = "EXTRA_NEW_CHANNEL_TITLE";
     private EditText et_newGrpName;
     private Button btn_newGrpChat;
 
@@ -96,6 +97,7 @@ public class CreateGroupChannelFragment extends Fragment {
 
                                             Intent intent = new Intent(getActivity(), ChatActivity.class);
                                             intent.putExtra(EXTRA_NEW_CHANNEL_URL, groupChannel.getUrl());
+                                            intent.putExtra(EXTRA_NEW_CHANNEL_TITLE, groupChannel.getName());
                                             startActivity(intent);
                                         }
                                     });

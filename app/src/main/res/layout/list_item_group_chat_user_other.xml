@@ -34,22 +34,14 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"/>
 
-    <TextView
-        android:text="Daniel Silberschatz"
-        android:id="@+id/text_group_chat_nickname"
-        android:textSize="16sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/image_group_chat_profile"
-        android:layout_alignTop="@id/image_group_chat_profile"
-        android:layout_marginBottom="4dp"/>
+
 
     <android.support.v7.widget.CardView
         android:id="@+id/card_group_chat_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/image_group_chat_profile"
-        android:layout_below="@id/text_group_chat_nickname"
+        android:layout_below="@id/image_group_chat_profile"
         android:layout_alignWithParentIfMissing="true"
         app:cardBackgroundColor="@color/groupChatBubbleOther"
         app:cardUseCompatPadding="true"
@@ -61,7 +53,20 @@
             android:id="@+id/group_chat_message_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
+
+            <TextView
+                android:text="Daniel Silberschatz"
+                android:id="@+id/text_group_chat_nickname"
+                android:paddingTop="8dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/image_group_chat_profile"
+                android:layout_alignTop="@id/image_group_chat_profile"
+                android:layout_marginBottom="4dp"/>
 
             <TextView
                 android:id="@+id/text_group_chat_message"
@@ -97,6 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:visibility="gone"
                 >
                 <View
                     android:maxWidth="260dp"

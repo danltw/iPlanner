@@ -82,6 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:visibility="gone"
                 >
                 <View
                     android:maxWidth="260dp"
@@ -104,6 +105,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxWidth="260dp"
+                    android:visibility="gone"
                     />
                 <TextView
                     android:id="@+id/text_url_preview_title"
@@ -117,6 +119,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxWidth="260dp"
+                    android:visibility="gone"
                     />
                 <TextView
                     android:id="@+id/text_url_preview_description"
@@ -131,6 +134,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxWidth="260dp"
+                    android:visibility="gone"
                     />
                 <ImageView
                     android:id="@+id/image_url_preview_main"
@@ -139,6 +143,7 @@
                     android:layout_height="148dp"
                     android:scaleType="centerCrop"
                     android:adjustViewBounds="true"
+                    android:visibility="gone"
                     />
 
             </LinearLayout>
