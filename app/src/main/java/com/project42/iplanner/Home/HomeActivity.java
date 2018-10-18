@@ -9,12 +9,15 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.project42.iplanner.AppConfig;
+import com.project42.iplanner.Groups.CreateGroupChannelFragment;
 import com.project42.iplanner.R;
 
 import com.project42.iplanner.Accounts.ProfileFragment;
 import com.project42.iplanner.Bookmarks.BookmarkFragment;
 import com.project42.iplanner.Itineraries.ItineraryFragment;
 import com.project42.iplanner.Chats.ChatFragment;
+import com.sendbird.android.SendBird;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -31,6 +34,9 @@ public class HomeActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         loadFragment(new HomeFragment());
+
+        // Initialise Sendbird SDK
+        SendBird.init(AppConfig.SBAPP_ID, this.getApplicationContext());
 
     }
 
@@ -54,7 +60,8 @@ public class HomeActivity extends AppCompatActivity {
                     loadFragment(fragment);
                     return true;
                 case R.id.navigation_chats:
-                    fragment = new ChatFragment();
+                    //fragment = new ChatFragment();
+                    fragment = new CreateGroupChannelFragment();
                     loadFragment(fragment);
                     return true;
                 case R.id.navigation_profile:
