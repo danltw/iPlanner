@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -51,12 +52,13 @@ import java.util.List;
 import com.project42.iplanner.POIs.POI;
 import com.project42.iplanner.POIs.POIAdapter;
 import com.project42.iplanner.POIs.POIDetailsFragment;
+import com.project42.iplanner.POIs.POISearchFragment;
+import com.project42.iplanner.POIs.RecyclerItemClickListener;
 import com.project42.iplanner.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class HomeFragment extends Fragment {
+
+    Fragment fragment;
 
     // Progress Dialog
     private ProgressDialog pDialog;
@@ -114,6 +116,38 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setAdapter(adapter);
+
+        recyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getActivity(), recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        fragment = new POIDetailsFragment();
+                        Bundle args = new Bundle();
+                        args.putInt("selected_poi_id",poiList.get(position).getLocationID());
+                        args.putString("selected_poi_name",poiList.get(position).getLocationName());
+                        args.putString("selected_poi_address",poiList.get(position).getAddress());
+                        args.putInt("selected_poi_postalcode",poiList.get(position).getPostalCode());
+                        args.putDouble("selected_poi_rating",poiList.get(position).getRating());
+                        args.putDouble("selected_poi_cost",poiList.get(position).getCost());
+                        args.putString("selected_poi_starthrs",poiList.get(position).getStartHrs());
+                        args.putString("selected_poi_endhrs",poiList.get(position).getEndHrs());
+                        args.putString("selected_poi_openingdays",poiList.get(position).getOpeningDays());
+                        if(poiList.get(position).getDescription().equals(""))
+                        {
+                            poiList.get(position).setDescription("No Description");
+                        }
+                        args.putString("selected_poi_desc",poiList.get(position).getDescription());
+                        args.putDouble("selected_poi_uvi",poiList.get(position).getUVI());
+                        args.putDouble("selected_poi_psi",poiList.get(position).getPSI());
+                        fragment.setArguments(args);
+                        Log.d("Passing Values", args.toString());
+                        loadFragment(fragment);
+                    }
+
+                    @Override public void onLongItemClick(View view, int position) {
+                        // do whatever
+                    }
+                })
+        );
 
         return view;
     }
@@ -386,5 +420,13 @@ public class HomeFragment extends Fragment {
 
         }
 
+    }
+
+    private void loadFragment(Fragment fragment) {
+        // load fragment
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }

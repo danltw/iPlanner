@@ -1,14 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".POIs.POIDetailsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/poi_details_id"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/poi_details_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="16pt"
+            />
+        <TextView
+            android:id="@+id/poi_details_cost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"/>
+        <RatingBar
+            android:id="@+id/poi_details_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/poi_details_name"
+            android:layout_marginEnd="10dp"
+            android:layout_gravity="left"
+            style="?android:attr/ratingBarStyleSmall"
+            android:numStars="5"
+            android:stepSize="0.1"
+            android:isIndicator="true" />
+        <TextView
+            android:id="@+id/statictext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/poi_details_rating"
+            android:layout_gravity="left"
+            android:layout_marginTop="10dp"
+            android:text="Location Description"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/poi_details_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_below="@id/statictext"/>
+
+        <TextView
+            android:id="@+id/statictext1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/poi_details_rating"
+            android:layout_gravity="left"
+            android:layout_marginTop="10dp"
+            android:text="Address"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/poi_details_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_below="@id/statictext1"/>
+        <TextView
+            android:id="@+id/poi_details_postal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_below="@id/poi_details_address"/>
+
+        <TextView
+            android:id="@+id/statictext2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/poi_details_postal"
+            android:layout_gravity="left"
+            android:layout_marginTop="10dp"
+            android:text="Opening Times"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/poi_details_openingdays"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_below="@id/statictext2"/>
+        <TextView
+            android:id="@+id/poi_details_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_below="@id/poi_details_openingdays"/>
+        <TextView
+            android:id="@+id/poi_details_end"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_below="@id/poi_details_start"/>
+    </LinearLayout>
 </FrameLayout>
