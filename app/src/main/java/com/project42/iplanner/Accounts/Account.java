@@ -14,7 +14,9 @@ public class Account {
     private String phoneNumber;
 
 
-    public Account(String username, String password){
+    Account(String username, String password){
+        //Maybe we make this class purely static, there doesn't have to be permanent account objects.
+        //They can just be created on demand from the AccountController and deleted after passing information.
         this.username = username;
         this.password = password;
 
@@ -22,9 +24,31 @@ public class Account {
 
     }
 
-    public String getPassword(String username){
-        String password = null;
+    static void deleteAccount(String username){
+        //remove account from database
+    }
 
+    static Account getAccount(String username){
+        //getAccount is called by account controller to retrieve the account object from database
+        Account account = null;
+
+        //do some sql shit here
+
+        return account;
+    }
+
+
+    String getPassword(String username){
+        String password = null;
+        //sql implementation
         return password;
+    }
+
+    void setEmail(String username, String email){
+
+    }
+
+    void setPhoneNumber(String username, String phoneNumber){
+
     }
 }
