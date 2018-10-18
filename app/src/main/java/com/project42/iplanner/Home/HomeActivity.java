@@ -16,12 +16,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.project42.iplanner.POIs.POISearchFragment;
+import com.project42.iplanner.AppConfig;
+import com.project42.iplanner.Groups.CreateGroupChannelFragment;
 import com.project42.iplanner.R;
 
 import com.project42.iplanner.Accounts.ProfileFragment;
 import com.project42.iplanner.Bookmarks.BookmarkFragment;
 import com.project42.iplanner.Itineraries.ItineraryFragment;
 import com.project42.iplanner.Chats.ChatFragment;
+import com.sendbird.android.SendBird;
 import com.project42.iplanner.Settings.SettingsFragment;
 
 
@@ -53,8 +56,10 @@ public class HomeActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-
         loadFragment(new HomeFragment());
+
+        // Initialise Sendbird SDK
+        SendBird.init(AppConfig.SBAPP_ID, this.getApplicationContext());
 
     }
 
@@ -152,7 +157,8 @@ public class HomeActivity extends AppCompatActivity {
                     loadFragment(fragment);
                     return true;
                 case R.id.navigation_chats:
-                    fragment = new ChatFragment();
+                    //fragment = new ChatFragment();
+                    fragment = new CreateGroupChannelFragment();
                     loadFragment(fragment);
                     return true;
                 case R.id.navigation_profile:

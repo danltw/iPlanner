@@ -121,6 +121,44 @@ public class HomeFragment extends Fragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu)
     {
+            final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response)
+            {
+                try {
+                    JSONArray array = response.getJSONArray("poi");
+
+                    for(int i=0; i<array.length();i++)
+                    {
+                        JSONObject jsonObject = array.getJSONObject(i);
+                        POI poi = new POI(0,null,null,0,0.0,0.0,null,null,null,null,0.0,0.0);
+                        poi.setLocationID(jsonObject.getInt("locationID"));
+                        poi.setLocationName(jsonObject.getString("locationName"));
+                        poi.setCost(jsonObject.getDouble("cost"));
+                        poi.setRating(jsonObject.getDouble("rating"));
+                        poiList.add(poi);
+                    }
+                }
+                catch (JSONException e)
+                {
+                            e.printStackTrace();
+                            progressDialog.dismiss();
+                }
+                    adapter.notifyDataSetChanged();
+                    progressDialog.dismiss();
+            }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("Volley", error.toString());
+                    progressDialog.dismiss();
+                }
+            });
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            requestQueue.add(jsonObjectRequest);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         if(searchItem != null)

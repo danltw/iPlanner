@@ -30,7 +30,7 @@ public class Account {
 
     static Account getAccount(String username){
         //getAccount is called by account controller to retrieve the account object from database
-        Account account;
+        Account account = null;
 
         //do some sql shit here
 
