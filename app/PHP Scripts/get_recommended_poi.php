@@ -15,7 +15,7 @@ $result = mysqli_query($con, "SELECT * FROM id7469667_iplanner.poi WHERE UVI < 9
 
 if($result == true)
 {
-    $response["POI"] = array();
+    $response["poi"] = array();
     foreach($result as $row)
     {
         $poi = array();
@@ -24,18 +24,18 @@ if($result == true)
         $poi["locationName"] = $row["location_name"];
         $poi["address"] = $row["location_address"];
         $poi["postalCode"] = $row["location_postalcode"];
-        $poi["evnType"] = $row["evn_type"];
+        //$poi["EvnType"] = $row["evn_type"];
         $poi["rating"] = $row["location_rating"];
         $poi["cost"] = $row["location_cost"];
         $poi["startHrs"] = $row["start_hrs"];
         $poi["endHrs"] = $row["end_hrs"];
         $poi["openingDays"] = $row["opening_days"];
         $poi["description"] = $row["location_desc"];
-        $poi["weatherType"] = $row["weather_type"];
+        //$poi["WeatherType"] = $row["weather_type"];
         $poi["UVI"] = $row["UVI"];
         $poi["PSI"] = $row["PSI"];
 
-        array_push($response["POI"], $poi);
+        array_push($response["poi"], $poi);
     }
     // success
     $response["success"] = 1;

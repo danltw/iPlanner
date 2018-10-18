@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/drawer_home"
+            android:title="Home"
+            android:checked="true"/>
+        <item
+            android:id="@+id/drawer_search"
+            android:title="Search" />
+        <item
+            android:id="@+id/drawer_itinerary"
+            android:title="Itineraries" />
+        <item
+            android:id="@+id/drawer_bookmark"
+            android:title="Bookmarks" />
+        <item
+            android:id="@+id/drawer_chat"
+            android:title="Chats" />
+        <item
+            android:id="@+id/drawer_profile"
+            android:title="Profile" />
+        <item
+            android:id="@+id/drawer_settings"
+            android:title="Settings" />
+    </group>
+</menu>
