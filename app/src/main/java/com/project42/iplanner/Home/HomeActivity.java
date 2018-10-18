@@ -1,5 +1,6 @@
 package com.project42.iplanner.Home;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.project42.iplanner.Groups.GroupChannelActivity;
 import com.project42.iplanner.POIs.POISearchFragment;
 import com.project42.iplanner.AppConfig;
 import com.project42.iplanner.Groups.CreateGroupChannelFragment;
@@ -158,8 +160,10 @@ public class HomeActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_chats:
                     //fragment = new ChatFragment();
-                    fragment = new CreateGroupChannelFragment();
-                    loadFragment(fragment);
+                    //fragment = new CreateGroupChannelFragment();
+                    //loadFragment(fragment);
+                    Intent intent = new Intent(HomeActivity.this, GroupChannelActivity.class);
+                    startActivity(intent);
                     return true;
                 case R.id.navigation_profile:
                     fragment = new ProfileFragment();

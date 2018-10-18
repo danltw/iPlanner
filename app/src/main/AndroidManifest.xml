@@ -47,7 +47,8 @@
         <!--<activity android:name=".Bookmarks.ViewBookmarksActivity" />-->
         <!--<activity android:name=".Accounts.ProfileDetailsActivity" />-->
         <!--<activity android:name=".Accounts.RegisterActivity" />-->
-        <activity android:name=".Chats.ChatActivity"/>
+        <activity android:name=".Chats.ChatActivity"
+            android:theme="@style/Toolbar"/>
         <activity android:name=".Groups.GroupChannelActivity"/>
         <meta-data
             android:name="com.google.android.actions"

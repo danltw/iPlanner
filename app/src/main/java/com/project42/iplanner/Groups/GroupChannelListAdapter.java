@@ -16,6 +16,7 @@ import com.project42.iplanner.Utilities.DateUtils;
 import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
+import com.project42.iplanner.Chats.ConnectionManager;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.GroupChannelListQuery;
 import com.sendbird.android.SendBirdException;
@@ -46,6 +47,8 @@ public class GroupChannelListAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     // Load all GroupChannels belonging to user
     public void load() {
+
+        //ConnectionManager.login("a1", null);
         mChannelList.clear();
         GroupChannelListQuery channelListQuery = GroupChannel.createMyGroupChannelListQuery();
         channelListQuery.setIncludeEmpty(true);

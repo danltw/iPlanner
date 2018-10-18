@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -123,6 +124,7 @@ public class ChatActivity extends AppCompatActivity {
                 finish();
         }
 
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_chat);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -348,16 +350,22 @@ public class ChatActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
-   /* @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_group_chat, menu);
-        super.onCreateOptionsMenu(menu);
-    }*/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //inflater.inflate(R.menu.menu_group_chat, menu);
+        getMenuInflater().inflate(R.menu.menu_group_chat, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+            switch (item.getItemId()) {
+                case android.R.id.home:
+                    super.onBackPressed();
+                    return true;
+            }
         /*if (id == R.id.action_group_channel_invite) {
             Intent intent = new Intent(getActivity(), InviteMemberActivity.class);
             intent.putExtra(EXTRA_CHANNEL_URL, mChannelUrl);
