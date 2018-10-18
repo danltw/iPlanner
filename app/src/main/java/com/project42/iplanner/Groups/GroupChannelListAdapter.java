@@ -16,7 +16,6 @@ import com.project42.iplanner.Utilities.DateUtils;
 import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
-import com.project42.iplanner.Chats.ConnectionManager;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.GroupChannelListQuery;
 import com.sendbird.android.SendBirdException;
@@ -149,8 +148,15 @@ public class GroupChannelListAdapter extends RecyclerView.Adapter<RecyclerView.V
         void bind(final Context context, final GroupChannel channel,
                   @Nullable final OnItemClickListener clickListener,
                   @Nullable final OnItemLongClickListener longClickListener) {
-            topicText.setText(channel.getName());
-            memberCountText.setText(String.valueOf(channel.getMemberCount()));
+
+            if (channel.getMemberCount() <= 1) {
+                topicText.setText(channel.getMembers().get(0).getUserId());
+                memberCountText.setVisibility(View.GONE);
+            }
+            else {
+                topicText.setText(channel.getName());
+                memberCountText.setText(String.valueOf(channel.getMemberCount()));
+            }
 
             int unreadCount = channel.getUnreadMessageCount();
             // If there are no unread messages, hide the unread count badge.
