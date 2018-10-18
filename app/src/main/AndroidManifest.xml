@@ -15,22 +15,35 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="android.app.default_searchable"
+            android:value=".Home.HomeActivity" />
+
         <activity
             android:name=".Home.HomeActivity"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.SEARCH" />
+                <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
-        <!--<activity android:name=".Accounts.LoginActivity" />-->
-        <!--<activity android:name=".POIs.ViewPOIsActivity" />-->
-        <!--<activity android:name=".Itineraries.ViewItinerariesActivity" />-->
-        <!--<activity android:name=".Itineraries.ItineraryDetailsActivity" />-->
-        <!--<activity android:name=".Bookmarks.ViewBookmarksActivity" />-->
-        <!--<activity android:name=".Accounts.ProfileDetailsActivity" />-->
-        <!--<activity android:name=".Accounts.RegisterActivity" />-->
+        <!-- <activity android:name=".Accounts.LoginActivity" /> -->
+        <!-- <activity android:name=".POIs.ViewPOIsActivity" /> -->
+        <!-- <activity android:name=".Itineraries.ViewItinerariesActivity" /> -->
+        <!-- <activity android:name=".Itineraries.ItineraryDetailsActivity" /> -->
+        <!-- <activity android:name=".Bookmarks.ViewBookmarksActivity" /> -->
+        <!-- <activity android:name=".Accounts.ProfileDetailsActivity" /> -->
+        <!-- <activity android:name=".Accounts.RegisterActivity" /> -->
 
         <meta-data
             android:name="com.google.android.actions"

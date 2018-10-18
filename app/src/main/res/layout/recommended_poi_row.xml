@@ -33,29 +33,30 @@
                 android:id="@+id/poiname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:lines="2"
+                android:layout_marginLeft="10dp"
                 android:textColor="#111"
-                android:textSize="11dp" />
+                android:textSize="20dp" />
 
             <TextView
                 android:id="@+id/poiprice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/poiname"
                 android:layout_marginRight="10dp"
                 android:gravity="right"
                 android:textColor="@color/colorAccent"
-                android:textSize="11dp" />
+                android:textSize="20dp" />
 
-            <TextView
+            <RatingBar
                 android:id="@+id/poirating"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/poiprice"
-                android:layout_marginRight="10dp"
-                android:gravity="right"
-                android:textColor="@color/colorAccent"
-                android:textSize="11dp" />
+                android:layout_marginEnd="10dp"
+                android:layout_gravity="end"
+                style="?android:attr/ratingBarStyleSmall"
+                android:numStars="5"
+                android:stepSize="0.1"
+                android:isIndicator="true" />
 
         </RelativeLayout>
 
