@@ -84,13 +84,8 @@ public class GroupChannelListFragment extends Fragment {
         });
 
         mChannelListAdapter = new GroupChannelListAdapter(getActivity());
+        //refresh();
         mChannelListAdapter.load();
-
-        // If current user has no existing chats, then force user to start chat
-        if (mChannelListAdapter.getItemCount() <= 0) {
-            Intent intent = new Intent(getContext(), CreateGroupChannelActivity.class);
-            startActivityForResult(intent, INTENT_REQUEST_NEW_GROUP_CHANNEL);
-        }
 
         setUpRecyclerView();
         setUpChannelListAdapter();
@@ -126,11 +121,6 @@ public class GroupChannelListFragment extends Fragment {
             }
         });
 
-        // If current user has no existing chats, then force user to start chat
-        if (mChannelListAdapter.getItemCount() <= 0) {
-            getActivity().finish();
-        }
-
         super.onResume();
     }
 
@@ -140,7 +130,7 @@ public class GroupChannelListFragment extends Fragment {
 
         Log.d("LIFECYCLE", "GroupChannelListFragment onPause()");
 
-        ConnectionManager.removeConnectionManagementHandler(CONNECTION_HANDLER_ID);
+        //ConnectionManager.removeConnectionManagementHandler(CONNECTION_HANDLER_ID);
         //SendBird.removeChannelHandler(CHANNEL_HANDLER_ID);
         super.onPause();
     }
