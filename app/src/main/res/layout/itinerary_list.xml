@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+    <LinearLayout android:orientation="vertical" android:layout_height="match_parent" android:layout_width="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    -<RelativeLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:padding="8dp">
+
+    <!--<ImageView-->
+
+
+    <!--android:id="@+id/imageView"-->
+
+
+    <!--android:layout_width="120dp"-->
+
+
+    <!--android:layout_height="90dp"-->
+
+
+    <!--android:padding="4dp" />-->
+
+
+    <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textColor="#000000" android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" android:text="Apple MacBook Air Core i5 5th Gen - (8 GB/128 GB SSD/Mac OS Sierra)" android:layout_marginLeft="5dp" android:id="@+id/textViewTitle"/>
+
+    <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" android:text="13.3 Inch, 256 GB" android:layout_marginLeft="5dp" android:id="@+id/textViewShortDesc" android:layout_marginTop="5dp" android:layout_below="@id/textViewTitle"/>
+
+    <!--<TextView-->
+
+
+    <!--android:id="@+id/textViewRating"-->
+
+
+    <!--android:layout_width="wrap_content"-->
+
+
+    <!--android:layout_height="wrap_content"-->
+
+
+    <!--android:layout_below="@id/textViewShortDesc"-->
+
+
+    <!--android:layout_marginLeft="5dp"-->
+
+
+    <!--android:layout_marginTop="5dp"-->
+
+
+    <!--android:layout_toRightOf="@id/imageView"-->
+
+
+    <!--android:background="@color/colorPrimary"-->
+
+
+    <!--android:paddingLeft="15dp"-->
+
+
+    <!--android:paddingRight="15dp"-->
+
+
+    <!--android:text="4.7"-->
+
+
+    <!--android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse"-->
+
+
+    <!--android:textStyle="bold" />-->
+
+
+    <!--<TextView-->
+
+
+    <!--android:id="@+id/textViewPrice"-->
+
+
+    <!--android:layout_width="wrap_content"-->
+
+
+    <!--android:layout_height="wrap_content"-->
+
+
+    <!--android:layout_below="@id/textViewRating"-->
+
+
+    <!--android:layout_marginLeft="5dp"-->
+
+
+    <!--android:layout_marginTop="5dp"-->
+
+
+    <!--android:layout_toRightOf="@id/imageView"-->
+
+
+    <!--android:text="INR 56990"-->
+
+
+    <!--android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"-->
+
+
+    <!--android:textStyle="bold" />-->
+
+
+</RelativeLayout>
+
+</LinearLayout>

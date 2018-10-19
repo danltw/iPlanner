@@ -8,43 +8,42 @@ import java.util.HashMap;
 
 public class Itinerary {
 
-    private int itineraryID;
+    private int itinerary_id;
 
-    private HashMap<POI, Time> lstPOIs;
+    private String itinerary_name;
 
-    private Date visitDate;
+    private Date visit_date;
 
     public Itinerary() {
 
     }
 
-    public Itinerary(int itineraryID, HashMap<POI, Time> lstPOIs, Date visitDate) {
-        this.itineraryID = itineraryID;
-        this.lstPOIs = lstPOIs;
-        this.visitDate = visitDate;
+    public Itinerary(int itinerary_id, String itinerary_name, Date visit_date) {
+        this.itinerary_id = itinerary_id;
+        this.itinerary_name = itinerary_name;
+        // this.lstPOIs = lstPOIs;
+        this.visit_date = visit_date;
     }
 
     public int getItineraryID() {
-        return itineraryID;
+        return itinerary_id;
     }
 
-    public void setItineraryID(int itineraryID) {
-        this.itineraryID = itineraryID;
+    public void setItineraryID(int itinerary_id) {
+        this.itinerary_id = itinerary_id;
     }
 
-    public HashMap<POI, Time> getLstPOIs() {
-        return lstPOIs;
+    public String getItineraryName() {
+        return itinerary_name;
     }
 
-    public void setLstPOIs(HashMap<POI, Time> lstPOIs) {
-        this.lstPOIs = lstPOIs;
+    public void setItineraryName(String itinerary_name) {
+        this.itinerary_name = itinerary_name;
     }
+
 
     public Date getVisitDate() {
-        return visitDate;
+        return visit_date;
     }
 
-    public void setVisitDate(Date visitDate) {
-        this.visitDate = visitDate;
-    }
 }
