@@ -95,6 +95,9 @@ public class CreateGroupChannelFragment extends Fragment {
                                             // remove current fragment such that it will not be shown again if back is pressed
                                             getActivity().getSupportFragmentManager().popBackStack();
 
+                                            // TODO: Change from switching from Fragment to Activity
+                                            // to Fragment to Fragment
+                                            // then only switch to acitivty at onActivityResult
                                             Intent intent = new Intent(getActivity(), ChatActivity.class);
                                             intent.putExtra(EXTRA_NEW_CHANNEL_URL, groupChannel.getUrl());
                                             intent.putExtra(EXTRA_NEW_CHANNEL_TITLE, groupChannel.getName());

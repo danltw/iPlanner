@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.project42.iplanner.Groups.CreateGroupChannelActivity;
 import com.project42.iplanner.Groups.CreateGroupChannelFragment;
 import com.project42.iplanner.Groups.GroupChannelActivity;
 import com.project42.iplanner.Groups.GroupChannelListFragment;
@@ -108,8 +109,8 @@ public class ChatActivity extends AppCompatActivity {
             // Get channel URL from GroupChannelListFragment.
             // ensure channel exists before opening activity
             Intent intent = getIntent();
-            String newChnlURL = intent.getStringExtra(CreateGroupChannelFragment.EXTRA_NEW_CHANNEL_URL);
-            String newChnlTitle = intent.getStringExtra(CreateGroupChannelFragment.EXTRA_NEW_CHANNEL_TITLE);
+            String newChnlURL = intent.getStringExtra(CreateGroupChannelActivity.EXTRA_NEW_CHANNEL_URL);
+            String newChnlTitle = intent.getStringExtra(CreateGroupChannelActivity.EXTRA_NEW_CHANNEL_TITLE);
             String currChnlURL = intent.getStringExtra(GroupChannelListFragment.EXTRA_GROUP_CHANNEL_URL);
             String currChnlTitle = intent.getStringExtra(GroupChannelListFragment.EXTRA_GROUP_TITLE);
             if (!TextUtils.isEmpty(newChnlURL) && !TextUtils.isEmpty(newChnlTitle)) {

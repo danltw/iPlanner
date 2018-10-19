@@ -4,9 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -20,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.project42.iplanner.Chats.ChatActivity;
-import com.project42.iplanner.Chats.ChatFragment;
 import com.project42.iplanner.Chats.ConnectionManager;
 import com.project42.iplanner.R;
 import com.sendbird.android.BaseChannel;
@@ -81,13 +78,19 @@ public class GroupChannelListFragment extends Fragment {
         mCreateChannelFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), CreateGroupChannelFragment.class);
+                Intent intent = new Intent(getContext(), CreateGroupChannelActivity.class);
                 startActivityForResult(intent, INTENT_REQUEST_NEW_GROUP_CHANNEL);
             }
         });
 
         mChannelListAdapter = new GroupChannelListAdapter(getActivity());
         mChannelListAdapter.load();
+
+        // If current user has no existing chats, then force user to start chat
+        if (mChannelListAdapter.getItemCount() <= 0) {
+            Intent intent = new Intent(getContext(), CreateGroupChannelActivity.class);
+            startActivityForResult(intent, INTENT_REQUEST_NEW_GROUP_CHANNEL);
+        }
 
         setUpRecyclerView();
         setUpChannelListAdapter();
@@ -122,6 +125,11 @@ public class GroupChannelListFragment extends Fragment {
                 mChannelListAdapter.notifyDataSetChanged();
             }
         });
+
+        // If current user has no existing chats, then force user to start chat
+        if (mChannelListAdapter.getItemCount() <= 0) {
+            getActivity().finish();
+        }
 
         super.onResume();
     }

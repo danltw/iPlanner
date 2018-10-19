@@ -40,7 +40,7 @@ public class GroupChannelActivity extends AppCompatActivity {
         }
 
         String channelUrl = getIntent().getStringExtra("groupChannelUrl");
-        if(channelUrl != null) {
+        /*if(channelUrl != null) {
             // If started from notification
             Fragment fragment = ChatFragment.newInstance(channelUrl);
             FragmentManager manager = getSupportFragmentManager();
@@ -48,7 +48,7 @@ public class GroupChannelActivity extends AppCompatActivity {
                     .replace(R.id.container_group_channel, fragment)
                     .addToBackStack(null)
                     .commit();
-        }
+        }*/
     }
 
     interface onBackPressedListener {
