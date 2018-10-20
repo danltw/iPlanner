@@ -18,7 +18,9 @@ import android.view.MenuItem;
 
 import com.project42.iplanner.Chats.ConnectionManager;
 import com.project42.iplanner.Groups.CreateGroupChannelActivity;
+import com.project42.iplanner.Groups.Group;
 import com.project42.iplanner.Groups.GroupChannelActivity;
+import com.project42.iplanner.Groups.GroupController;
 import com.project42.iplanner.POIs.POISearchFragment;
 import com.project42.iplanner.AppConfig;
 import com.project42.iplanner.Groups.CreateGroupChannelFragment;
@@ -170,6 +172,7 @@ public class HomeActivity extends AppCompatActivity {
                     //fragment = new ChatFragment();
                     //fragment = new CreateGroupChannelFragment();
                     //loadFragment(fragment);
+                    // testing for post response
                     ConnectionManager.login("", new SendBird.ConnectHandler() {
                         @Override
                         public void onConnected(User user, SendBirdException e) {
