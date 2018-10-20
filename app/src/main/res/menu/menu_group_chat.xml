@@ -5,7 +5,7 @@
     <item android:id="@+id/action_group_channel_view_members"
         android:title="View members"
         android:orderInCategory="10"
-        app:showAsAction="never" />
+        app:showAsAction="never"/>
 
     <item android:id="@+id/action_group_channel_invite"
         android:title="Invite members"

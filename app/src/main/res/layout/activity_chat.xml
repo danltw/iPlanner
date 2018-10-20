@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/rootLayout"
+    android:theme="@style/Toolbar"
     tools:context="com.project42.iplanner.Chats.ChatActivity">
 
     <!-- A horizontal line between the chatbox and RecyclerView -->

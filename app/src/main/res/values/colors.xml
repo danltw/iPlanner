@@ -20,4 +20,10 @@
     <color name="groupChatDateText">#ffffff</color>
 
     <color name="groupChatDateBackground">#C0C0C0</color>
+
+    <!-- Selector -->
+    <color name="btn_create">#ffffff</color>
+    <color name="btn_create_disabled">#c1acff</color>
+    <color name="btn_edit">#ffffff</color>
+    <color name="btn_edit_disabled">#c1acff</color>
 </resources>

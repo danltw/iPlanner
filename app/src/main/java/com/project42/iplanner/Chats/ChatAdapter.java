@@ -713,7 +713,7 @@ class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 ImageUtils.displayRoundImageFromUrl(context, message.getSender().getProfileUrl(), profileImage);
 
                 nicknameText.setVisibility(View.VISIBLE);
-                nicknameText.setText(message.getSender().getNickname());
+                nicknameText.setText(message.getSender().getUserId());
             }
 
             messageText.setText(message.getMessage());

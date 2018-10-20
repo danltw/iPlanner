@@ -4,9 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -19,7 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.project42.iplanner.Chats.ChatFragment;
+import com.project42.iplanner.Chats.ChatActivity;
+import com.project42.iplanner.Chats.ConnectionManager;
 import com.project42.iplanner.R;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
@@ -36,6 +35,8 @@ public class GroupChannelListFragment extends Fragment {
 
     private static final int INTENT_REQUEST_NEW_GROUP_CHANNEL = 302;
     public static final String EXTRA_GROUP_CHANNEL_URL = "GROUP_CHANNEL_URL";
+    public static final String EXTRA_GROUP_TITLE = "GROUP_CHANNEL_TITLE";
+    private static final String CONNECTION_HANDLER_ID = "CONNECTION_HANDLER_GROUP_CHANNEL_LIST";
     private static final String CHANNEL_HANDLER_ID = "CHANNEL_HANDLER_GROUP_CHANNEL_LIST";
     private static final int CHANNEL_LIST_LIMIT = 15;
 
@@ -77,12 +78,13 @@ public class GroupChannelListFragment extends Fragment {
         mCreateChannelFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), CreateGroupChannelFragment.class);
+                Intent intent = new Intent(getContext(), CreateGroupChannelActivity.class);
                 startActivityForResult(intent, INTENT_REQUEST_NEW_GROUP_CHANNEL);
             }
         });
 
         mChannelListAdapter = new GroupChannelListAdapter(getActivity());
+        //refresh();
         mChannelListAdapter.load();
 
         setUpRecyclerView();
@@ -95,12 +97,12 @@ public class GroupChannelListFragment extends Fragment {
     public void onResume() {
         Log.d("LIFECYCLE", "GroupChannelListFragment onResume()");
 
-        /*ConnectionManager.addConnectionManagementHandler(CONNECTION_HANDLER_ID, new ConnectionManager.ConnectionManagementHandler() {
+        ConnectionManager.addConnectionManagementHandler(CONNECTION_HANDLER_ID, new ConnectionManager.ConnectionManagementHandler() {
             @Override
             public void onConnected(boolean reconnect) {
                 refresh();
             }
-        });*/
+        });
 
         SendBird.addChannelHandler(CHANNEL_HANDLER_ID, new SendBird.ChannelHandler() {
             @Override
@@ -124,12 +126,12 @@ public class GroupChannelListFragment extends Fragment {
 
     @Override
     public void onPause() {
-        /*mChannelListAdapter.save();
+        //mChannelListAdapter.save();
 
         Log.d("LIFECYCLE", "GroupChannelListFragment onPause()");
 
-        ConnectionManager.removeConnectionManagementHandler(CONNECTION_HANDLER_ID);
-        SendBird.removeChannelHandler(CHANNEL_HANDLER_ID);*/
+        //ConnectionManager.removeConnectionManagementHandler(CONNECTION_HANDLER_ID);
+        //SendBird.removeChannelHandler(CHANNEL_HANDLER_ID);
         super.onPause();
     }
 
@@ -140,8 +142,9 @@ public class GroupChannelListFragment extends Fragment {
                 // Channel successfully created
                 // Enter the newly created channel.
                 String newChannelUrl = data.getStringExtra(CreateGroupChannelFragment.EXTRA_NEW_CHANNEL_URL);
+                String newChannelTitle = data.getStringExtra(CreateGroupChannelFragment.EXTRA_NEW_CHANNEL_TITLE);
                 if (newChannelUrl != null) {
-                    enterGroupChannel(newChannelUrl);
+                    enterGroupChannel(newChannelUrl, newChannelTitle);
                 }
             } else {
                 Log.d("GrChLIST", "resultCode not STATUS_OK");
@@ -256,7 +259,7 @@ public class GroupChannelListFragment extends Fragment {
     void enterGroupChannel(GroupChannel channel) {
         final String channelUrl = channel.getUrl();
 
-        enterGroupChannel(channelUrl);
+        enterGroupChannel(channelUrl, channel.getName());
     }
 
     /**
@@ -264,12 +267,17 @@ public class GroupChannelListFragment extends Fragment {
      *
      * @param channelUrl The URL of the channel to enter.
      */
-    void enterGroupChannel(String channelUrl) {
-        ChatFragment fragment = ChatFragment.newInstance(channelUrl);
+    void enterGroupChannel(String channelUrl, String channelTitle) {
+        /*ChatFragment fragment = ChatFragment.newInstance(channelUrl);
         getFragmentManager().beginTransaction()
                 .replace(R.id.container_group_channel, fragment)
                 .addToBackStack(null)
-                .commit();
+                .commit();*/
+        Intent intent = new Intent((GroupChannelActivity)getActivity(), ChatActivity.class);
+        intent.putExtra(EXTRA_GROUP_CHANNEL_URL, channelUrl);
+        intent.putExtra(EXTRA_GROUP_TITLE, channelTitle);
+        startActivity(intent);
+
     }
 
     private void refresh() {
@@ -284,7 +292,8 @@ public class GroupChannelListFragment extends Fragment {
      */
     private void refreshChannelList(int numChannels) {
         mChannelListQuery = GroupChannel.createMyGroupChannelListQuery();
-        mChannelListQuery.setLimit(numChannels);
+        //mChannelListQuery.setLimit(0);
+        mChannelListQuery.setIncludeEmpty(true);
 
         mChannelListQuery.next(new GroupChannelListQuery.GroupChannelListQueryResultHandler() {
             @Override
@@ -324,7 +333,6 @@ public class GroupChannelListFragment extends Fragment {
             }
         });
     }
-
     /**
      * Leaves a Group Channel.
      *

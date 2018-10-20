@@ -1,5 +1,6 @@
 package com.project42.iplanner.Home;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +16,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.project42.iplanner.Chats.ConnectionManager;
+import com.project42.iplanner.Groups.CreateGroupChannelActivity;
+import com.project42.iplanner.Groups.GroupChannelActivity;
 import com.project42.iplanner.POIs.POISearchFragment;
 import com.project42.iplanner.AppConfig;
 import com.project42.iplanner.Groups.CreateGroupChannelFragment;
@@ -24,8 +28,14 @@ import com.project42.iplanner.Accounts.ProfileFragment;
 import com.project42.iplanner.Bookmarks.BookmarkFragment;
 import com.project42.iplanner.Itineraries.ItineraryFragment;
 import com.project42.iplanner.Chats.ChatFragment;
+import com.sendbird.android.GroupChannel;
+import com.sendbird.android.GroupChannelListQuery;
 import com.sendbird.android.SendBird;
 import com.project42.iplanner.Settings.SettingsFragment;
+import com.sendbird.android.SendBirdException;
+import com.sendbird.android.User;
+
+import java.util.List;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -158,8 +168,19 @@ public class HomeActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_chats:
                     //fragment = new ChatFragment();
-                    fragment = new CreateGroupChannelFragment();
-                    loadFragment(fragment);
+                    //fragment = new CreateGroupChannelFragment();
+                    //loadFragment(fragment);
+                    ConnectionManager.login("", new SendBird.ConnectHandler() {
+                        @Override
+                        public void onConnected(User user, SendBirdException e) {
+
+                            if (e != null) {
+                                e.printStackTrace(); // error
+                            }
+                            showOrCreateChats();
+                        }
+                    });
+
                     return true;
                 case R.id.navigation_profile:
                     fragment = new ProfileFragment();
@@ -176,6 +197,30 @@ public class HomeActivity extends AppCompatActivity {
         transaction.replace(R.id.frame_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    private void showOrCreateChats() {
+        // If current user has no existing chats, then force user to start chat
+        GroupChannelListQuery channelListQuery = GroupChannel.createMyGroupChannelListQuery();
+        channelListQuery.setIncludeEmpty(true);
+        channelListQuery.next(new GroupChannelListQuery.GroupChannelListQueryResultHandler() {
+
+            @Override
+            public void onResult(List<GroupChannel> list, SendBirdException e) {
+                if (e != null) {    // Error.
+                    e.printStackTrace();
+                    return;
+                }
+                if (list.isEmpty()) {
+                    Intent intent = new Intent(HomeActivity.this, CreateGroupChannelActivity.class);
+                    startActivity(intent);
+                }
+                else if (!list.isEmpty()) {
+                    Intent intent = new Intent(HomeActivity.this, GroupChannelActivity.class);
+                    startActivity(intent);
+                }
+             }
+        });
     }
 
 //    @Override
