@@ -49,15 +49,15 @@
         <!-- <activity android:name=".Accounts.RegisterActivity" /> -->
         <activity
             android:name=".Chats.ChatActivity"
-            android:theme="@style/Toolbar"
-            android:parentActivityName=".Groups.GroupChannelActivity"/>
+            android:parentActivityName=".Groups.GroupChannelActivity"
+            android:theme="@style/Toolbar" />
         <activity android:name=".Groups.GroupChannelActivity" />
 
         <meta-data
             android:name="com.google.android.actions"
             android:resource="@menu/navigation" />
 
-        <activity android:name=".Groups.CreateGroupChannelActivity"/>
+        <activity android:name=".Groups.CreateGroupChannelActivity" />
     </application>
 
 </manifest>

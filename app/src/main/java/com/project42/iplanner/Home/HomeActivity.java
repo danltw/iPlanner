@@ -9,18 +9,18 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.project42.iplanner.Chats.ConnectionManager;
 import com.project42.iplanner.Groups.CreateGroupChannelActivity;
-import com.project42.iplanner.Groups.Group;
 import com.project42.iplanner.Groups.GroupChannelActivity;
-import com.project42.iplanner.Groups.GroupController;
 import com.project42.iplanner.POIs.POISearchFragment;
 import com.project42.iplanner.AppConfig;
 import com.project42.iplanner.Groups.CreateGroupChannelFragment;
@@ -40,33 +40,29 @@ import com.sendbird.android.User;
 import java.util.List;
 
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private ActionBar toolbar;
-    private DrawerLayout mDrawer;
-    private Toolbar tBar;
-    private NavigationView nvDrawer;
-
-    private ActionBarDrawerToggle drawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         toolbar = getSupportActionBar();
-
-//        tBar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(tBar);
-//
-//        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        drawerToggle = setupDrawerToggle();
-//        mDrawer.addDrawerListener(drawerToggle);
-//
-//        nvDrawer = (NavigationView) findViewById(R.id.nvView);
-//        setupDrawerContent(nvDrawer);
+        Toolbar toolbar1 = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar1);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar1, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         loadFragment(new HomeFragment());
 
@@ -75,80 +71,88 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-//    private ActionBarDrawerToggle setupDrawerToggle()
-//    {
-//        return new ActionBarDrawerToggle(this,mDrawer,tBar,R.string.drawer_open,R.string.drawer_close);
-//    }
-//
-//    private void setupDrawerContent(NavigationView navigationView)
-//    {
-//        navigationView.setNavigationItemSelectedListener(
-//                new NavigationView.OnNavigationItemSelectedListener() {
-//                    @Override
-//                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-//                        selectDrawerItem(menuItem);
-//                        return true;
-//                    }
-//                });
-//    }
-//
-//    public void selectDrawerItem(MenuItem menuItem) {
-//        // Create a new fragment and specify the fragment to show based on nav item clicked
-//        Fragment fragment = null;
-//        Class fragmentClass;
-//        switch(menuItem.getItemId()) {
-//            case R.id.drawer_home:
-//                fragmentClass = HomeFragment.class;
-//                break;
-//            case R.id.drawer_itinerary:
-//                fragmentClass = ItineraryFragment.class;
-//                break;
-//            case R.id.drawer_bookmark:
-//                fragmentClass = BookmarkFragment.class;
-//                break;
-//            case R.id.drawer_search:
-//                fragmentClass = POISearchFragment.class;
-//                break;
-//            case R.id.drawer_profile:
-//                fragmentClass = ProfileFragment.class;
-//                break;
-//            case R.id.drawer_chat:
-//                fragmentClass = ChatFragment.class;
-//                break;
-//            case R.id.drawer_settings:
-//                fragmentClass = SettingsFragment.class;
-//                break;
-//            default:
-//                fragmentClass = HomeFragment.class;
-//        }
-//
-//        try {
-//            fragment = (Fragment) fragmentClass.newInstance();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        // Insert the fragment by replacing any existing fragment
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
-//
-//        // Highlight the selected item has been done by NavigationView
-//        menuItem.setChecked(true);
-//        // Set action bar title
-//        setTitle(menuItem.getTitle());
-//        // Close the navigation drawer
-//        mDrawer.closeDrawers();
-//    }
-//
-//    public boolean onOptionsItemSelected(MenuItem item)
-//    {
-//        if(drawerToggle.onOptionsItemSelected(item))
-//        {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        displaySelectedScreen(item.getItemId());
+        return true;
+    }
+
+    private void displaySelectedScreen(int itemId) {
+
+        //creating fragment object
+        Fragment fragment = null;
+
+        //initializing the fragment object which is selected
+        switch (itemId) {
+            case R.id.drawer_home:
+                fragment = new HomeFragment();
+                break;
+            case R.id.drawer_itinerary:
+                fragment = new ItineraryFragment();
+                break;
+            case R.id.drawer_bookmark:
+                fragment = new BookmarkFragment();
+                break;
+            case R.id.drawer_search:
+                fragment = new POISearchFragment();
+                break;
+            case R.id.drawer_profile:
+                fragment = new ProfileFragment();
+                break;
+            case R.id.drawer_chat:
+                fragment = new ChatFragment();
+                break;
+            case R.id.drawer_settings:
+                fragment = new SettingsFragment();
+                break;
+            default:
+                fragment = new HomeFragment();
+        }
+
+        //replacing the fragment
+        if (fragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.frame_container, fragment);
+            ft.commit();
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+    }
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -172,7 +176,6 @@ public class HomeActivity extends AppCompatActivity {
                     //fragment = new ChatFragment();
                     //fragment = new CreateGroupChannelFragment();
                     //loadFragment(fragment);
-                    // testing for post response
                     ConnectionManager.login("", new SendBird.ConnectHandler() {
                         @Override
                         public void onConnected(User user, SendBirdException e) {
@@ -225,18 +228,4 @@ public class HomeActivity extends AppCompatActivity {
              }
         });
     }
-
-//    @Override
-//    protected void onPostCreate(Bundle savedInstanceState) {
-//        super.onPostCreate(savedInstanceState);
-//        // Sync the toggle state after onRestoreInstanceState has occurred.
-//        drawerToggle.syncState();
-//    }
-
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-//        // Pass any configuration change to the drawer toggles
-//        drawerToggle.onConfigurationChanged(newConfig);
-//    }
 }
