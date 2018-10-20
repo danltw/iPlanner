@@ -36,6 +36,17 @@
                 android:layout_marginLeft="10dp"
                 android:textColor="#111"
                 android:textSize="20dp" />
+            <RatingBar
+                android:id="@+id/poirating"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/poiname"
+                android:layout_gravity="left"
+                android:layout_marginLeft="10dp"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:stepSize="0.1" />
 
             <TextView
                 android:id="@+id/poiprice"
@@ -45,17 +56,6 @@
                 android:gravity="right"
                 android:textColor="@color/colorAccent"
                 android:textSize="20dp" />
-            <RatingBar
-                android:id="@+id/poirating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/poiname"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="left"
-                style="?android:attr/ratingBarStyleSmall"
-                android:numStars="5"
-                android:stepSize="0.1"
-                android:isIndicator="true" />
 
         </RelativeLayout>
 
