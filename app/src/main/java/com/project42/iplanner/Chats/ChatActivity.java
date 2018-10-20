@@ -338,6 +338,16 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed()
+    {
+        // code here to show dialog
+        Intent intent = new Intent(ChatActivity.this, GroupChannelActivity.class);
+        startActivity(intent);
+        finish();
+        //super.onBackPressed();  // optional depending on your needs
+    }
+
+    @Override
     public void onDestroy() {
         // Save messages to cache.
         //mChatAdapter.save();

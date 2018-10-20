@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.project42.iplanner.Chats.ChatActivity;
 import com.project42.iplanner.Chats.ConnectionManager;
+import com.project42.iplanner.Home.HomeActivity;
 import com.project42.iplanner.R;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
@@ -89,6 +90,11 @@ public class GroupChannelListFragment extends Fragment {
 
         setUpRecyclerView();
         setUpChannelListAdapter();
+
+        Group grp = new Group();
+        grp.setGroupID(0);
+        grp.setGroupName("Blbla");
+        GroupController.getInstance(getActivity()).addGroup(grp);
 
         return rootView;
     }
