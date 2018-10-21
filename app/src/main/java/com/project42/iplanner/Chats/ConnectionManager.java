@@ -6,8 +6,10 @@ import com.sendbird.android.User;
 
 public class ConnectionManager {
 
+    private static String user = "User1";
+
         public static void login(String userId, final SendBird.ConnectHandler handler) {
-            SendBird.connect(userId, new SendBird.ConnectHandler() {
+            SendBird.connect(user, new SendBird.ConnectHandler() {
                 @Override
                 public void onConnected(User user, SendBirdException e) {
                     if (handler != null) {
@@ -51,8 +53,7 @@ public class ConnectionManager {
                     handler.onConnected(false);
                 }
             } else if (SendBird.getConnectionState() == SendBird.ConnectionState.CLOSED) { // push notification or system kill
-                String userId = "hardcoded user1";
-                SendBird.connect(userId, new SendBird.ConnectHandler() {
+                SendBird.connect(user, new SendBird.ConnectHandler() {
                     @Override
                     public void onConnected(User user, SendBirdException e) {
                         if (e != null) {

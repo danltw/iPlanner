@@ -36,7 +36,7 @@ public class POIAdapter extends RecyclerView.Adapter<POIAdapter.ViewHolder> {
         float ratingvalue  = (float) poi.getRating();
         holder.poiid.setText(String.valueOf(poi.getLocationID()));
         holder.poiname.setText(String.valueOf(poi.getLocationName()));
-        holder.poicost.setText(String.valueOf(poi.getCost()));
+        holder.poicost.setText("S$" + String.valueOf(poi.getCost()));
         holder.poirating.setRating(ratingvalue);
 
     }

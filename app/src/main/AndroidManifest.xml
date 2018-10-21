@@ -40,16 +40,23 @@
                     android:name="android.app.searchable"
                     android:resource="@xml/searchable"/>
         </activity>
-        <!-- <activity android:name=".Chats.ChatActivity"/> -->
-        <meta-data
-                android:name="com.google.android.actions"
-                android:resource="@menu/navigation"/>
-
+        <!-- <activity android:name=".Accounts.LoginActivity" /> -->
+        <!-- <activity android:name=".POIs.ViewPOIsActivity" /> -->
+        <!-- <activity android:name=".Itineraries.ViewItinerariesActivity" /> -->
+        <!-- <activity android:name=".Itineraries.ItineraryDetailsActivity" /> -->
+        <!-- <activity android:name=".Bookmarks.ViewBookmarksActivity" /> -->
+        <!-- <activity android:name=".Accounts.ProfileDetailsActivity" /> -->
+        <!-- <activity android:name=".Accounts.RegisterActivity" /> -->
         <activity
-                android:name=".Accounts.LoginButton"
-                android:label="@string/title_activity_login_button"
-                android:theme="@style/AppTheme">
-        </activity>
+            android:name=".Chats.ChatActivity"
+            android:parentActivityName=".Groups.GroupChannelActivity"
+            android:theme="@style/Toolbar" />
+        <activity android:name=".Groups.GroupChannelActivity" />
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@menu/navigation" />
+
+        <activity android:name=".Groups.CreateGroupChannelActivity" />
     </application>
 
 </manifest>

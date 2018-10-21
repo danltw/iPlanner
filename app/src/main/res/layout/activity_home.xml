@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -21,17 +22,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <!-- The ActionBar displayed at the top -->
-    <include
-        layout="@layout/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
     <FrameLayout
         android:id="@+id/frame_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_marginTop="50dp"/>
     </LinearLayout>
         <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
@@ -45,13 +41,18 @@
         app:itemTextColor="@android:color/white"
         app:menu="@menu/navigation" />
 
-        <!--<android.support.design.widget.NavigationView-->
-            <!--android:id="@+id/nvView"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_gravity="start"-->
-            <!--android:background="@android:color/white"-->
-            <!--app:menu="@menu/drawer_view" />-->
-
 </android.support.design.widget.CoordinatorLayout>
+    <include
+        layout="@layout/app_bar_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/activity_main_drawer" />
 </android.support.v4.widget.DrawerLayout>

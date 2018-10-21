@@ -49,6 +49,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.project42.iplanner.AppConfig;
 import com.project42.iplanner.POIs.POI;
 import com.project42.iplanner.POIs.POIAdapter;
 import com.project42.iplanner.POIs.POIDetailsFragment;
@@ -67,7 +68,7 @@ public class HomeFragment extends Fragment {
     public static final int READ_TIMEOUT = 15000;
 
     private static final String TAG = HomeFragment.class.getSimpleName();
-    private static final String URL = "http://project42-iplanner.000webhostapp.com/get_recommended_poi.php";
+    private static final String URL = AppConfig.URL_RECOMMENDED;
 
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
