@@ -32,4 +32,5 @@
     <!-- Message Status -->
     <string name="message_sending">Sending</string>
     <string name="message_failed">Failed</string>
+    <string name="title_activity_login_button">LoginButton</string>
 </resources>

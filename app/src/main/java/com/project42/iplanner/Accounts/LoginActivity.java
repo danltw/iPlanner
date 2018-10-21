@@ -1,25 +1,46 @@
 package com.project42.iplanner.Accounts;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 import com.project42.iplanner.R;
 
 public class LoginActivity extends AppCompatActivity {
+    private static final int SUCCESS = 0;
+    private static final int USERNAME_OCCUPIED = 1;
+    private static final int USERNAME_INVALID = 2;
+    private static final int PASSWORD_INCORRECT = 3;
 
-    @Override
+    private String username = ((EditText)findViewById(R.id.login_username)).getText().toString();
+    private String password = ((EditText)findViewById(R.id.login_password)).getText().toString();
+
+    public LoginActivity(){
+
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
     }
 
-    public boolean verifyUser(String username, String tryPassword){
-        //called by Login_Activity to check if password matches username
+    public void onClickLogin(View view){
+        int status;
+        status = AccountController.login(username, password);
 
-        boolean userVerified = false;
-
-        String password = null;
-
-        return userVerified;
+        if (status == SUCCESS){
+            Toast.makeText(this, "Logging in...", Toast.LENGTH_LONG).show();
+        }
+        else if (status == USERNAME_INVALID){
+            Toast.makeText(this, "Wrong username!", Toast.LENGTH_LONG).show();
+        }
+        else if (status == PASSWORD_INCORRECT){
+            Toast.makeText(this, "Wrong password!", Toast.LENGTH_LONG).show();
+        }
+        else {
+            Toast.makeText(this, "(DEBUG) Uncaught error!", Toast.LENGTH_LONG).show();
+        }
     }
 }
