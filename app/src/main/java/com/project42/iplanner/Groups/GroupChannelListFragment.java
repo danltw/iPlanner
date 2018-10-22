@@ -86,15 +86,10 @@ public class GroupChannelListFragment extends Fragment {
 
         mChannelListAdapter = new GroupChannelListAdapter(getActivity());
         //refresh();
-        mChannelListAdapter.load();
+        //mChannelListAdapter.load();
 
         setUpRecyclerView();
         setUpChannelListAdapter();
-
-        Group grp = new Group();
-        grp.setGroupID(0);
-        grp.setGroupName("Blbla");
-        GroupController.getInstance(getActivity()).addGroup(grp);
 
         return rootView;
     }
