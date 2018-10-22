@@ -6,4 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".Accounts.LoginActivity">
 
+    <FrameLayout
+            android:id="@+id/container_test"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    </FrameLayout>
+
 </android.support.constraint.ConstraintLayout>
