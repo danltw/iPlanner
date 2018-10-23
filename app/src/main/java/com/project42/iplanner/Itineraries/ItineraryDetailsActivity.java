@@ -20,7 +20,7 @@ import java.util.Calendar;
 
 public class ItineraryDetailsActivity extends AppCompatActivity  implements
         View.OnClickListener{
-    private TextView nameTxt;
+    private TextView idTxt,nameTxt;
     Button btnDatePicker;
     EditText txtDate;
     private int mYear, mMonth, mDay;
@@ -31,9 +31,10 @@ public class ItineraryDetailsActivity extends AppCompatActivity  implements
 
         setContentView(R.layout.activity_view_itinerary_datepickerdialog);
 
-        nameTxt= (TextView) findViewById(R.id.nameTxt);
+        idTxt= (TextView) findViewById(R.id.idTxt);
         btnDatePicker=(Button)findViewById(R.id.btn_date);
         txtDate=(EditText)findViewById(R.id.in_date);
+        nameTxt=(TextView) findViewById(R.id.nameTxt);
 
         btnDatePicker.setOnClickListener(this);
     }
@@ -109,7 +110,7 @@ public class ItineraryDetailsActivity extends AppCompatActivity  implements
         //int year = i.getIntExtra("YEAR_KEY",0);
 
         //SET DATA TO TEXTVIEWS
-        nameTxt.setText(Integer.toString(poiid));
+        idTxt.setText(Integer.toString(poiid));
         //yearTxt.setText(String.valueOf(year));
     }
 }

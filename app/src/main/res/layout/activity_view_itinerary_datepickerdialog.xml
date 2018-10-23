@@ -10,20 +10,22 @@ android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".Itinerar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Name"
-        android:id="@+id/nameTxt"
+        android:text="ID"
+        android:id="@+id/idTxt"
         android:padding="5dp"
         />
 
-<EditText
-    android:layout_width="200dp"
-    android:layout_height="wrap_content"
-    android:id="@+id/in_date"
-    android:layout_marginTop="82dp"
-    android:layout_alignParentTop="true"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentStart="true"
-    android:inputType="" />
+
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/in_date"
+        android:layout_marginTop="82dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:inputType="" />
 
 <Button
     android:layout_width="wrap_content"
@@ -35,7 +37,19 @@ android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".Itinerar
     android:layout_toEndOf="@+id/in_date" />
 
 
-
+    <EditText
+        android:id="@+id/select_name"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/in_date"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="14dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="187dp"
+        android:layout_marginBottom="-44dp"
+        android:inputType="" />
 
 
 
