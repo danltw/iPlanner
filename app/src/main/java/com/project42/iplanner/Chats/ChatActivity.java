@@ -1,20 +1,17 @@
 package com.project42.iplanner.Chats;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,12 +24,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project42.iplanner.Groups.CreateGroupChannelActivity;
-import com.project42.iplanner.Groups.CreateGroupChannelFragment;
 import com.project42.iplanner.Groups.GroupChannelActivity;
 import com.project42.iplanner.Groups.GroupChannelListFragment;
+import com.project42.iplanner.Groups.InviteMemberActivity;
+import com.project42.iplanner.Groups.MemberListActivity;
 import com.project42.iplanner.R;
 import com.project42.iplanner.Utilities.*;
-import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
@@ -41,15 +38,9 @@ import com.sendbird.android.Member;
 import com.sendbird.android.PreviousMessageListQuery;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
-import com.sendbird.android.User;
 import com.sendbird.android.UserMessage;
 
-import org.json.JSONException;
-
-import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
@@ -66,7 +57,7 @@ public class ChatActivity extends AppCompatActivity {
     private static final String STATE_CHANNEL_URL = "STATE_CHANNEL_URL";
     private static final int INTENT_REQUEST_CHOOSE_MEDIA = 301;
     private static final int PERMISSION_WRITE_EXTERNAL_STORAGE = 13;
-    static final String EXTRA_CHANNEL_URL = "EXTRA_CHANNEL_URL";
+    public static final String EXTRA_CHANNEL_URL = "EXTRA_CHANNEL_URL";
 
     private InputMethodManager mIMM;
     private HashMap<BaseChannel.SendFileMessageWithProgressHandler, FileMessage> mFileProgressHandlerMap;
@@ -171,6 +162,8 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         setUpRecyclerView();
+        // prevent the previous fragment from showing
+        ChatActivity.this.getSupportFragmentManager().popBackStack();
     }
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -377,17 +370,17 @@ public class ChatActivity extends AppCompatActivity {
                     super.onBackPressed();
                     return true;
             }
-        /*if (id == R.id.action_group_channel_invite) {
-            Intent intent = new Intent(getActivity(), InviteMemberActivity.class);
+        if (id == R.id.action_group_channel_invite) {
+            Intent intent = new Intent(ChatActivity.this, InviteMemberActivity.class);
             intent.putExtra(EXTRA_CHANNEL_URL, mChannelUrl);
             startActivity(intent);
             return true;
         } else if (id == R.id.action_group_channel_view_members) {
-            Intent intent = new Intent(getActivity(), MemberListActivity.class);
+            Intent intent = new Intent(ChatActivity.this, MemberListActivity.class);
             intent.putExtra(EXTRA_CHANNEL_URL, mChannelUrl);
             startActivity(intent);
             return true;
-        }*/
+        }
 
         return super.onOptionsItemSelected(item);
     }

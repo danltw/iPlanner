@@ -17,5 +17,5 @@ public class AppConfig {
     public static final String URL_RECOMMENDED = "http://project42-iplanner.000webhostapp.com/get_recommended_poi.php";
     public static final String URL_ADDBOOKMARKS = "http://project42-iplanner.000webhostapp.com/add_bookmark.php";
     public static final String URL_ITINERARY = "http://project42-iplanner.000webhostapp.com/getItinerary.php";
-    public static final String URL_GROUP = "http://10.0.2.2/iplanner/group.php";
+    public static final String URL_GROUP = "http://project42-iplanner.000webhostapp.com/group.php";
 }
