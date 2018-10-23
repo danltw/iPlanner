@@ -27,18 +27,19 @@
                 android:launchMode="singleTop"
                 android:theme="@style/AppTheme.NoActionBar"
                 android:windowSoftInputMode="adjustPan">
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
 
-                <action android:name="android.intent.action.SEARCH"/>
-                <action android:name="android.intent.action.VIEW"/>
             </intent-filter>
-
-            <meta-data
-                    android:name="android.app.searchable"
-                    android:resource="@xml/searchable"/>
         </activity>
         <!-- <activity android:name=".Accounts.LoginActivity" /> -->
         <!-- <activity android:name=".POIs.ViewPOIsActivity" /> -->
