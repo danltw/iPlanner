@@ -6,4 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".Itineraries.ItineraryDetailsActivity">
 
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Name"
+        android:id="@+id/nameTxt"
+        android:padding="5dp"
+        />
+
 </android.support.constraint.ConstraintLayout>

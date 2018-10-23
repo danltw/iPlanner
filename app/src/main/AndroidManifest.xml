@@ -42,8 +42,8 @@
         </activity>
         <!-- <activity android:name=".Accounts.LoginActivity" /> -->
         <!-- <activity android:name=".POIs.ViewPOIsActivity" /> -->
-        <!-- <activity android:name=".Itineraries.ViewItinerariesActivity" /> -->
-        <!-- <activity android:name=".Itineraries.ItineraryDetailsActivity" /> -->
+         <!--<activity android:name=".Itineraries.ViewItinerariesActivity" /> -->
+         <activity android:name=".Itineraries.ItineraryDetailsActivity" />
         <!-- <activity android:name=".Bookmarks.ViewBookmarksActivity" /> -->
         <!-- <activity android:name=".Accounts.ProfileDetailsActivity" /> -->
         <!-- <activity android:name=".Accounts.RegisterActivity" /> -->
