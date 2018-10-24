@@ -10,15 +10,15 @@ public class Group {
 
     private String groupName;
 
-    private ArrayList<Integer> members;
+    private ArrayList<Account> members;
 
-    private ArrayList<Integer> admins;
+    private ArrayList<Account> admins;
 
     public Group() {
 
     }
 
-    public Group(int groupID, String groupName, ArrayList<Integer> members, ArrayList<Integer> admins) {
+    public Group(int groupID, String groupName, ArrayList<Account> members, ArrayList<Account> admins) {
         this.groupID = groupID;
         this.groupName = groupName;
         this.members = members;
@@ -41,19 +41,19 @@ public class Group {
         this.groupName = groupName;
     }
 
-    public ArrayList<Integer> getMembers() {
+    public ArrayList<Account> getMembers() {
         return members;
     }
 
-    public void setMembers(ArrayList<Integer> members) {
+    public void setMembers(ArrayList<Account> members) {
         this.members = members;
     }
 
-    public ArrayList<Integer> getAdmins() {
+    public ArrayList<Account> getAdmins() {
         return admins;
     }
 
-    public void setAdmins(ArrayList<Integer> admins) {
+    public void setAdmins(ArrayList<Account> admins) {
         this.admins = admins;
     }
 }

@@ -6,25 +6,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.project42.iplanner.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class POIAdapter extends RecyclerView.Adapter<POIAdapter.ViewHolder> implements Filterable {
+public class POIAdapter extends RecyclerView.Adapter<POIAdapter.ViewHolder> {
     private Context context;
     private List<POI> poiList;
-    private List<POI> filteredPoi;
 
     public POIAdapter(Context context, List<POI> poiList) {
         this.context = context;
         this.poiList = poiList;
-        this.filteredPoi = poiList;
     }
 
     @Override
@@ -36,7 +31,7 @@ public class POIAdapter extends RecyclerView.Adapter<POIAdapter.ViewHolder> impl
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        POI poi = filteredPoi.get(position);
+        POI poi = poiList.get(position);
 
         float ratingvalue  = (float) poi.getRating();
         holder.poiid.setText(String.valueOf(poi.getLocationID()));
@@ -48,7 +43,7 @@ public class POIAdapter extends RecyclerView.Adapter<POIAdapter.ViewHolder> impl
 
     @Override
     public int getItemCount() {
-        return filteredPoi.size();
+        return poiList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -64,38 +59,4 @@ public class POIAdapter extends RecyclerView.Adapter<POIAdapter.ViewHolder> impl
         }
     }
 
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence charSequence) {
-                String charString = charSequence.toString();
-                if (charString.isEmpty()) {
-                    filteredPoi = poiList;
-                } else {
-                    List<POI> filteredList = new ArrayList<>();
-                    for (POI row : poiList) {
-
-                        // name match condition. this might differ depending on your requirement
-                        // here we are looking for name or phone number match
-                        if (row.getLocationName().toLowerCase().contains(charString.toLowerCase()) || row.getAddress().toLowerCase().contains(charString.toLowerCase())) {
-                            filteredList.add(row);
-                        }
-                    }
-
-                    poiList = filteredList;
-                }
-
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = filteredPoi;
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                filteredPoi = (ArrayList<POI>) filterResults.values;
-                notifyDataSetChanged();
-            }
-        };
-    }
 }

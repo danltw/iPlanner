@@ -33,8 +33,8 @@ class DB_CONNECT {
         $db = mysqli_select_db($con, DB_DATABASE) or die(mysqli_error($con)) or die(mysqli_error($con));
         
 		// returing connection cursor
-		//echo "Connected liao la cb!";
-        return $con;
+		echo "Connected liao la cb!";
+        return true;
     }
  
     /**

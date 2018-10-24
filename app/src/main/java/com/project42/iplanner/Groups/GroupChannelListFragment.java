@@ -86,10 +86,15 @@ public class GroupChannelListFragment extends Fragment {
 
         mChannelListAdapter = new GroupChannelListAdapter(getActivity());
         //refresh();
-        //mChannelListAdapter.load();
+        mChannelListAdapter.load();
 
         setUpRecyclerView();
         setUpChannelListAdapter();
+
+        Group grp = new Group();
+        grp.setGroupID(0);
+        grp.setGroupName("Blbla");
+        GroupController.getInstance(getActivity()).addGroup(grp);
 
         return rootView;
     }
@@ -259,16 +264,8 @@ public class GroupChannelListFragment extends Fragment {
      */
     void enterGroupChannel(GroupChannel channel) {
         final String channelUrl = channel.getUrl();
-        String mChannelTitle = channel.getName();
-        // If 1-to-1 chat, then display channel title as other party's name
-        if (channel.getMemberCount() == 2) {
-            if (channel.getMembers().get(0).getUserId().equals(SendBird.getCurrentUser().getUserId())
-                    && !channel.getMembers().get(1).getUserId().equals(SendBird.getCurrentUser().getUserId()))
-                mChannelTitle = channel.getMembers().get(1).getUserId();
-            else
-                mChannelTitle = SendBird.getCurrentUser().getUserId();
-        }
-        enterGroupChannel(channelUrl, mChannelTitle);
+
+        enterGroupChannel(channelUrl, channel.getName());
     }
 
     /**
