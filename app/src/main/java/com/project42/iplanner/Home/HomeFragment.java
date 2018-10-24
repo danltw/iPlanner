@@ -75,9 +75,9 @@ public class HomeFragment extends Fragment {
     private DividerItemDecoration dividerItemDecoration;
     private List<POI> poiList;
     private RecyclerView.Adapter adapter;
+    private POIAdapter mAdapter;
     Menu menu = null;
     SearchView searchView = null;
-
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -194,18 +194,38 @@ public class HomeFragment extends Fragment {
             });
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             requestQueue.add(jsonObjectRequest);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        if(searchItem != null)
-        {
-            searchView = (SearchView) searchItem.getActionView();
-        }
-        if(searchView != null)
-        {
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-            searchView.setIconified(false);
-        }
     }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        inflater.inflate(R.menu.menu_search, menu);
+//
+//        // Associate searchable configuration with the SearchView
+//        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+//        searchView = (SearchView) menu.findItem(R.id.action_search)
+//                .getActionView();
+//        searchView.setSearchableInfo(searchManager
+//                .getSearchableInfo(getActivity().getComponentName()));
+//        searchView.setMaxWidth(Integer.MAX_VALUE);
+//
+//        // listening to search query text change
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                // filter recycler view when query submitted
+//                mAdapter.getFilter().filter(query);
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String query) {
+//                // filter recycler view when text is changed
+//                mAdapter.getFilter().filter(query);
+//                return false;
+//            }
+//        });
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -213,27 +233,18 @@ public class HomeFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    // Every time when you press search button on keypad an Activity is recreated which in turn calls this function
-    protected void onNewIntent(Intent intent) {
-        // Get search query and create object of class AsyncFetch
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            if (searchView != null) {
-                searchView.clearFocus();
-            }
-            new AsyncFetch(query).execute();
-
-        }
-    }
-
-    private void swapFragment()
-    {
-        POIDetailsFragment newPOIDetailsFragment = new POIDetailsFragment();
-        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.navigation_home,newPOIDetailsFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
+//    // Every time when you press search button on keypad an Activity is recreated which in turn calls this function
+//    protected void onNewIntent(Intent intent) {
+//        // Get search query and create object of class AsyncFetch
+//        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+//            String query = intent.getStringExtra(SearchManager.QUERY);
+//            if (searchView != null) {
+//                searchView.clearFocus();
+//            }
+//            new AsyncFetch(query).execute();
+//
+//        }
+//    }
 
     private void getData() {
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
@@ -279,149 +290,149 @@ public class HomeFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         requestQueue.add(jsonArrayRequest);
     }
-
-    // Create class AsyncFetch
-    private class AsyncFetch extends AsyncTask<String, String, String> {
-
-        ProgressDialog pdLoading = new ProgressDialog(getActivity());
-        HttpURLConnection conn;
-        URL url = null;
-        String searchQuery;
-
-        public AsyncFetch(String searchQuery){
-            this.searchQuery=searchQuery;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            //this method will be running on UI thread
-            pdLoading.setMessage("\tLoading...");
-            pdLoading.setCancelable(false);
-            pdLoading.show();
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-
-                // Enter URL address where your php file resides
-                url = new URL("http://project42-iplanner.000webhostapp.com/get_search_poi.php");
-
-            } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                return e.toString();
-            }
-            try {
-
-                // Setup HttpURLConnection class to send and receive data from php and mysql
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(READ_TIMEOUT);
-                conn.setConnectTimeout(CONNECTION_TIMEOUT);
-                conn.setRequestMethod("POST");
-
-                // setDoInput and setDoOutput to true as we send and recieve data
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-
-                // add parameter to our above url
-                Uri.Builder builder = new Uri.Builder().appendQueryParameter("searchQuery", searchQuery);
-                String query = builder.build().getEncodedQuery();
-
-                OutputStream os = conn.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                writer.write(query);
-                writer.flush();
-                writer.close();
-                os.close();
-                conn.connect();
-
-            } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-                return e1.toString();
-            }
-
-            try {
-
-                int response_code = conn.getResponseCode();
-
-                // Check if successful connection made
-                if (response_code == HttpURLConnection.HTTP_OK) {
-
-                    // Read data sent from server
-                    InputStream input = conn.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                    StringBuilder result = new StringBuilder();
-                    String line;
-
-                    while ((line = reader.readLine()) != null) {
-                        result.append(line);
-                    }
-
-                    // Pass data to onPostExecute method
-                    return (result.toString());
-
-                } else {
-                    return("Connection error");
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                return e.toString();
-            } finally {
-                conn.disconnect();
-            }
-
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-            //this method will be running on UI thread
-            pdLoading.dismiss();
-            List<POI> data=new ArrayList<>();
-
-            pdLoading.dismiss();
-            if(result.equals("no rows")) {
-                adapter.notifyDataSetChanged();
-                pdLoading.dismiss();
-                Toast.makeText(getActivity(), "No Results found for entered query", Toast.LENGTH_LONG).show();
-            }else{
-
-                try {
-
-                    JSONArray jArray = new JSONArray(result);
-
-                    // Extract data from json and store into ArrayList as class objects
-                    for (int i = 0; i < jArray.length(); i++) {
-                        JSONObject json_data = jArray.getJSONObject(i);
-                        POI poiData = new POI(0,null,null,0,0.0,0.0,null,null,null,null,0.0,0.0);
-                        poiData.setLocationID(json_data.getInt("location_id"));
-                        poiData.setLocationName(json_data.getString("location_name"));
-                        poiData.setCost(json_data.getDouble("location_cost"));
-                        poiData.setRating(json_data.getDouble("location_rating"));
-                        data.add(poiData);
-                    }
-
-                    adapter.notifyDataSetChanged();
-                    pdLoading.dismiss();
-
-                } catch (JSONException e) {
-                    // You to understand what actually error is and handle it appropriately
-                    Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_LONG).show();
-                    Toast.makeText(getActivity(), result.toString(), Toast.LENGTH_LONG).show();
-                }
-
-            }
-
-        }
-
-    }
+//
+//    // Create class AsyncFetch
+//    private class AsyncFetch extends AsyncTask<String, String, String> {
+//
+//        ProgressDialog pdLoading = new ProgressDialog(getActivity());
+//        HttpURLConnection conn;
+//        URL url = null;
+//        String searchQuery;
+//
+//        public AsyncFetch(String searchQuery){
+//            this.searchQuery=searchQuery;
+//        }
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//
+//            //this method will be running on UI thread
+//            pdLoading.setMessage("\tLoading...");
+//            pdLoading.setCancelable(false);
+//            pdLoading.show();
+//
+//        }
+//
+//        @Override
+//        protected String doInBackground(String... params) {
+//            try {
+//
+//                // Enter URL address where your php file resides
+//                url = new URL("http://project42-iplanner.000webhostapp.com/get_search_poi.php");
+//
+//            } catch (MalformedURLException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//                return e.toString();
+//            }
+//            try {
+//
+//                // Setup HttpURLConnection class to send and receive data from php and mysql
+//                conn = (HttpURLConnection) url.openConnection();
+//                conn.setReadTimeout(READ_TIMEOUT);
+//                conn.setConnectTimeout(CONNECTION_TIMEOUT);
+//                conn.setRequestMethod("POST");
+//
+//                // setDoInput and setDoOutput to true as we send and recieve data
+//                conn.setDoInput(true);
+//                conn.setDoOutput(true);
+//
+//                // add parameter to our above url
+//                Uri.Builder builder = new Uri.Builder().appendQueryParameter("searchQuery", searchQuery);
+//                String query = builder.build().getEncodedQuery();
+//
+//                OutputStream os = conn.getOutputStream();
+//                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+//                writer.write(query);
+//                writer.flush();
+//                writer.close();
+//                os.close();
+//                conn.connect();
+//
+//            } catch (IOException e1) {
+//                // TODO Auto-generated catch block
+//                e1.printStackTrace();
+//                return e1.toString();
+//            }
+//
+//            try {
+//
+//                int response_code = conn.getResponseCode();
+//
+//                // Check if successful connection made
+//                if (response_code == HttpURLConnection.HTTP_OK) {
+//
+//                    // Read data sent from server
+//                    InputStream input = conn.getInputStream();
+//                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+//                    StringBuilder result = new StringBuilder();
+//                    String line;
+//
+//                    while ((line = reader.readLine()) != null) {
+//                        result.append(line);
+//                    }
+//
+//                    // Pass data to onPostExecute method
+//                    return (result.toString());
+//
+//                } else {
+//                    return("Connection error");
+//                }
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                return e.toString();
+//            } finally {
+//                conn.disconnect();
+//            }
+//
+//
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String result) {
+//
+//            //this method will be running on UI thread
+//            pdLoading.dismiss();
+//            List<POI> data=new ArrayList<>();
+//
+//            pdLoading.dismiss();
+//            if(result.equals("no rows")) {
+//                adapter.notifyDataSetChanged();
+//                pdLoading.dismiss();
+//                Toast.makeText(getActivity(), "No Results found for entered query", Toast.LENGTH_LONG).show();
+//            }else{
+//
+//                try {
+//
+//                    JSONArray jArray = new JSONArray(result);
+//
+//                    // Extract data from json and store into ArrayList as class objects
+//                    for (int i = 0; i < jArray.length(); i++) {
+//                        JSONObject json_data = jArray.getJSONObject(i);
+//                        POI poiData = new POI(0,null,null,0,0.0,0.0,null,null,null,null,0.0,0.0);
+//                        poiData.setLocationID(json_data.getInt("location_id"));
+//                        poiData.setLocationName(json_data.getString("location_name"));
+//                        poiData.setCost(json_data.getDouble("location_cost"));
+//                        poiData.setRating(json_data.getDouble("location_rating"));
+//                        data.add(poiData);
+//                    }
+//
+//                    adapter.notifyDataSetChanged();
+//                    pdLoading.dismiss();
+//
+//                } catch (JSONException e) {
+//                    // You to understand what actually error is and handle it appropriately
+//                    Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getActivity(), result.toString(), Toast.LENGTH_LONG).show();
+//                }
+//
+//            }
+//
+//        }
+//
+//    }
 
     private void loadFragment(Fragment fragment) {
         // load fragment
