@@ -151,12 +151,17 @@ public class GroupChannelListAdapter extends RecyclerView.Adapter<RecyclerView.V
                   @Nullable final OnItemClickListener clickListener,
                   @Nullable final OnItemLongClickListener longClickListener) {
 
+            String me = SendBird.getCurrentUser().getUserId();
             if (channel.getMemberCount() == 2) {
-                if (channel.getMembers().get(0).getUserId().equals(SendBird.getCurrentUser().getUserId())
-                        && !channel.getMembers().get(1).getUserId().equals(SendBird.getCurrentUser().getUserId()))
+                if (me.equals(channel.getMembers().get(0).getUserId()))
                     topicText.setText(channel.getMembers().get(1).getUserId());
+
+                else if (!me.equals(channel.getMembers().get(0).getUserId()))
+                    topicText.setText(channel.getMembers().get(0).getUserId());
+
                 else
-                    topicText.setText(SendBird.getCurrentUser().getUserId());
+                    topicText.setText(me);
+
                 memberCountText.setVisibility(View.GONE);
             }
             else {

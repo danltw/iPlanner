@@ -104,6 +104,7 @@ public class ChatActivity extends AppCompatActivity {
             String newChnlTitle = intent.getStringExtra(CreateGroupChannelActivity.EXTRA_NEW_CHANNEL_TITLE);
             String currChnlURL = intent.getStringExtra(GroupChannelListFragment.EXTRA_GROUP_CHANNEL_URL);
             String currChnlTitle = intent.getStringExtra(GroupChannelListFragment.EXTRA_GROUP_TITLE);
+
             if (!TextUtils.isEmpty(newChnlURL) && !TextUtils.isEmpty(newChnlTitle)) {
                 mChannelUrl = newChnlURL;
                 mChannelTitle = newChnlTitle;
@@ -124,7 +125,7 @@ public class ChatActivity extends AppCompatActivity {
             //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_left_white_24_dp);
         }
 
-        Log.d(LOG_TAG, mChannelUrl);
+        //Log.d(LOG_TAG, mChannelUrl);
 
         mChatAdapter = new ChatAdapter(this);
         //setUpChatListAdapter();
@@ -162,8 +163,6 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         setUpRecyclerView();
-        // prevent the previous fragment from showing
-        ChatActivity.this.getSupportFragmentManager().popBackStack();
     }
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

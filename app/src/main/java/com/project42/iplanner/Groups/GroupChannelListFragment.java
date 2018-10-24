@@ -259,14 +259,18 @@ public class GroupChannelListFragment extends Fragment {
      */
     void enterGroupChannel(GroupChannel channel) {
         final String channelUrl = channel.getUrl();
+        String me = SendBird.getCurrentUser().getUserId();
         String mChannelTitle = channel.getName();
         // If 1-to-1 chat, then display channel title as other party's name
         if (channel.getMemberCount() == 2) {
-            if (channel.getMembers().get(0).getUserId().equals(SendBird.getCurrentUser().getUserId())
-                    && !channel.getMembers().get(1).getUserId().equals(SendBird.getCurrentUser().getUserId()))
+            if (me.equals(channel.getMembers().get(0).getUserId()))
                 mChannelTitle = channel.getMembers().get(1).getUserId();
+
+            else if (!me.equals(channel.getMembers().get(0).getUserId()))
+                mChannelTitle = channel.getMembers().get(0).getUserId();
+
             else
-                mChannelTitle = SendBird.getCurrentUser().getUserId();
+                mChannelTitle = me;
         }
         enterGroupChannel(channelUrl, mChannelTitle);
     }

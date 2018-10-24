@@ -15,6 +15,7 @@ import com.project42.iplanner.Chats.ChatActivity;
 import com.project42.iplanner.R;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.GroupChannelParams;
+import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 
 import java.util.ArrayList;
@@ -56,6 +57,7 @@ public class CreateGroupChannelActivity extends AppCompatActivity implements
             FragmentManager manager = getSupportFragmentManager();
             manager.beginTransaction()
                     .replace(R.id.container_create_group_channel, fragment)
+                    .addToBackStack(null)
                     .commit();
         }
 
@@ -217,7 +219,18 @@ public class CreateGroupChannelActivity extends AppCompatActivity implements
                 Intent intent = new Intent(CreateGroupChannelActivity.this, ChatActivity.class);
                 intent.putExtra(EXTRA_NEW_CHANNEL_URL, groupChannel.getUrl());
                 intent.putExtra(EXTRA_NEW_CHANNEL_TITLE, groupChannel.getName());
+                String mChannelTitle = null;
+                if (groupChannel.getMemberCount() == 2) {
+                    if (groupChannel.getMembers().get(0).getUserId().equals(SendBird.getCurrentUser().getUserId())
+                            && !groupChannel.getMembers().get(1).getUserId().equals(SendBird.getCurrentUser().getUserId()))
+                        mChannelTitle = groupChannel.getMembers().get(1).getUserId();
+                    else
+                        mChannelTitle = SendBird.getCurrentUser().getUserId();
+
+                    intent.putExtra(EXTRA_NEW_CHANNEL_TITLE, mChannelTitle);
+                }
                 startActivity(intent);
+                finish();
                 //setResult(RESULT_OK, intent);
             }
         });
