@@ -113,8 +113,8 @@ public class ChatActivity extends AppCompatActivity {
                 mChannelUrl = currChnlURL;
                 mChannelTitle = currChnlTitle;
             }
-            else
-                finish();
+            /*else
+                finish();*/
         }
 
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_chat);
@@ -332,11 +332,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public void onBackPressed()
     {
-        // code here to show dialog
-        Intent intent = new Intent(ChatActivity.this, GroupChannelActivity.class);
-        startActivity(intent);
-        finish();
-        //super.onBackPressed();  // optional depending on your needs
+        super.onBackPressed();  // optional depending on your needs
     }
 
     @Override

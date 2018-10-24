@@ -220,13 +220,16 @@ public class CreateGroupChannelActivity extends AppCompatActivity implements
                 intent.putExtra(EXTRA_NEW_CHANNEL_URL, groupChannel.getUrl());
                 intent.putExtra(EXTRA_NEW_CHANNEL_TITLE, groupChannel.getName());
                 String mChannelTitle = null;
+                String me = SendBird.getCurrentUser().getUserId();
                 if (groupChannel.getMemberCount() == 2) {
-                    if (groupChannel.getMembers().get(0).getUserId().equals(SendBird.getCurrentUser().getUserId())
-                            && !groupChannel.getMembers().get(1).getUserId().equals(SendBird.getCurrentUser().getUserId()))
+                    if (me.equals(groupChannel.getMembers().get(0).getUserId()))
                         mChannelTitle = groupChannel.getMembers().get(1).getUserId();
-                    else
-                        mChannelTitle = SendBird.getCurrentUser().getUserId();
 
+                    else if (!me.equals(groupChannel.getMembers().get(0).getUserId()))
+                        mChannelTitle = groupChannel.getMembers().get(0).getUserId();
+
+                    else
+                        mChannelTitle = me;
                     intent.putExtra(EXTRA_NEW_CHANNEL_TITLE, mChannelTitle);
                 }
                 startActivity(intent);

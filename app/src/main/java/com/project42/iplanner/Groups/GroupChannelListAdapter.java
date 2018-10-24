@@ -167,6 +167,7 @@ public class GroupChannelListAdapter extends RecyclerView.Adapter<RecyclerView.V
             else {
                 topicText.setText(channel.getName());
                 memberCountText.setText(String.valueOf(channel.getMemberCount()));
+                memberCountText.setVisibility(View.VISIBLE);
             }
 
             int unreadCount = channel.getUnreadMessageCount();
