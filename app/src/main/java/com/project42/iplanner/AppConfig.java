@@ -16,5 +16,6 @@ public class AppConfig {
     public static final String CONN_TESTER = "http://10.0.2.2/iplanner/conntester.php";
     public static final String URL_RECOMMENDED = "http://10.0.2.2/iplanner/get_recommended_poi.php";
     public static final String URL_ITINERARY = "http://10.0.2.2/iplanner/getItinerary.php";
+    public static final String URL_ITINERARYSPINNER = "http://10.0.2.2/iplanner/getSpinner.php";
     public static final String URL_GROUP = "http://10.0.2.2/iplanner/group.php";
 }
