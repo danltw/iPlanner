@@ -63,15 +63,12 @@ public class CreateGroupChannelActivity extends AppCompatActivity implements
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mCurrentState == STATE_SELECT_USERS && mSelectedIds.size() > 1) {
+                if (mCurrentState == STATE_SELECT_USERS) {
                     Fragment fragment = CreateGroupNameFragment.newInstance();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.container_create_group_channel, fragment)
                             .addToBackStack(null)
                             .commit();
-                }
-                else {
-                    createGroupChannel(mSelectedIds, mIsDistinct);
                 }
             }
         });
@@ -171,40 +168,25 @@ public class CreateGroupChannelActivity extends AppCompatActivity implements
     private void createGroupChannel(List<String> userIds, boolean distinct) {
 
         List<String> admins = new ArrayList();
-        GroupChannelParams params = new GroupChannelParams();
         if (userIds.size() > 1) {
             admins.add(dummyUser);
-
-           params = new GroupChannelParams()
-                    .setPublic(false)
-                    .setEphemeral(false)
-                    .setDistinct(false)
-                    .addUserIds(userIds)
-                    .setOperatorUserIds(admins)
-                    .setName(grpName)
-                    .setCoverImage(null)
-                    .setCoverUrl(null)
-                    .setData(null)
-                    .setCustomType(null);
         }
 
         else if (userIds.size() == 1) {
             admins.addAll(userIds);
-
-            params = new GroupChannelParams()
-                    .setPublic(false)
-                    .setEphemeral(false)
-                    .setDistinct(false)
-                    .addUserIds(userIds)
-                    .setOperatorUserIds(admins)
-                    .setName(null)
-                    .setCoverImage(null)
-                    .setCoverUrl(null)
-                    .setData(null)
-                    .setCustomType(null);
         }
 
-
+        GroupChannelParams params = new GroupChannelParams()
+                .setPublic(false)
+                .setEphemeral(false)
+                .setDistinct(false)
+                .addUserIds(userIds)
+                .setOperatorUserIds(admins)
+                .setName(grpName)
+                .setCoverImage(null)
+                .setCoverUrl(null)
+                .setData(null)
+                .setCustomType(null);
 
         GroupChannel.createChannel(params, new GroupChannel.GroupChannelCreateHandler() {
             @Override

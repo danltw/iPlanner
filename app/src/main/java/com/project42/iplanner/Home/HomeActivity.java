@@ -20,9 +20,7 @@ import android.view.MenuItem;
 
 import com.project42.iplanner.Chats.ConnectionManager;
 import com.project42.iplanner.Groups.CreateGroupChannelActivity;
-import com.project42.iplanner.Groups.Group;
 import com.project42.iplanner.Groups.GroupChannelActivity;
-import com.project42.iplanner.Groups.GroupController;
 import com.project42.iplanner.POIs.POISearchFragment;
 import com.project42.iplanner.AppConfig;
 import com.project42.iplanner.Groups.CreateGroupChannelFragment;
@@ -39,8 +37,6 @@ import com.project42.iplanner.Settings.SettingsFragment;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -221,35 +217,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     e.printStackTrace();
                     return;
                 }
-
-                // Start region of group functions test
-                // testing getGroup function
-                Group grp = new Group();
-                grp.setGroupID(1);
-                //GroupController.getInstance(HomeActivity.this).getGroup(null);
-
-                // testing addGroup function
-                /*grp.setGroupName("Grouper1");
-                ArrayList<Integer> lstInt = new ArrayList();
-                for(int i=0;i<=6;i++)
-                    lstInt.add(i+1);
-                grp.setMembers(lstInt);
-                ArrayList<Integer> lstInt1 = new ArrayList();
-                lstInt1.add(1);
-                lstInt1.add(2);
-                grp.setAdmins(lstInt1);
-                GroupController.getInstance(HomeActivity.this).addGroup(grp);*/
-
-                // testing updateGroup function
-                /*grp.setGroupName("Grouper1");
-                grp.setMembers(new ArrayList<Integer>(Arrays.asList(1,2,3,4,5)));
-                grp.setAdmins(new ArrayList<Integer>(Arrays.asList(1)));
-                GroupController.getInstance(HomeActivity.this).updateGroup(grp);*/
-
-                // testing deleteGroup function
-                //GroupController.getInstance(HomeActivity.this).deleteGroup(8);
-                // End region of group functions test
-
                 if (list.isEmpty()) {
                     Intent intent = new Intent(HomeActivity.this, CreateGroupChannelActivity.class);
                     startActivity(intent);
