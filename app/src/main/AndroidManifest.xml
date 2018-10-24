@@ -23,7 +23,7 @@
                 android:value=".Home.HomeActivity"/>
 
         <activity
-                android:name=".Home.HomeActivity"
+                android:name=".Accounts.LoginActivity"
                 android:launchMode="singleTop"
                 android:theme="@style/AppTheme.NoActionBar"
                 android:windowSoftInputMode="adjustPan">
@@ -31,6 +31,16 @@
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.VIEW"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+                android:name=".Home.HomeActivity"
+                android:launchMode="singleTop"
+                android:theme="@style/AppTheme.NoActionBar"
+                android:windowSoftInputMode="adjustPan">
+            <intent-filter>
 
                 <action android:name="android.intent.action.SEARCH"/>
                 <action android:name="android.intent.action.VIEW"/>
@@ -48,13 +58,13 @@
         <!-- <activity android:name=".Accounts.ProfileDetailsActivity" /> -->
         <!-- <activity android:name=".Accounts.RegisterActivity" /> -->
         <activity
-            android:name=".Chats.ChatActivity"
-            android:parentActivityName=".Groups.GroupChannelActivity"
-            android:theme="@style/Toolbar" />
+                android:name=".Chats.ChatActivity"
+                android:parentActivityName=".Groups.GroupChannelActivity"
+                android:theme="@style/Toolbar" />
         <activity android:name=".Groups.GroupChannelActivity" />
         <meta-data
-            android:name="com.google.android.actions"
-            android:resource="@menu/navigation" />
+                android:name="com.google.android.actions"
+                android:resource="@menu/navigation" />
 
         <activity android:name=".Groups.CreateGroupChannelActivity" />
     </application>
