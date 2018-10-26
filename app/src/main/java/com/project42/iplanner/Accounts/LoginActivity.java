@@ -2,7 +2,6 @@ package com.project42.iplanner.Accounts;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_login_ui);
 
         final Button login_button = findViewById(R.id.login_button);
+        final Button switch_mode = findViewById(R.id.switch_mode_toreg);
 
         if (savedInstanceState == null) {
             Fragment fragment = new LoginUI();
@@ -41,10 +41,16 @@ public class LoginActivity extends AppCompatActivity {
                     onClickLogin(view);
                 }
             });
+            switch_mode.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onClickSwitchMode(view);
+                }
+            });
         }
     }
 
-    public void onClickLogin(View view){
+    private void onClickLogin(View view){
         int status;
 
         final String username = ((EditText)findViewById(R.id.login_username)).getText().toString();
@@ -68,5 +74,10 @@ public class LoginActivity extends AppCompatActivity {
         else {
             Toast.makeText(this, "(DEBUG) Uncaught error!", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void onClickSwitchMode(View view){
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
     }
 }
