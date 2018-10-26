@@ -7,19 +7,40 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.project42.iplanner.AppConfig;
 import com.project42.iplanner.Chats.ChatActivity;
 import com.project42.iplanner.R;
+import com.project42.iplanner.Utilities.ListUtils;
+import com.project42.iplanner.Utilities.TextUtils;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.GroupChannelParams;
+import com.sendbird.android.Member;
+import com.sendbird.android.OperatorListQuery;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
+import com.sendbird.android.User;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.android.volley.VolleyLog.TAG;
 
 public class CreateGroupChannelActivity extends AppCompatActivity implements
         SelectUserFragment.UsersSelectedListener, CreateGroupNameFragment.OnGroupNameEntered {
@@ -216,6 +237,33 @@ public class CreateGroupChannelActivity extends AppCompatActivity implements
                     return;
                 }
 
+                final String groupName = groupChannel.getName();
+                final String groupUrl = groupChannel.getUrl();
+
+                // get list of admins and members
+                OperatorListQuery operatorListQuery = groupChannel.createOperatorListQuery();
+                operatorListQuery.next(new OperatorListQuery.OperatorListQueryResultHandler() {
+                    @Override
+                    public void onResult(List<User> list, SendBirdException e) {
+                        if (e != null) {
+                            // Error!
+                            return;
+                        }
+
+                        ArrayList<String> members = new ArrayList();
+                        ArrayList<String> admins = new ArrayList();
+
+                        for (Member m : groupChannel.getMembers())
+                            members.add(m.getUserId());
+
+                        for (User u : list)
+                            admins.add(u.getUserId());
+
+                        // add new group into database
+                        addGroup(groupName, groupUrl, members, admins);
+                    }
+                });
+
                 Intent intent = new Intent(CreateGroupChannelActivity.this, ChatActivity.class);
                 intent.putExtra(EXTRA_NEW_CHANNEL_URL, groupChannel.getUrl());
                 intent.putExtra(EXTRA_NEW_CHANNEL_TITLE, groupChannel.getName());
@@ -237,6 +285,71 @@ public class CreateGroupChannelActivity extends AppCompatActivity implements
                 //setResult(RESULT_OK, intent);
             }
         });
+    }
+    // Add a single group record
+    private void addGroup(final String groupName, final String channelUrl, final ArrayList<String> memberNames, final ArrayList<String> adminNames) {
+        // Tag used to cancel the request
+        String tag_string_req = "req_add_group";
+
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                AppConfig.URL_GROUP, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Group Insertion Response: " + response.toString());
+
+                // Process the JSON
+                try {
+                    JSONArray jsonResponse = new JSONArray(response);
+
+                    // If some errors occurred, return
+                    JSONObject errResponse = jsonResponse.getJSONObject(0);
+                    boolean error = errResponse.has("error");
+                    if (error) {
+                        Log.d("Group Insertion Error: ", errResponse.getString("error"));
+                        return;
+                    }
+                    else {
+                        // Todo: If successful: display message to inform user that group is created
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Group Insertion Error: " + error.getMessage());
+            }
+        }) {
+            // method to pass user input to php page
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting params to php page
+                Map<String, String> params = new HashMap<String, String>();
+                if (!TextUtils.isEmpty(groupName) && !TextUtils.isEmpty(channelUrl) && memberNames != null &&
+                        adminNames != null) {
+                    try {
+                        params.put("method", "addGroup");
+                        params.put("grpUrl", channelUrl);
+                        params.put("grpName", groupName);
+                        params.put("memberNames", ListUtils.getStrNames(memberNames));
+                        params.put("adminNames", ListUtils.getStrNames(adminNames));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                return params;
+            }
+
+        };
+
+        // Adding request to request queue
+        RequestQueue queue = Volley.newRequestQueue(CreateGroupChannelActivity.this);
+        queue.add(strReq);
     }
 
     void setActionBarTitle(String title) {

@@ -31,7 +31,6 @@ import com.project42.iplanner.R;
 import com.project42.iplanner.Accounts.ProfileFragment;
 import com.project42.iplanner.Bookmarks.BookmarkFragment;
 import com.project42.iplanner.Itineraries.ItineraryFragment;
-import com.project42.iplanner.Chats.ChatFragment;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.GroupChannelListQuery;
 import com.sendbird.android.SendBird;
@@ -137,7 +136,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 fragment = new ProfileFragment();
                 break;
             case R.id.drawer_chat:
-                fragment = new ChatFragment();
+                showOrCreateChats();
                 break;
             case R.id.drawer_settings:
                 fragment = new SettingsFragment();
@@ -216,33 +215,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             e.printStackTrace();
                             return;
                         }
-
-                        // ####Start region of group functions test####
-                        // testing getGroup function
-                        Group grp = new Group();
-                        grp.setGroupID(1);
-
-                        // testing addGroup function
-                        /*grp.setGroupName("Grouper1");
-                        ArrayList<Integer> lstInt = new ArrayList();
-                        for(int i=0;i<=6;i++)
-                            lstInt.add(i+1);
-                        grp.setMembers(lstInt);
-                        ArrayList<Integer> lstInt1 = new ArrayList();
-                        lstInt1.add(1);
-                        lstInt1.add(2);
-                        grp.setAdmins(lstInt1);
-                        GroupController.getInstance(HomeActivity.this).addGroup(grp);*/
-
-                                // testing updateGroup function
-                        /*grp.setGroupName("Grouper1");
-                        grp.setMembers(new ArrayList<Integer>(Arrays.asList(1,2,3,4,5)));
-                        grp.setAdmins(new ArrayList<Integer>(Arrays.asList(1)));
-                        GroupController.getInstance(HomeActivity.this).updateGroup(grp);*/
-
-                        // testing deleteGroup function
-                        //GroupController.getInstance(HomeActivity.this).deleteGroup(8);
-                        // ####End region of group functions test####
 
                         if (list.isEmpty()) {
                             Intent intent = new Intent(HomeActivity.this, CreateGroupChannelActivity.class);

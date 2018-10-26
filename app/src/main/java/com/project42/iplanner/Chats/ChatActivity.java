@@ -45,7 +45,7 @@ import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
 
-    private static final String LOG_TAG = ChatFragment.class.getSimpleName();
+    private static final String LOG_TAG = ChatActivity.class.getSimpleName();
 
     private static final int CHANNEL_LIST_LIMIT = 30;
     private static final String CONNECTION_HANDLER_ID = "CONNECTION_HANDLER_GROUP_CHAT";
