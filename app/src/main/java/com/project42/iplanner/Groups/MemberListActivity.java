@@ -7,6 +7,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.project42.iplanner.Chats.ChatActivity;
@@ -24,6 +25,7 @@ public class MemberListActivity extends AppCompatActivity{
 
     private static final String CONNECTION_HANDLER_ID = "CONNECTION_HANDLER_MEMBER_LIST";
     static final String EXTRA_CHANNEL_URL = "EXTRA_CHANNEL_URL";
+    static final String EXTRA_CHANNEL_TITLE = "ExTRA_CHANNEL_TITLE";
     static final String EXTRA_USER_ID = "EXTRA_USER_ID";
     static final String EXTRA_USER_PROFILE_URL = "EXTRA_USER_PROFILE_URL";
     static final String EXTRA_USER_NICKNAME = "EXTRA_USER_NICKNAME";
@@ -33,6 +35,7 @@ public class MemberListActivity extends AppCompatActivity{
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private String mChannelUrl;
+    private String mChannelTitle;
     private GroupChannel mChannel;
 
     @Override
@@ -42,6 +45,7 @@ public class MemberListActivity extends AppCompatActivity{
         setContentView(R.layout.activity_member_list);
 
         mChannelUrl = getIntent().getStringExtra(ChatActivity.EXTRA_CHANNEL_URL);
+        mChannelTitle = getIntent().getStringExtra(ChatActivity.EXTRA_CHANNEL_TITLE);
         mRecyclerView = findViewById(R.id.recycler_member_list);
         mListAdapter = new UserListAdapter(this, mChannelUrl, true);
 
@@ -49,6 +53,7 @@ public class MemberListActivity extends AppCompatActivity{
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(mChannelTitle);
             //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_left_white_24_dp);
         }
 
@@ -131,6 +136,7 @@ public class MemberListActivity extends AppCompatActivity{
                 break;
             }
         }
+
         for (Member other : memberList) {
             if (other.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
                 continue;

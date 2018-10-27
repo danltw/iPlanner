@@ -63,7 +63,7 @@ public class CreateGroupChannelActivity extends AppCompatActivity implements
 
     private String grpName;
 
-    private String dummyUser = "hardcoded user1"; // this is used to simulate a dummy user
+    private String dummyUser = SendBird.getCurrentUser().getUserId(); // this is used to simulate a dummy user
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -195,8 +195,9 @@ public class CreateGroupChannelActivity extends AppCompatActivity implements
 
         List<String> admins = new ArrayList();
         GroupChannelParams params = new GroupChannelParams();
+        admins.add(dummyUser);
         if (userIds.size() > 1) {
-            admins.add(dummyUser);
+
 
            params = new GroupChannelParams()
                     .setPublic(false)

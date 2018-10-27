@@ -282,28 +282,12 @@ public class InviteMemberActivity extends AppCompatActivity{
                         final List<User> users = list;
                         final List<Member> members = groupChannel.getMembers();
 
-                        List<User> finalList = new ArrayList();
-
-                        for (User user : users) {
-                            boolean match = false;
-                            for (Member member : members) {
-                                // Check if user is an existing participant
-                                if (!member.getUserId().equals(user.getUserId()) && !user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
-                                    Log.d("Compare names: ", member.getUserId() + "VS" + user.getUserId());
-                                } else {
-                                    match = true;
-                                    break;
-                                }
-                            }
-                            if (!match)
-                                // only add if current user has been found to not match against all members
-                                finalList.add(user);
-                        }
-
-                        mListAdapter.setUserList(finalList);
+                        ArrayList<User> finalList = new ArrayList();
+                        finalList = filterMembers(users, members);
+                        if (!finalList.isEmpty() && finalList.size()>1)
+                            mListAdapter.setUserList(finalList);
                     }
                 });
-
             }
 
             ;
@@ -326,11 +310,53 @@ public class InviteMemberActivity extends AppCompatActivity{
                     return;
                 }
 
-                for (User user : list) {
-                    mListAdapter.addLast(user);
-                }
+                GroupChannel.getChannel(mChannelUrl, new GroupChannel.GroupChannelGetHandler() {
+                    @Override
+                    public void onResult(GroupChannel groupChannel, SendBirdException e) {
+                        if (e != null) {
+                            // Error!
+                            e.printStackTrace();
+                            return;
+                        }
+
+                        final List<User> users = list;
+                        final List<Member> members = groupChannel.getMembers();
+
+                        ArrayList<User> finalList = new ArrayList();
+                        finalList = filterMembers(users, members);
+                        if (!finalList.isEmpty() && finalList.size() > 1) {
+                            for (User user : finalList) {
+                                mListAdapter.addLast(user);
+                            }
+                        }
+                    }
+                });
+
+
             }
         });
     }
+
+    private ArrayList<User> filterMembers(List<User> adminsIncluded, List<Member> onlyMembers) {
+        ArrayList<User> finalList = new ArrayList();
+
+        for (User user : adminsIncluded) {
+            boolean match = false;
+            for (Member member : onlyMembers) {
+                // Check if user is an existing participant
+                if (!member.getUserId().equals(user.getUserId()) && !user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+                    Log.d("Compare names: ", member.getUserId() + "VS" + user.getUserId());
+                } else {
+                    match = true;
+                    break;
+                }
+            }
+            if (!match)
+                // only add if current user has been found to not match against all members
+                finalList.add(user);
+        }
+        return finalList;
+    }
+
 
 }

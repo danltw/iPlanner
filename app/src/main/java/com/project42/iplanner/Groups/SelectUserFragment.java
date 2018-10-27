@@ -6,16 +6,19 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sendbird.android.Member;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
 import com.sendbird.android.UserListQuery;
 import com.project42.iplanner.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -104,7 +107,7 @@ public class SelectUserFragment extends Fragment{
                     return;
                 }
 
-                mListAdapter.setUserList(list);
+                mListAdapter.setUserList(filterMe(list));
             }
         });
     }
@@ -120,10 +123,21 @@ public class SelectUserFragment extends Fragment{
                     return;
                 }
 
-                for (User user : list) {
+                for (User user : filterMe(list)) {
                     mListAdapter.addLast(user);
                 }
             }
         });
+    }
+
+    private List<User> filterMe(List<User> allUsers) {
+
+        for (User user : allUsers) {
+            if (user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+                allUsers.remove(user);
+                break;
+            }
+        }
+        return allUsers;
     }
 }
