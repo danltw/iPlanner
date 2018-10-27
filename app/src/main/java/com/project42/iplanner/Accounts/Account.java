@@ -1,10 +1,28 @@
 package com.project42.iplanner.Accounts;
 
+import android.accounts.AccountAuthenticatorActivity;
+import android.app.ProgressDialog;
+import android.content.Context;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.project42.iplanner.AppConfig;
+import com.project42.iplanner.DBConn.DBController;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class Account {
 
@@ -19,8 +37,6 @@ public class Account {
         //They can just be created on demand from the AccountController and deleted after passing information.
         this.username = username;
         this.password = password;
-
-        //IMPLEMENT PUTTING THIS INTO SQL
 
     }
 
@@ -51,4 +67,45 @@ public class Account {
     void setPhoneNumber(String username, String phoneNumber){
 
     }
+
+//    private void loadProducts() {
+//
+//        /*
+//         * Creating a String Request
+//         * The request type is GET defined by first parameter
+//         * The URL is defined in the second parameter
+//         * Then we have a Response Listener and a Error Listener
+//         * In response listener we will get the JSON response as a String
+//         * */
+//        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+//        progressDialog.setMessage("Loading...");
+//        progressDialog.show();
+//        StringRequest stringRequest = new StringRequest(Request.Method.GET, AppConfig.URL_ITINERARY ,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//
+//                        try {
+//                            //converting the string to json array object
+//                            JSONArray array = new JSONArray(response);
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                            progressDialog.dismiss();
+//                        }
+//                        progressDialog.dismiss();
+//                    }
+//
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//
+//                        progressDialog.dismiss();
+//                    }
+//                });
+//
+//        //adding our stringrequest to queue
+//        Volley.newRequestQueue().add(stringRequest);
+//    }
 }

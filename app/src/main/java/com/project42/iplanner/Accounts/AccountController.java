@@ -27,8 +27,8 @@ public class AccountController {
             return USERNAME_INVALID;                                       //Password or username too long
         }
 
-        new Account(username, password);
-        new AccountController(username, password);
+//        new Account(username, password);
+//        new AccountController(username, password);
         accountList.add(username);
 
         return SUCCESS;

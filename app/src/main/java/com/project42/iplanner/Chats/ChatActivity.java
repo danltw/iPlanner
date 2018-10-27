@@ -45,7 +45,7 @@ import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
 
-    private static final String LOG_TAG = ChatFragment.class.getSimpleName();
+    private static final String LOG_TAG = ChatActivity.class.getSimpleName();
 
     private static final int CHANNEL_LIST_LIMIT = 30;
     private static final String CONNECTION_HANDLER_ID = "CONNECTION_HANDLER_GROUP_CHAT";
@@ -58,6 +58,7 @@ public class ChatActivity extends AppCompatActivity {
     private static final int INTENT_REQUEST_CHOOSE_MEDIA = 301;
     private static final int PERMISSION_WRITE_EXTERNAL_STORAGE = 13;
     public static final String EXTRA_CHANNEL_URL = "EXTRA_CHANNEL_URL";
+    public static final String EXTRA_CHANNEL_TITLE = "EXTRA_CHANNEL_TITLE";
 
     private InputMethodManager mIMM;
     private HashMap<BaseChannel.SendFileMessageWithProgressHandler, FileMessage> mFileProgressHandlerMap;
@@ -113,8 +114,8 @@ public class ChatActivity extends AppCompatActivity {
                 mChannelUrl = currChnlURL;
                 mChannelTitle = currChnlTitle;
             }
-            /*else
-                finish();*/
+            else
+                finish();
         }
 
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_chat);
@@ -163,6 +164,7 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         setUpRecyclerView();
+        invalidateOptionsMenu();
     }
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -353,6 +355,13 @@ public class ChatActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         //inflater.inflate(R.menu.menu_group_chat, menu);
         getMenuInflater().inflate(R.menu.menu_group_chat, menu);
+        if (mChannel.getMemberCount() <= 2) {
+            return false;
+        }
+        else if (mChannel.getMyRole().equals(Member.Role.NONE)) {
+            MenuItem item = menu.findItem(R.id.action_group_channel_invite);
+            item.setVisible(false);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -360,22 +369,22 @@ public class ChatActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-            switch (item.getItemId()) {
+            switch (id) {
                 case android.R.id.home:
                     super.onBackPressed();
                     return true;
+                case R.id.action_group_channel_invite:
+                    Intent intent = new Intent(ChatActivity.this, InviteMemberActivity.class);
+                    intent.putExtra(EXTRA_CHANNEL_URL, mChannelUrl);
+                    startActivity(intent);
+                    return true;
+                case R.id.action_group_channel_view_members:
+                    Intent intent1 = new Intent(ChatActivity.this, MemberListActivity.class);
+                    intent1.putExtra(EXTRA_CHANNEL_URL, mChannelUrl);
+                    intent1.putExtra(EXTRA_CHANNEL_TITLE, mChannelTitle);
+                    startActivity(intent1);
+                    return true;
             }
-        if (id == R.id.action_group_channel_invite) {
-            Intent intent = new Intent(ChatActivity.this, InviteMemberActivity.class);
-            intent.putExtra(EXTRA_CHANNEL_URL, mChannelUrl);
-            startActivity(intent);
-            return true;
-        } else if (id == R.id.action_group_channel_view_members) {
-            Intent intent = new Intent(ChatActivity.this, MemberListActivity.class);
-            intent.putExtra(EXTRA_CHANNEL_URL, mChannelUrl);
-            startActivity(intent);
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }

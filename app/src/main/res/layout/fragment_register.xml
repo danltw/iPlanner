@@ -26,14 +26,14 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="248dp"/>
     <Button
-            android:text="Login"
+            android:text="Register"
             android:layout_width="134dp"
             android:layout_height="wrap_content" android:layout_alignParentBottom="true"
-            android:id="@+id/login_button" android:layout_centerHorizontal="true" android:layout_marginBottom="189dp"/>
+            android:id="@+id/register_button" android:layout_centerHorizontal="true" android:layout_marginBottom="189dp"/>
     <Button
-            android:text="Register"
+            android:text="Sign In"
             android:layout_width="135dp"
             android:layout_height="wrap_content" android:layout_alignParentBottom="true"
             android:layout_marginBottom="132dp" android:layout_centerHorizontal="true"
-            android:id="@+id/switch_mode_toreg"/>
+            android:id="@+id/switch_mode_tologin"/>
 </RelativeLayout>

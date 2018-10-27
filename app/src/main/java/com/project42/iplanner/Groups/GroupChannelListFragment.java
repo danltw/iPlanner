@@ -17,10 +17,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.project42.iplanner.AppConfig;
 import com.project42.iplanner.Chats.ChatActivity;
 import com.project42.iplanner.Chats.ConnectionManager;
 import com.project42.iplanner.Home.HomeActivity;
 import com.project42.iplanner.R;
+import com.project42.iplanner.Utilities.ListUtils;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
@@ -28,9 +36,17 @@ import com.sendbird.android.GroupChannelListQuery;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
+import static com.android.volley.VolleyLog.TAG;
 
 public class GroupChannelListFragment extends Fragment {
 
@@ -364,5 +380,73 @@ public class GroupChannelListFragment extends Fragment {
                 refresh();
             }
         });
+    }
+
+    // Get a single / multiple group records
+    public void getGroup(final Group group) {
+        // Tag used to cancel the request
+        String tag_string_req = "req_get_group";
+
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                AppConfig.URL_GROUP, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Group Retrieval Response: " + response.toString());
+                ArrayList<Group> retrievedGroups = new ArrayList();
+
+                // Process the JSON
+                try {
+                    JSONArray jsonResponse = new JSONArray(response);
+
+                    // If no results or some errors occurred, return
+                    JSONObject errResponse = jsonResponse.getJSONObject(0);
+                    boolean error = errResponse.has("error");
+                    if (error) {
+                        Log.d("Group Retrieval Error: ", errResponse.getString("error"));
+                        return;
+                    }
+                    else {
+                        // If successful: Loop through the array elements
+                        for (int i = 0; i < jsonResponse.length(); i++) {
+                            JSONObject grp = jsonResponse.getJSONObject(i);
+                            String grpID = grp.getString("group_id");
+                            String groupName = grp.getString("group_name");
+                            String memberIDs = grp.getString("member_ids");
+                            String adminIDs = grp.getString("admin_ids");
+                            Group group = new Group(Integer.valueOf(grpID), groupName,
+                                    ListUtils.parseString(memberIDs), ListUtils.parseString(adminIDs));
+                            retrievedGroups.add(group);
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Group Retrieval Error: " + error.getMessage());
+            }
+        }) {
+            // method to pass user input to php page
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting params to php page
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("method", "getGroup");
+                if (group != null)
+                    params.put("grpName", group.getGroupName());
+                return params;
+            }
+
+        };
+
+        // Adding request to request queue
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        queue.add(strReq);
     }
 }

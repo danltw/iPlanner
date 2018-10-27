@@ -39,26 +39,26 @@ class Group
 					break;
 					
 				case "addGroup":
-					if (isset($_POST['grpName']) && isset($_POST['memberIDs']) && isset($_POST['adminIDs'])) {
+					if (isset($_POST['grpUrl']) && isset($_POST['grpName']) && isset($_POST['memberNames']) && isset($_POST['adminNames'])) {
+						$groupUrl = $_POST['grpUrl'];
 						$groupName = $_POST['grpName'];
-						$memberIDs = $_POST['memberIDs'];
-						$adminIDs = $_POST['adminIDs'];
-						echo $this->addGroup($groupName, $memberIDs, $adminIDs);
+						$memberNames = $_POST['memberNames'];
+						$adminNames = $_POST['adminNames'];
+						echo $this->addGroup($groupName, $groupUrl, $memberNames, $adminNames);
 					} 
 					else 
-						echo $this->displayError("grpName: ".$_POST['grpName'].", memberIDs: ".$_POST['memberIDs'].", adminIDs: ".$_POST['adminIDs']);
+						echo $this->displayError("grpUrl: ".$_POST['grpUrl'].", grpName: ".$_POST['grpName'].", memberNames: ".$_POST['memberNames'].", adminNames: ".$_POST['adminNames']);
 					break;
 					
 				case "updateGroup":
-					if (isset($_POST['grpID']) && isset($_POST['grpName']) && isset($_POST['memberIDs']) && isset($_POST['adminIDs'])) {
-						$groupID = $_POST['grpID'];
-						$groupName = $_POST['grpName'];
-						$memberIDs = $_POST['memberIDs'];
-						$adminIDs = $_POST['adminIDs'];
-						echo $this->updateGroup($groupID, $groupName, $memberIDs, $adminIDs);
+					if (isset($_POST['grpUrl']) && isset($_POST['memberNames']) && isset($_POST['adminNames'])) {
+						$groupUrl = $_POST['grpUrl'];
+						$memberNames = $_POST['memberNames'];
+						$adminNames = $_POST['adminNames'];
+						echo $this->updateGroup($groupUrl, $memberNames, $adminNames);
 					} 
 					else 
-						echo $this->displayError("grpID: ".$_POST['grpID']."grpName: ".$_POST['grpName'].", memberIDs: ".$_POST['memberIDs'].", adminIDs: ".$_POST['adminIDs']);
+						echo $this->displayError("grpUrl: ".$_POST['grpUrl'].", memberNames: ".$_POST['memberNames'].", adminNames: ".$_POST['adminNames']);
 					break;
 					
 				case "deleteGroup":
@@ -76,39 +76,91 @@ class Group
 		}
 		else {
 			echo $this->displayError("Method not specified");
+			/* $groupName = "Grouper5";
+			$groupUrl = "sendbird_channel_195731461961359300";
+			$memberNames = '"user1","a1"';
+			$adminNames = '"user1","hardcoded user"';
+			echo $this->addGroup($groupName, $groupUrl, $memberNames, $adminNames); */
 		}
-		
-		//echo $this->addGroup("Grouper", "2,5,6,7", "2");
-		//echo $this->getGroups(null);
-		//echo $this->getGroups();
 		
 	}
 	
-	function addGroup($groupName, $memberIDs, $adminIDs) {
-		$query = "INSERT INTO groups (group_name, member_ids, admin_ids) VALUES (?,?,?)";
-		if ($stmt = $this->con->prepare($query)) {
+	function getAdminsAndMembers($usernames) {
 		
-			$stmt->bind_param('sss', $groupName, $memberIDs, $adminIDs);
-			$stmt->execute();
-			if ($stmt->affected_rows === 1)
-				return $this->displaySuccess("Success");
-			else if ($stmt->affected_rows === 0 || $stmt->affected_rows > 1) {
+		// getting the userIDs of admins and members via their usernames
+		$query = "SELECT `user_id` FROM account WHERE `username` IN ";
+		
+		// splitting string array and form a combined string
+		//$string_split = implode('","', $arrUsernames);
+		//$string_split = '"'.$string_split.'"';
+		//$query.= "(".$string_split.");";
+		$query.="(".$usernames.")";
+		
+		//echo $query;
+
+		if ($stmt = $this->con->prepare($query)) {
+			
+			if ($stmt->execute()) {
+				$stmt->bind_result($userID);
+				$users = array();
+		
+				while ($stmt->fetch()) {
+					
+					// adding each userID into an array
+					array_push($users, $userID);
+				}
+				
+				// returns list of userIDs in string format without double quotes encapsulating each
+				return implode(',', $users);
+			
+			}
+			else {
 				//die("Error: ". $this->con->error);
-				return $this->displayError("Affected ".$stmt->affected_rows." rows");
+				return $this->displayError($this->con->error);
 			}
 		}
 		else 
 			//die("Error: ". $this->con->error);
 			return $this->displayError($this->con->error);
 		return $this->displayError($this->con->error);;
+		
+	}
+	
+	function addGroup($groupName, $groupUrl, $memberNames, $adminNames) {
+		$memberIDs = $this->getAdminsAndMembers($memberNames);
+		$adminIDs = $this->getAdminsAndMembers($adminNames);
+		
+		if ((!isset($memberIDs) && !isset($adminIDs)) || (preg_match('/\berror\b/', $memberIDs) || preg_match('/\berror\b/',$adminIDs))) 
+			return $this->displayError("Unable to retrieve IDs corresponding to the members and admins provided");
+		
+		else {
+			$query = "INSERT INTO groups (group_name, group_url, member_ids, admin_ids) VALUES (?,?,?,?)";
+			if ($stmt = $this->con->prepare($query)) {
+			
+				$stmt->bind_param('ssss', $groupName, $groupUrl, $memberIDs, $adminIDs);
+				$stmt->execute();
+				if ($stmt->affected_rows === 1)
+					return $this->displaySuccess("Success");
+				else if ($stmt->affected_rows === 0 || $stmt->affected_rows > 1) {
+					//die("Error: ". $this->con->error);
+					return $this->displayError("Affected ".$stmt->affected_rows." rows");
+				}
+			}
+			else 
+				//die("Error: ". $this->con->error);
+				return $this->displayError($this->con->error);
+			return $this->displayError($this->con->error);
+		}
 	}
 	
 	function getGroups($groupName) {
 		
+		// only for searching purpose
 		if (isset($groupName)) {
 			$query = "SELECT * FROM groups WHERE group_name LIKE ?";
 			$param = "%{$groupName}%";
 		}
+		
 		else {
 			$query = "SELECT * FROM groups";
 		}
@@ -118,7 +170,7 @@ class Group
 				$stmt->bind_param('s', $param);
 			}
 			$stmt->execute();
-			$stmt->bind_result($groupID, $groupName, $memberIDs, $adminIDs);
+			$stmt->bind_result($groupID, $groupName, $groupUrl, $memberIDs, $adminIDs);
 		}
 		else {
 			//die("Error: ". $this->con->error);
@@ -131,6 +183,7 @@ class Group
 			$group = array();
 			$group['group_id'] = $groupID;
 			$group['group_name'] = $groupName;
+			$group['group_url'] = $groupUrl;
 			$group['member_ids'] = $memberIDs;
 			$group['admin_ids'] = $adminIDs;
 			
@@ -144,6 +197,7 @@ class Group
 		return json_encode($groups);
 	}
 	
+	// havent fully implemented in app yet
 	function deleteGroup($groupID) {
 		$query = "DELETE FROM groups WHERE group_id = ?";
 		$stmt = $this->con->prepare($query);
@@ -153,16 +207,24 @@ class Group
 		return $this->displayError($this->con->error);
 	}
 	
-	function updateGroup($groupID, $groupName, $memberIDs, $adminIDs) {
-		$query = "UPDATE groups SET member_ids = ?, admin_ids = ? WHERE group_id = ? AND group_name = ?";
-		$stmt = $this->con->prepare($query);
-		$stmt->bind_param("ssis", $memberIDs, $adminIDs, $groupID, $groupName);
-		$stmt->execute();
-		if ($stmt->affected_rows === 1)
-			return $this->displaySuccess("Success");
-		else if ($stmt->affected_rows === 0 || $stmt->affected_rows > 1) {
-			//die("Error: ". $this->con->error);
-			return $this->displayError("Affected ".$stmt->affected_rows." rows");
+	function updateGroup($groupUrl, $memberNames, $adminNames) {
+		$memberIDs = $this->getAdminsAndMembers($memberNames);
+		$adminIDs = $this->getAdminsAndMembers($adminNames);
+		
+		if ((!isset($memberIDs) && !isset($adminIDs)) || (preg_match('/\berror\b/', $memberIDs) || preg_match('/\berror\b/',$adminIDs))) 
+			return $this->displayError("Unable to retrieve IDs corresponding to the members and admins provided");
+		
+		else {
+			$query = "UPDATE groups SET member_ids = ?, admin_ids = ? WHERE group_url = ? ";
+			$stmt = $this->con->prepare($query);
+			$stmt->bind_param("sss", $memberIDs, $adminIDs, $groupUrl);
+			$stmt->execute();
+			if ($stmt->affected_rows === 1)
+				return $this->displaySuccess("Success");
+			else if ($stmt->affected_rows === 0 || $stmt->affected_rows > 1) {
+				//die("Error: ". $this->con->error);
+				return $this->displayError("Affected ".$stmt->affected_rows." rows");
+			}
 		}
 		return $this->displayError($this->con->error);
 	}
