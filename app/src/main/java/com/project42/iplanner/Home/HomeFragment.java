@@ -39,6 +39,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -55,9 +56,13 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import com.project42.iplanner.AppConfig;
@@ -81,7 +86,11 @@ public class HomeFragment extends Fragment {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String URL = AppConfig.URL_RECOMMENDED;
+    private static final String URL_UVI = AppConfig.URL_UVI;
+    private static final String URL_PSI = AppConfig.URL_PSI;
 
+    private Double currentpsi = 0.0;
+    private Double currentuvi = 0.0;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private DividerItemDecoration dividerItemDecoration;
@@ -118,8 +127,16 @@ public class HomeFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_view);
         poiList = new ArrayList<>();
 
+        getAllUVI();
+
+//        Log.d("All UVI", uviList.toString());
+//
+//        currentuvi = lastUVI(uviList);
+//        Log.d("Avg UVI", currentuvi.toString());
+
         getData();
         Log.d("Response",poiList.toString());
+
         adapter = new POIAdapter(getActivity(), poiList);
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -364,5 +381,70 @@ public class HomeFragment extends Fragment {
             poiList = unsortedList;
             adapter.notifyDataSetChanged();
         }
+    }
+
+    private void getAllUVI()
+    {
+        Date now = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateStr = sdf.format(now);
+        Log.d("Date", dateStr);
+        Log.d("URL", URL_UVI+dateStr);
+        //String URL = URL_PSI + sdf.format(dateStr).toString();
+        //creating a string request to send request to the url
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_UVI+dateStr,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            List<Double> uviList = new ArrayList<>();
+                            //getting the whole json object from the response
+                            JSONObject obj = new JSONObject(response);
+
+                            //we have the array named items inside the object
+                            //so here we are getting that json array
+                            JSONArray itemsArray = obj.getJSONArray("items");
+                            Log.d("Items Array", itemsArray.toString());
+                            for (int i = 0; i < itemsArray.length(); i++) {
+                                JSONObject itemsObj = itemsArray.getJSONObject(i);
+                                JSONArray indexArray = itemsObj.getJSONArray("index");
+                                Log.d("Index Array", indexArray.get(i).toString());
+                                for(int k = 0; k < indexArray.length(); k++)
+                                {
+                                    JSONObject indexObject = indexArray.getJSONObject(k);
+                                    Double uv = indexObject.getDouble("value");
+                                    uviList.add(uv);
+                                }
+                            }
+
+                            Log.d("All UVI", uviList.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley", error.toString());
+                    }
+                });
+
+        //creating a request queue
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+
+        //adding the string request to request queue
+        requestQueue.add(stringRequest);
+    }
+
+    private Double lastUVI(List<Double> uviList)
+    {
+        Double lastUvi = 0.0;
+        for(int i =0;i<uviList.size();i++)
+        {
+            lastUvi = uviList.get(i).doubleValue();
+        }
+
+        return lastUvi;
     }
 }

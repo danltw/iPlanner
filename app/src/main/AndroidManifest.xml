@@ -22,18 +22,18 @@
                 android:name="android.app.default_searchable"
                 android:value=".Home.HomeActivity"/>
 
-        <activity
-                android:name=".Accounts.LoginActivity"
-                android:launchMode="singleTop"
-                android:theme="@style/AppTheme.NoActionBar"
-                android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+        <!--<activity-->
+                <!--android:name=".Accounts.LoginActivity"-->
+                <!--android:launchMode="singleTop"-->
+                <!--android:theme="@style/AppTheme.NoActionBar"-->
+                <!--android:windowSoftInputMode="adjustPan">-->
+            <!--<intent-filter>-->
+                <!--&lt;!&ndash;<action android:name="android.intent.action.MAIN"/>&ndash;&gt;-->
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-                <action android:name="android.intent.action.VIEW"/>
-            </intent-filter>
-        </activity>
+                <!--&lt;!&ndash;<category android:name="android.intent.category.LAUNCHER"/>&ndash;&gt;-->
+                <!--<action android:name="android.intent.action.VIEW"/>-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
 
         <activity
                 android:name=".Home.HomeActivity"
@@ -41,7 +41,9 @@
                 android:theme="@style/AppTheme.NoActionBar"
                 android:windowSoftInputMode="adjustPan">
             <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
 
+                <category android:name="android.intent.category.LAUNCHER"/>
                 <action android:name="android.intent.action.SEARCH"/>
                 <action android:name="android.intent.action.VIEW"/>
             </intent-filter>
