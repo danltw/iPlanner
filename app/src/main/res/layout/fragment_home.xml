@@ -6,9 +6,36 @@
     tools:context=".Home.HomeFragment">
 
     <LinearLayout
+        android:id="@+id/linear_layout1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/rl_custom_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+            <ImageButton
+                android:id="@+id/floatingActionButtonFilter"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/baseline_filter_list_black_18dp" />
+
+            <ImageButton
+                android:id="@+id/floatingActionButtonSort"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:clickable="true"
+                android:src="@drawable/baseline_sort_black_18dp" />
+        </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"

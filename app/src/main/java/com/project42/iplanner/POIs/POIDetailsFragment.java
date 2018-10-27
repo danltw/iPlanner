@@ -23,6 +23,7 @@ import com.project42.iplanner.R;
 public class POIDetailsFragment extends Fragment {
 
 
+
     public POIDetailsFragment() {
         // Required empty public constructor
     }
@@ -83,6 +84,15 @@ public class POIDetailsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 sendData();
+            }
+        });
+
+        FloatingActionButton bookmarkBtn = (FloatingActionButton) view.findViewById(R.id.floatingActionButtonBookmark);
+
+        bookmarkBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //bookmarkData();
             }
         });
 
