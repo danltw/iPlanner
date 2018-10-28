@@ -19,6 +19,7 @@ import com.project42.iplanner.AppConfig;
 import com.project42.iplanner.AppController;
 import com.project42.iplanner.Home.HomeActivity;
 import com.project42.iplanner.R;
+import com.project42.iplanner.Utilities.SharedManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,6 +61,12 @@ public class LoginActivity extends AppCompatActivity {
         final Button login_button = findViewById(R.id.login_button);
         final Button switch_mode = findViewById(R.id.switch_mode_toreg);
 
+        if (SharedManager.getInstance(LoginActivity.this).getUser() != null) {
+            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         // Progress dialog
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
@@ -94,7 +101,10 @@ public class LoginActivity extends AppCompatActivity {
 
         if (!username.isEmpty() && !password.isEmpty()) {
             // login user
-            verifyUser(username, password);
+            //verifyUser(username, password);
+            AccountController ac = new AccountController(username, password, LoginActivity.this);
+            ac.loginUser(username, password);
+
         } else {
             // Prompt user to enter credentials
             Toast.makeText(getApplicationContext(),
