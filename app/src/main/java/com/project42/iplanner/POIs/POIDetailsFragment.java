@@ -102,7 +102,7 @@ public class POIDetailsFragment extends Fragment {
 
         FloatingActionButton BookmarkBtn = (FloatingActionButton) view.findViewById(R.id.floatingActionButtonBookmark);
 
-        sendBtn.setOnClickListener(new View.OnClickListener() {
+        BookmarkBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addBookmark();

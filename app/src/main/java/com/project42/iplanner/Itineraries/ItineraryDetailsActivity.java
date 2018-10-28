@@ -3,6 +3,7 @@ package com.project42.iplanner.Itineraries;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -18,7 +19,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.project42.iplanner.AppConfig;
+import com.project42.iplanner.Groups.Group;
 import com.project42.iplanner.R;
+import com.project42.iplanner.Utilities.ListUtils;
+
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.Menu;
@@ -37,6 +41,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
+import android.app.ProgressDialog;
+
 
 public class ItineraryDetailsActivity extends AppCompatActivity  implements
         View.OnClickListener{
@@ -46,7 +55,7 @@ public class ItineraryDetailsActivity extends AppCompatActivity  implements
 
 
     private TextView idTxt,nameTxt;
-    Button btnDatePicker;
+    Button btnDatePicker,btnSubmit;
     EditText txtDate;
     private int mYear, mMonth, mDay;
     EditText chooseTime;
@@ -55,6 +64,23 @@ public class ItineraryDetailsActivity extends AppCompatActivity  implements
     int currentHour;
     int currentMinute;
     String amPm;
+
+        // Creating Volley RequestQueue.
+        RequestQueue requestQueue;
+
+        // Create string variable to hold the EditText Value.
+        String FirstNameHolder, LastNameHolder, EmailHolder ;
+
+        // Creating Progress dialog.
+        ProgressDialog progressDialog;
+
+        // Storing server url into String variable.
+        String HttpUrl = "http://project42-iplanner.000webhostapp.com/postItinerary.php";
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +92,16 @@ public class ItineraryDetailsActivity extends AppCompatActivity  implements
         btnDatePicker=(Button)findViewById(R.id.btn_date);
         txtDate=(EditText)findViewById(R.id.in_date);
         nameTxt=(TextView) findViewById(R.id.nameTxt);
+        btnSubmit=(Button)findViewById(R.id.submitBtn);
+
+
+        // Assigning ID's to Button.
+        btnSubmit = (Button) findViewById(R.id.submitBtn);
+
+        // Creating Volley newRequestQueue .
+        requestQueue = Volley.newRequestQueue(ItineraryDetailsActivity.this);
+
+        progressDialog = new ProgressDialog(ItineraryDetailsActivity.this);
 
         btnDatePicker.setOnClickListener(this);
 
@@ -108,11 +144,79 @@ public class ItineraryDetailsActivity extends AppCompatActivity  implements
                 // DO Nothing here
             }
         });
+
+
+
+        // Adding click listener to button.
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Showing progress dialog at user registration time.
+                progressDialog.setMessage("Please Wait, We are Inserting Your Data on Server");
+                progressDialog.show();
+
+                // Calling method to get value from EditText.
+                GetValueFromEditText();
+
+                // Creating string request with post method.
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpUrl,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String ServerResponse) {
+
+                                // Hiding the progress dialog after all task complete.
+                                progressDialog.dismiss();
+
+                                // Showing response message coming from server.
+                                Toast.makeText(ItineraryDetailsActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError volleyError) {
+
+                                // Hiding the progress dialog after all task complete.
+                                progressDialog.dismiss();
+
+                                // Showing error message if something goes wrong.
+                                Toast.makeText(ItineraryDetailsActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                            }
+                        }) {
+                    @Override
+                    protected Map<String, String> getParams() {
+
+                        // Creating Map String Params.
+                        Map<String, String> params = new HashMap<String, String>();
+
+                        // Adding All values to Params.
+                        params.put("itinerary_name", FirstNameHolder);
+                      //  params.put("POI_id", LastNameHolder);
+
+                        return params;
+                    }
+
+                };
+
+                // Creating RequestQueue.
+                RequestQueue requestQueue = Volley.newRequestQueue(ItineraryDetailsActivity.this);
+
+                // Adding the StringRequest object into requestQueue.
+                requestQueue.add(stringRequest);
+
+            }
+        });
     }
 
+    // Creating method to get value from EditText.
+    public void GetValueFromEditText(){
 
 
+        FirstNameHolder = spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString();
+      //  LastNameHolder = idTxt.getText().toString().trim();
 
+
+    }
 
         @Override
         public void onClick(View v) {
@@ -141,7 +245,6 @@ public class ItineraryDetailsActivity extends AppCompatActivity  implements
             }
 
         }
-
 
 
     @Override
@@ -195,11 +298,12 @@ public class ItineraryDetailsActivity extends AppCompatActivity  implements
             @Override
             public void onResponse(String response) {
                 try{
-                    JSONObject jsonObject=new JSONObject(response);
+                    //JSONObject jsonObject=new JSONObject(response);
+                    JSONArray jsonarray = new JSONArray(response);
 
-                        JSONArray jsonArray=jsonObject.getJSONArray("Name");
-                        for(int i=0;i<jsonArray.length();i++){
-                            JSONObject jsonObject1=jsonArray.getJSONObject(i);
+                       // JSONArray jsonArray=jsonarray.getJSONArray("Name");
+                        for(int i=0;i<jsonarray.length();i++){
+                            JSONObject jsonObject1=jsonarray.getJSONObject(i);
                             String country=jsonObject1.getString("itinerary_name");
                             CountryName.add(country);
                         }
@@ -218,4 +322,8 @@ public class ItineraryDetailsActivity extends AppCompatActivity  implements
         stringRequest.setRetryPolicy(policy);
         requestQueue.add(stringRequest);
     }
+
+
+
+
 }
