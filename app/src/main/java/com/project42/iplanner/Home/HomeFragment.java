@@ -33,6 +33,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -63,7 +64,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.project42.iplanner.AppConfig;
 import com.project42.iplanner.POIs.POI;
@@ -89,8 +92,8 @@ public class HomeFragment extends Fragment {
     private static final String URL_UVI = AppConfig.URL_UVI;
     private static final String URL_PSI = AppConfig.URL_PSI;
 
-    private Double currentpsi = 0.0;
-    private Double currentuvi = 0.0;
+    private Double currentpsi;
+    private Double currentuvi;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private DividerItemDecoration dividerItemDecoration;
@@ -126,15 +129,9 @@ public class HomeFragment extends Fragment {
         linearLayout1 = (LinearLayout) view.findViewById(R.id.linear_layout1);
         recyclerView = view.findViewById(R.id.recycler_view);
         poiList = new ArrayList<>();
-
+        currentuvi = 0.0;
+        currentpsi = 0.0;
         getAllUVI();
-
-//        Log.d("All UVI", uviList.toString());
-//
-//        currentuvi = lastUVI(uviList);
-//        Log.d("Avg UVI", currentuvi.toString());
-
-        getData();
         Log.d("Response",poiList.toString());
 
         adapter = new POIAdapter(getActivity(), poiList);
@@ -262,17 +259,21 @@ public class HomeFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void getData() {
+
+    private void getData(Double cuvi, Double cpsi) {
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Loading...");
         progressDialog.show();
-        final JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(URL, new Response.Listener<JSONArray>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>()
+        {
             @Override
-            public void onResponse(JSONArray response) {
+            public void onResponse(String response)
+            {
                 try {
+                    JSONArray poiarray = new JSONArray(response);
                     for (int i = 0; i < response.length(); i++)
                     {
-                        JSONObject poi = response.getJSONObject(i);
+                        JSONObject poi = poiarray.getJSONObject(i);
                         Integer id = poi.getInt("locationID");
                         String name = poi.getString("locationName");
                         String address = poi.getString("address");
@@ -302,9 +303,20 @@ public class HomeFragment extends Fragment {
                 Log.e("Volley", error.toString());
                 progressDialog.dismiss();
             }
-        });
+        }){
+            @Override
+            protected Map<String,String> getParams()
+            {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("uv_index", cuvi.toString());
+                Log.d("POST UV", cuvi.toString());
+                params.put("ps_index", cpsi.toString());
+                Log.d("POST PSI", cpsi.toString());
+                return params;
+            }
+        };
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        requestQueue.add(jsonArrayRequest);
+        requestQueue.add(stringRequest);
     }
 
     private void loadFragment(Fragment fragment) {
@@ -416,8 +428,8 @@ public class HomeFragment extends Fragment {
                                     uviList.add(uv);
                                 }
                             }
-
-                            Log.d("All UVI", uviList.toString());
+                            currentuvi = uviList.get(uviList.size()-1);
+                            getAllPSI();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -437,14 +449,61 @@ public class HomeFragment extends Fragment {
         requestQueue.add(stringRequest);
     }
 
-    private Double lastUVI(List<Double> uviList)
+    private void getAllPSI()
     {
-        Double lastUvi = 0.0;
-        for(int i =0;i<uviList.size();i++)
-        {
-            lastUvi = uviList.get(i).doubleValue();
-        }
+        Date now = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateStr = sdf.format(now);
+        Log.d("Date", dateStr);
+        Log.d("URL", URL_PSI+dateStr);
+        //String URL = URL_PSI + sdf.format(dateStr).toString();
+        //creating a string request to send request to the url
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_PSI+dateStr,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            List<Double> psiList = new ArrayList<>();
+                            //getting the whole json object from the response
+                            JSONObject obj = new JSONObject(response);
 
-        return lastUvi;
+                            //we have the array named items inside the object
+                            //so here we are getting that json array
+                            JSONArray itemsArray = obj.getJSONArray("items");
+                            Log.d("Items Array", itemsArray.toString());
+                            for (int i = 0; i < itemsArray.length(); i++) {
+                                JSONObject itemsObj = itemsArray.getJSONObject(i);
+                                JSONObject readingsObj = itemsObj.getJSONObject("readings");
+                                for(int k = 0; k < readingsObj.length(); k++)
+                                {
+                                    JSONObject psiObject = readingsObj.getJSONObject("psi_twenty_four_hourly");
+//                                    Double n_psi = psiObject.getDouble("north");
+//                                    Double s_psi = psiObject.getDouble("south");
+//                                    Double e_psi = psiObject.getDouble("east");
+//                                    Double w_psi = psiObject.getDouble("west");
+//                                    Double cen_psi = psiObject.getDouble("central");
+                                    Double nat_psi = psiObject.getDouble("national");
+                                    psiList.add(nat_psi);
+                                }
+                            }
+                            currentpsi = psiList.get(psiList.size()-1);
+                            getData(currentuvi,currentpsi);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley", error.toString());
+                    }
+                });
+
+        //creating a request queue
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+
+        //adding the string request to request queue
+        requestQueue.add(stringRequest);
     }
 }
