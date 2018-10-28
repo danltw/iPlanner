@@ -2,16 +2,16 @@
 
 class DB_Functions {
 
-    private $conn;
+    private $con;
 
     // constructor
     function __construct() {
         // include db connect class
-require_once(__DIR__.'/DB_Connect.php');
+		require_once(__DIR__.'/DB_Connect.php');
 
-// connecting to db
-$db = new DB_CONNECT();
-$con = mysqli_connect(DB_SERVER, DB_USER, DB_PASSWORD) or die(mysqli_error($con));
+		// connecting to db
+		$db = new DB_CONNECT();
+		$this->con = mysqli_connect(DB_SERVER, DB_USER, DB_PASSWORD) or die(mysqli_error($con));
     }
 
     // destructor
@@ -23,16 +23,17 @@ $con = mysqli_connect(DB_SERVER, DB_USER, DB_PASSWORD) or die(mysqli_error($con)
      * Storing new user
      * returns user details
      */
-    public function storeUser($username, $email, $password) {
+    public function storeUser($username, $password) {
+        $user_id = uniqid('', true);
         $hash = $this->hashSSHA($password);
         $enc_password = $hash["encrypted"]; // encrypted password
         $salt = $hash["salt"]; // salt
-
-        $stmt = $this->conn->prepare("INSERT INTO id7469667_iplanner.account(username, enc_password, salt, email) VALUES(?, ?, ?,?)");
-        $stmt->bind_param("ssss", $username, $enc_password, $salt, $email);
+ 
+        $stmt = $this->con->prepare("INSERT INTO id7469667_iplanner.account(user_id, username, enc_password, salt) VALUES(?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $user_id, $username,  $enc_password, $salt);
         $result = $stmt->execute();
         $stmt->close();
-
+ 
         // check for successful store
         if ($result) {
             $stmt = $this->conn->prepare("SELECT * FROM id7469667_iplanner.account WHERE username = ?");
@@ -40,7 +41,7 @@ $con = mysqli_connect(DB_SERVER, DB_USER, DB_PASSWORD) or die(mysqli_error($con)
             $stmt->execute();
             $user = $stmt->get_result()->fetch_assoc();
             $stmt->close();
-
+ 
             return $user;
         } else {
             return false;
@@ -48,11 +49,15 @@ $con = mysqli_connect(DB_SERVER, DB_USER, DB_PASSWORD) or die(mysqli_error($con)
     }
 
     /**
-     * Get user by email and password
+     * Get user by username and password
      */
     public function getUserByEmailAndPassword($username, $password) {
 
-        $stmt = $this->conn->prepare("SELECT * FROM id7469667_iplanner.account WHERE username = ?");
+        $stmt = $this->con->prepare("SELECT * FROM id7469667_iplanner.account WHERE username = ?");
+		
+		if ($stmt == false) {
+			return NULL;
+		}
 
         $stmt->bind_param("s", $username);
 
@@ -73,12 +78,13 @@ $con = mysqli_connect(DB_SERVER, DB_USER, DB_PASSWORD) or die(mysqli_error($con)
             return NULL;
         }
     }
+	    
 
     /**
      * Check user is existed or not
      */
     public function isUserExisted($username) {
-        $stmt = $this->conn->prepare("SELECT username from id7469667_iplanner.account WHERE username = ?");
+        $stmt = $this->con->prepare("SELECT username from id7469667_iplanner.account WHERE username = ?");
 
         $stmt->bind_param("s", $username);
 

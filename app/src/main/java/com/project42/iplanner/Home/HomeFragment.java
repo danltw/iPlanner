@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.print.PrintDocumentAdapter;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -14,22 +16,31 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -46,8 +57,16 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.project42.iplanner.AppConfig;
 import com.project42.iplanner.POIs.POI;
@@ -63,21 +82,28 @@ public class HomeFragment extends Fragment {
 
     // Progress Dialog
     private ProgressDialog pDialog;
+    private RadioGroup sortGrp;
 
     public static final int CONNECTION_TIMEOUT = 10000;
     public static final int READ_TIMEOUT = 15000;
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String URL = AppConfig.URL_RECOMMENDED;
+    private static final String URL_UVI = AppConfig.URL_UVI;
+    private static final String URL_PSI = AppConfig.URL_PSI;
 
+    private Double currentpsi;
+    private Double currentuvi;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private DividerItemDecoration dividerItemDecoration;
     private List<POI> poiList;
     private RecyclerView.Adapter adapter;
     private POIAdapter mAdapter;
+    LinearLayout linearLayout1;
     Menu menu = null;
     SearchView searchView = null;
+    private PopupWindow mPopupWindow;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -100,12 +126,14 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
 //         Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
+        linearLayout1 = (LinearLayout) view.findViewById(R.id.linear_layout1);
         recyclerView = view.findViewById(R.id.recycler_view);
         poiList = new ArrayList<>();
-
-        getData();
+        currentuvi = 0.0;
+        currentpsi = 0.0;
+        getAllUVI();
         Log.d("Response",poiList.toString());
+
         adapter = new POIAdapter(getActivity(), poiList);
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -150,82 +178,80 @@ public class HomeFragment extends Fragment {
                 })
         );
 
+        ImageButton sortBtn = (ImageButton) view.findViewById(R.id.floatingActionButtonSort);
+        ImageButton filterBtn = (ImageButton) view.findViewById(R.id.floatingActionButtonFilter);
+
+        sortBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater inflater1 = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+                // Inflate the custom layout/view
+                View customView = inflater1.inflate(R.layout.sort_layout,null);
+                mPopupWindow = new PopupWindow(customView,ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+                mPopupWindow.showAtLocation(linearLayout1,Gravity.CENTER,0,0);
+                if(Build.VERSION.SDK_INT>=21){
+                    mPopupWindow.setElevation(5.0f);
+                }
+
+                sortGrp = (RadioGroup) customView.findViewById(R.id.sortGrp);
+
+                final RadioButton atoz = (RadioButton) customView.findViewById(R.id.atoz);
+                final RadioButton ztoa = (RadioButton) customView.findViewById(R.id.ztoa);
+                final RadioButton costup = (RadioButton) customView.findViewById(R.id.costup);
+                final RadioButton costdown = (RadioButton) customView.findViewById(R.id.costdown);
+
+                Button applyBtn = (Button) customView.findViewById(R.id.sort_apply);
+
+                applyBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int selectedId = sortGrp.getCheckedRadioButtonId();
+                        String sortType = "default";
+                        if(selectedId == atoz.getId())
+                        {
+                            sortType = "atoz";
+                            sortList(poiList,sortType);
+                            mPopupWindow.dismiss();
+                        }
+                        else if(selectedId == ztoa.getId())
+                        {
+                            sortType = "ztoa";
+                            sortList(poiList,sortType);
+                            mPopupWindow.dismiss();
+                        }
+                        else if(selectedId == costup.getId())
+                        {
+                            sortType = "costup";
+                            sortList(poiList,sortType);
+                            mPopupWindow.dismiss();
+                        }
+                        else if(selectedId == costdown.getId())
+                        {
+                            sortType = "costdown";
+                            sortList(poiList,sortType);
+                            mPopupWindow.dismiss();
+                        }
+                        else
+                        {
+                            sortType = "default";
+                            sortList(poiList,sortType);
+                            mPopupWindow.dismiss();
+                        }
+                    }
+                });
+
+                Button cancelBtn = (Button) customView.findViewById(R.id.sort_cancel);
+                cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mPopupWindow.dismiss();
+                    }
+                });
+            }
+        });
         return view;
     }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu)
-    {
-            final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setMessage("Loading...");
-            progressDialog.show();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response)
-            {
-                try {
-                    JSONArray array = response.getJSONArray("poi");
-
-                    for(int i=0; i<array.length();i++)
-                    {
-                        JSONObject jsonObject = array.getJSONObject(i);
-                        POI poi = new POI(0,null,null,0,0.0,0.0,null,null,null,null,0.0,0.0);
-                        poi.setLocationID(jsonObject.getInt("locationID"));
-                        poi.setLocationName(jsonObject.getString("locationName"));
-                        poi.setCost(jsonObject.getDouble("cost"));
-                        poi.setRating(jsonObject.getDouble("rating"));
-                        poiList.add(poi);
-                    }
-                }
-                catch (JSONException e)
-                {
-                            e.printStackTrace();
-                            progressDialog.dismiss();
-                }
-                    adapter.notifyDataSetChanged();
-                    progressDialog.dismiss();
-            }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("Volley", error.toString());
-                    progressDialog.dismiss();
-                }
-            });
-            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-            requestQueue.add(jsonObjectRequest);
-    }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.menu_search, menu);
-//
-//        // Associate searchable configuration with the SearchView
-//        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-//        searchView = (SearchView) menu.findItem(R.id.action_search)
-//                .getActionView();
-//        searchView.setSearchableInfo(searchManager
-//                .getSearchableInfo(getActivity().getComponentName()));
-//        searchView.setMaxWidth(Integer.MAX_VALUE);
-//
-//        // listening to search query text change
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                // filter recycler view when query submitted
-//                mAdapter.getFilter().filter(query);
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String query) {
-//                // filter recycler view when text is changed
-//                mAdapter.getFilter().filter(query);
-//                return false;
-//            }
-//        });
-//        return true;
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -233,30 +259,21 @@ public class HomeFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-//    // Every time when you press search button on keypad an Activity is recreated which in turn calls this function
-//    protected void onNewIntent(Intent intent) {
-//        // Get search query and create object of class AsyncFetch
-//        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-//            String query = intent.getStringExtra(SearchManager.QUERY);
-//            if (searchView != null) {
-//                searchView.clearFocus();
-//            }
-//            new AsyncFetch(query).execute();
-//
-//        }
-//    }
 
-    private void getData() {
+    private void getData(Double cuvi, Double cpsi) {
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Loading...");
         progressDialog.show();
-        final JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(URL, new Response.Listener<JSONArray>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>()
+        {
             @Override
-            public void onResponse(JSONArray response) {
+            public void onResponse(String response)
+            {
                 try {
+                    JSONArray poiarray = new JSONArray(response);
                     for (int i = 0; i < response.length(); i++)
                     {
-                        JSONObject poi = response.getJSONObject(i);
+                        JSONObject poi = poiarray.getJSONObject(i);
                         Integer id = poi.getInt("locationID");
                         String name = poi.getString("locationName");
                         String address = poi.getString("address");
@@ -286,153 +303,21 @@ public class HomeFragment extends Fragment {
                 Log.e("Volley", error.toString());
                 progressDialog.dismiss();
             }
-        });
+        }){
+            @Override
+            protected Map<String,String> getParams()
+            {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("uv_index", cuvi.toString());
+                Log.d("POST UV", cuvi.toString());
+                params.put("ps_index", cpsi.toString());
+                Log.d("POST PSI", cpsi.toString());
+                return params;
+            }
+        };
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        requestQueue.add(jsonArrayRequest);
+        requestQueue.add(stringRequest);
     }
-//
-//    // Create class AsyncFetch
-//    private class AsyncFetch extends AsyncTask<String, String, String> {
-//
-//        ProgressDialog pdLoading = new ProgressDialog(getActivity());
-//        HttpURLConnection conn;
-//        URL url = null;
-//        String searchQuery;
-//
-//        public AsyncFetch(String searchQuery){
-//            this.searchQuery=searchQuery;
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//
-//            //this method will be running on UI thread
-//            pdLoading.setMessage("\tLoading...");
-//            pdLoading.setCancelable(false);
-//            pdLoading.show();
-//
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//            try {
-//
-//                // Enter URL address where your php file resides
-//                url = new URL("http://project42-iplanner.000webhostapp.com/get_search_poi.php");
-//
-//            } catch (MalformedURLException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//                return e.toString();
-//            }
-//            try {
-//
-//                // Setup HttpURLConnection class to send and receive data from php and mysql
-//                conn = (HttpURLConnection) url.openConnection();
-//                conn.setReadTimeout(READ_TIMEOUT);
-//                conn.setConnectTimeout(CONNECTION_TIMEOUT);
-//                conn.setRequestMethod("POST");
-//
-//                // setDoInput and setDoOutput to true as we send and recieve data
-//                conn.setDoInput(true);
-//                conn.setDoOutput(true);
-//
-//                // add parameter to our above url
-//                Uri.Builder builder = new Uri.Builder().appendQueryParameter("searchQuery", searchQuery);
-//                String query = builder.build().getEncodedQuery();
-//
-//                OutputStream os = conn.getOutputStream();
-//                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-//                writer.write(query);
-//                writer.flush();
-//                writer.close();
-//                os.close();
-//                conn.connect();
-//
-//            } catch (IOException e1) {
-//                // TODO Auto-generated catch block
-//                e1.printStackTrace();
-//                return e1.toString();
-//            }
-//
-//            try {
-//
-//                int response_code = conn.getResponseCode();
-//
-//                // Check if successful connection made
-//                if (response_code == HttpURLConnection.HTTP_OK) {
-//
-//                    // Read data sent from server
-//                    InputStream input = conn.getInputStream();
-//                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-//                    StringBuilder result = new StringBuilder();
-//                    String line;
-//
-//                    while ((line = reader.readLine()) != null) {
-//                        result.append(line);
-//                    }
-//
-//                    // Pass data to onPostExecute method
-//                    return (result.toString());
-//
-//                } else {
-//                    return("Connection error");
-//                }
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                return e.toString();
-//            } finally {
-//                conn.disconnect();
-//            }
-//
-//
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//
-//            //this method will be running on UI thread
-//            pdLoading.dismiss();
-//            List<POI> data=new ArrayList<>();
-//
-//            pdLoading.dismiss();
-//            if(result.equals("no rows")) {
-//                adapter.notifyDataSetChanged();
-//                pdLoading.dismiss();
-//                Toast.makeText(getActivity(), "No Results found for entered query", Toast.LENGTH_LONG).show();
-//            }else{
-//
-//                try {
-//
-//                    JSONArray jArray = new JSONArray(result);
-//
-//                    // Extract data from json and store into ArrayList as class objects
-//                    for (int i = 0; i < jArray.length(); i++) {
-//                        JSONObject json_data = jArray.getJSONObject(i);
-//                        POI poiData = new POI(0,null,null,0,0.0,0.0,null,null,null,null,0.0,0.0);
-//                        poiData.setLocationID(json_data.getInt("location_id"));
-//                        poiData.setLocationName(json_data.getString("location_name"));
-//                        poiData.setCost(json_data.getDouble("location_cost"));
-//                        poiData.setRating(json_data.getDouble("location_rating"));
-//                        data.add(poiData);
-//                    }
-//
-//                    adapter.notifyDataSetChanged();
-//                    pdLoading.dismiss();
-//
-//                } catch (JSONException e) {
-//                    // You to understand what actually error is and handle it appropriately
-//                    Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_LONG).show();
-//                    Toast.makeText(getActivity(), result.toString(), Toast.LENGTH_LONG).show();
-//                }
-//
-//            }
-//
-//        }
-//
-//    }
 
     private void loadFragment(Fragment fragment) {
         // load fragment
@@ -440,5 +325,185 @@ public class HomeFragment extends Fragment {
         transaction.replace(R.id.frame_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    public void sortList(List<POI> unsortedList, String type)
+    {
+        if(type.equals("atoz"))
+        {
+            Collections.sort(unsortedList, new Comparator<POI>() {
+                @Override
+                public int compare(POI e1, POI e2) {
+                    String name1 = ((POI) e1).getLocationName();
+                    String name2 = ((POI) e2).getLocationName();
+
+                    // ascending order
+                    return name1.compareTo(name2);
+                }
+            });
+            poiList = unsortedList;
+            adapter.notifyDataSetChanged();
+        }
+        else if(type.equals("ztoa"))
+        {
+            Collections.sort(unsortedList, new Comparator<POI>() {
+                @Override
+                public int compare(POI e1, POI e2) {
+                    String name1 = ((POI) e1).getLocationName();
+                    String name2 = ((POI) e2).getLocationName();
+                    return name2.compareTo(name1);
+                }
+            });
+            poiList = unsortedList;
+            adapter.notifyDataSetChanged();
+        }
+        else if(type.equals("costup"))
+        {
+            Collections.sort(unsortedList, new Comparator<POI>() {
+                @Override
+                public int compare(POI e1, POI e2) {
+                    Double c1 = ((POI) e1).getCost();
+                    Double c2 = ((POI) e2).getCost();
+
+                    // ascending order
+                    return c1.compareTo(c2);
+
+                    // descending order
+                    //return id2.compareTo(id1);
+                }
+            });
+            poiList = unsortedList;
+            adapter.notifyDataSetChanged();
+        }
+        else if(type.equals("costdown"))
+        {
+            Collections.sort(unsortedList, new Comparator<POI>() {
+                @Override
+                public int compare(POI e1, POI e2) {
+                    Double c1 = ((POI) e1).getCost();
+                    Double c2 = ((POI) e2).getCost();
+
+                    return c2.compareTo(c1);
+                }
+            });
+            poiList = unsortedList;
+            adapter.notifyDataSetChanged();
+        }
+        else {
+            poiList = unsortedList;
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void getAllUVI()
+    {
+        Date now = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateStr = sdf.format(now);
+        Log.d("Date", dateStr);
+        Log.d("URL", URL_UVI+dateStr);
+        //String URL = URL_PSI + sdf.format(dateStr).toString();
+        //creating a string request to send request to the url
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_UVI+dateStr,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            List<Double> uviList = new ArrayList<>();
+                            //getting the whole json object from the response
+                            JSONObject obj = new JSONObject(response);
+
+                            //we have the array named items inside the object
+                            //so here we are getting that json array
+                            JSONArray itemsArray = obj.getJSONArray("items");
+                            Log.d("Items Array", itemsArray.toString());
+                            for (int i = 0; i < itemsArray.length(); i++) {
+                                JSONObject itemsObj = itemsArray.getJSONObject(i);
+                                JSONArray indexArray = itemsObj.getJSONArray("index");
+                                Log.d("Index Array", indexArray.get(i).toString());
+                                for(int k = 0; k < indexArray.length(); k++)
+                                {
+                                    JSONObject indexObject = indexArray.getJSONObject(k);
+                                    Double uv = indexObject.getDouble("value");
+                                    uviList.add(uv);
+                                }
+                            }
+                            currentuvi = uviList.get(uviList.size()-1);
+                            getAllPSI();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley", error.toString());
+                    }
+                });
+
+        //creating a request queue
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+
+        //adding the string request to request queue
+        requestQueue.add(stringRequest);
+    }
+
+    private void getAllPSI()
+    {
+        Date now = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateStr = sdf.format(now);
+        Log.d("Date", dateStr);
+        Log.d("URL", URL_PSI+dateStr);
+        //String URL = URL_PSI + sdf.format(dateStr).toString();
+        //creating a string request to send request to the url
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_PSI+dateStr,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            List<Double> psiList = new ArrayList<>();
+                            //getting the whole json object from the response
+                            JSONObject obj = new JSONObject(response);
+
+                            //we have the array named items inside the object
+                            //so here we are getting that json array
+                            JSONArray itemsArray = obj.getJSONArray("items");
+                            Log.d("Items Array", itemsArray.toString());
+                            for (int i = 0; i < itemsArray.length(); i++) {
+                                JSONObject itemsObj = itemsArray.getJSONObject(i);
+                                JSONObject readingsObj = itemsObj.getJSONObject("readings");
+                                for(int k = 0; k < readingsObj.length(); k++)
+                                {
+                                    JSONObject psiObject = readingsObj.getJSONObject("psi_twenty_four_hourly");
+//                                    Double n_psi = psiObject.getDouble("north");
+//                                    Double s_psi = psiObject.getDouble("south");
+//                                    Double e_psi = psiObject.getDouble("east");
+//                                    Double w_psi = psiObject.getDouble("west");
+//                                    Double cen_psi = psiObject.getDouble("central");
+                                    Double nat_psi = psiObject.getDouble("national");
+                                    psiList.add(nat_psi);
+                                }
+                            }
+                            currentpsi = psiList.get(psiList.size()-1);
+                            getData(currentuvi,currentpsi);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley", error.toString());
+                    }
+                });
+
+        //creating a request queue
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+
+        //adding the string request to request queue
+        requestQueue.add(stringRequest);
     }
 }

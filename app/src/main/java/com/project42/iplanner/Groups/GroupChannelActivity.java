@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.project42.iplanner.Chats.ChatFragment;
 import com.project42.iplanner.R;
 
 

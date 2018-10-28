@@ -1,7 +1,6 @@
 package com.project42.iplanner.POIs;
 
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.media.Rating;
 import android.os.Bundle;
@@ -15,18 +14,8 @@ import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
-import com.project42.iplanner.AppConfig;
 import com.project42.iplanner.Itineraries.ItineraryDetailsActivity;
 import com.project42.iplanner.R;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,7 +23,6 @@ import org.json.JSONObject;
 public class POIDetailsFragment extends Fragment {
 
 
-    private static final String URL_BOOKMARK = AppConfig.URL_ADDBOOKMARKS;
 
     public POIDetailsFragment() {
         // Required empty public constructor
@@ -57,9 +45,9 @@ public class POIDetailsFragment extends Fragment {
         TextView close = (TextView) view.findViewById(R.id.poi_details_end);
         TextView days = (TextView) view.findViewById(R.id.poi_details_openingdays);
 
-        String poiname,add,des,start,end,day;
-        Double cst,rate;
-        Integer poiid,post;
+        String poiname, add, des, start, end, day;
+        Double cst, rate;
+        Integer poiid, post;
         poiid = getArguments().getInt("selected_poi_id");
         poiname = getArguments().getString("selected_poi_name");
         add = getArguments().getString("selected_poi_address");
@@ -71,25 +59,24 @@ public class POIDetailsFragment extends Fragment {
         end = getArguments().getString("selected_poi_endhrs");
         day = getArguments().getString("selected_poi_openingdays");
 
-        float ratingvalue  = rate.floatValue();
+        float ratingvalue = rate.floatValue();
 
         id.setText(poiid.toString());
         name.setText(poiname);
         address.setText(add);
         postal.setText("Singapore " + post.toString());
-        cost.setText("S$"+cst.toString());
-        if(des.equals("No Description"))
-        {
+        cost.setText("S$" + cst.toString());
+        if (des.equals("No Description")) {
             desc.setText("No Description");
-        }
-        else
-        {
+        } else {
             desc.setText(des);
         }
         open.setText("Opens at " + start);
         close.setText("Closes at " + end);
         days.setText(day);
         rating.setRating(ratingvalue);
+
+
 
         FloatingActionButton sendBtn = (FloatingActionButton) view.findViewById(R.id.floatingActionButtonAdd);
 
@@ -100,12 +87,12 @@ public class POIDetailsFragment extends Fragment {
             }
         });
 
-        FloatingActionButton BookmarkBtn = (FloatingActionButton) view.findViewById(R.id.floatingActionButtonBookmark);
+        FloatingActionButton bookmarkBtn = (FloatingActionButton) view.findViewById(R.id.floatingActionButtonBookmark);
 
-        BookmarkBtn.setOnClickListener(new View.OnClickListener() {
+        bookmarkBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addBookmark();
+                //bookmarkData();
             }
         });
 
@@ -143,50 +130,4 @@ public class POIDetailsFragment extends Fragment {
         //START ACTIVITY
         getActivity().startActivity(i);
     }
-
-    private void addBookmark() {
-//        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-//        progressDialog.setMessage("Loading...");
-//        progressDialog.show();
-//        final JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(URL_BOOKMARK, new Response.Listener<JSONArray>() {
-//            @Override
-//            public void onResponse(JSONArray response) {
-//                try {
-//                    for (int i = 0; i < response.length(); i++)
-//                    {
-//                        JSONObject poi = response.getJSONObject(i);
-//                        Integer id = poi.getInt("locationID");
-//                        String name = poi.getString("locationName");
-//                        String address = poi.getString("address");
-//                        Integer postalcode = poi.getInt("postalCode");
-//                        Double rating = poi.getDouble("rating");
-//                        Double cost = poi.getDouble("cost");
-//                        String startHrs = poi.getString("startHrs");
-//                        String endHrs = poi.getString("endHrs");
-//                        String open = poi.getString("openingDays");
-//                        String desc = poi.getString("description");
-//                        Double uvi = poi.getDouble("UVI");
-//                        Double psi = poi.getDouble("PSI");
-//                        POI poiObject = new POI(id,name,address,postalcode,rating,cost,startHrs,endHrs,open,desc,uvi,psi);
-//                        poiList.add(poiObject);
-//                        Log.d("JSON Data", poi.toString());
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                    progressDialog.dismiss();
-//                }
-//                adapter.notifyDataSetChanged();
-//                progressDialog.dismiss();
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.e("Volley", error.toString());
-//                progressDialog.dismiss();
-//            }
-//        });
-//        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-//        requestQueue.add(jsonArrayRequest);
-    }
-
 }

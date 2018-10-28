@@ -6,14 +6,16 @@ $db = new DB_Functions();
 // json response array
 $response = array("error" => FALSE);
 
-if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['password'])) {
+if (isset($_POST['username']) && isset($_POST['password'])) {
 
+	//echo $_POST['username'];
+	//echo $_POST['password'];
+	
     // receiving the post params
-    $name = $_POST['username'];
-    $email = $_POST['email'];
+    $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // check if user is already existed with the same email
+    // check if user is already existed with the same username
     if ($db->isUserExisted($username)) {
         // user already existed
         $response["error"] = TRUE;
@@ -21,12 +23,11 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['passwor
         echo json_encode($response);
     } else {
         // create a new user
-        $user = $db->storeUser($name, $email, $password);
+        $user = $db->storeUser($username, $password);
         if ($user) {
             // user stored successfully
             $response["error"] = FALSE;
             $response["user"]["username"] = $user["username"];
-            $response["user"]["email"] = $user["email"];
             echo json_encode($response);
         } else {
             // user failed to store
@@ -37,7 +38,7 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['passwor
     }
 } else {
     $response["error"] = TRUE;
-    $response["error_msg"] = "Required parameters (name, email or password) is missing!";
+    $response["error_msg"] = "Required parameters (username or password) is missing!";
     echo json_encode($response);
 }
 ?>

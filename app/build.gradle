@@ -23,6 +23,10 @@ android {
     }
     useLibrary 'org.apache.http.legacy'
     buildToolsVersion '28.0.3'
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {

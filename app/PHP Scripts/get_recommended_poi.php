@@ -1,8 +1,5 @@
 <?php
 
-// array for JSON response
-$response = array();
-
 // include db connect class
 require_once(__DIR__.'/include/DB_Connect.php');
 
@@ -10,49 +7,34 @@ require_once(__DIR__.'/include/DB_Connect.php');
 $db = new DB_CONNECT();
 $con = mysqli_connect(DB_SERVER, DB_USER, DB_PASSWORD) or die(mysqli_error($con));
 
+$sql = "SELECT * FROM id7469667_iplanner.poi WHERE UVI < 9 AND PSI < 100";
+
+$res = mysqli_query($con, $sql);
+
 // Get locations from poi table
-$result = mysqli_query($con, "SELECT * FROM id7469667_iplanner.poi WHERE UVI < 9 AND PSI < 100");
+$result = array();
 
-if($result == true)
+while($row = mysqli_fetch_array($res))
 {
-    $response["poi"] = array();
-    foreach($result as $row)
-    {
-        $poi = array();
+    array_push($result, 
+    array('locationID' => $row[0],
+    'locationName' => $row[1],
+    'address' => $row[2],
+    'postalCode' => $row[3],
+    'EvnType' => $row[4],
+    'rating' => $row[5],
+    'cost' => $row[6],
+    'startHrs' => $row[7],
+    'endHrs' => $row[8],
+    'openingDays' => $row[9],
+    'description' => $row[10],
+    'WeatherType' => $row[11],
+    'UVI' => $row[12],
+    'PSI' => $row[13]));
 
-        $poi["locationID"] = $row["location_id"];
-        $poi["locationName"] = $row["location_name"];
-        $poi["address"] = $row["location_address"];
-        $poi["postalCode"] = $row["location_postalcode"];
-        //$poi["EvnType"] = $row["evn_type"];
-        $poi["rating"] = $row["location_rating"];
-        $poi["cost"] = $row["location_cost"];
-        $poi["startHrs"] = $row["start_hrs"];
-        $poi["endHrs"] = $row["end_hrs"];
-        $poi["openingDays"] = $row["opening_days"];
-        $poi["description"] = $row["location_desc"];
-        //$poi["WeatherType"] = $row["weather_type"];
-        $poi["UVI"] = $row["UVI"];
-        $poi["PSI"] = $row["PSI"];
-
-        array_push($response["poi"], $poi);
-    }
-    // success
-    $response["success"] = 1;
-
-    // echoing JSON response
-    echo json_encode($response);
 }
 
-else
-{
-    // no poi found
-    $response["success"] = 0;
-    $response["message"] = "No locations found";
-
-    // echo no users JSON
-    echo json_encode($response);
-
-    echo mysqli_error($con);
-}
+// echoing JSON response
+echo json_encode($result);
+mysqli_close($con);
 ?>

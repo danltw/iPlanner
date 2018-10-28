@@ -85,7 +85,7 @@ class Group
 	}
 	
 	function addGroup($groupName, $memberIDs, $adminIDs) {
-		$query = "INSERT INTO groups (group_name, member_ids, admin_ids) VALUES (?,?,?)";
+		$query = "INSERT INTO id7469667_iplanner.group (group_name, member_ids, admin_ids) VALUES (?,?,?)";
 		if ($stmt = $this->con->prepare($query)) {
 		
 			$stmt->bind_param('sss', $groupName, $memberIDs, $adminIDs);
@@ -106,11 +106,11 @@ class Group
 	function getGroups($groupName) {
 		
 		if (isset($groupName)) {
-			$query = "SELECT * FROM groups WHERE group_name LIKE ?";
+			$query = "SELECT * FROM id7469667_iplanner.group WHERE group_name LIKE ?";
 			$param = "%{$groupName}%";
 		}
 		else {
-			$query = "SELECT * FROM groups";
+			$query = "SELECT * FROM id7469667_iplanner.group";
 		}
 		
 		if ($stmt = $this->con->prepare($query)) {
@@ -145,7 +145,7 @@ class Group
 	}
 	
 	function deleteGroup($groupID) {
-		$query = "DELETE FROM groups WHERE group_id = ?";
+		$query = "DELETE FROM id7469667_iplanner.group WHERE group_id = ?";
 		$stmt = $this->con->prepare($query);
 		$stmt->bind_param("s", $groupID);
 		if ($stmt->execute()) 
@@ -154,7 +154,7 @@ class Group
 	}
 	
 	function updateGroup($groupID, $groupName, $memberIDs, $adminIDs) {
-		$query = "UPDATE groups SET member_ids = ?, admin_ids = ? WHERE group_id = ? AND group_name = ?";
+		$query = "UPDATE id7469667_iplanner.group SET member_ids = ?, admin_ids = ? WHERE group_id = ? AND group_name = ?";
 		$stmt = $this->con->prepare($query);
 		$stmt->bind_param("ssis", $memberIDs, $adminIDs, $groupID, $groupName);
 		$stmt->execute();

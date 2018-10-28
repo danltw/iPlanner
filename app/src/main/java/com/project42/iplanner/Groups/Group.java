@@ -10,19 +10,19 @@ public class Group {
 
     private String groupName;
 
-    private ArrayList<Integer> members;
+    private ArrayList<Integer> memberIDs;
 
-    private ArrayList<Integer> admins;
+    private ArrayList<Integer> adminIDs;
 
     public Group() {
 
     }
 
-    public Group(int groupID, String groupName, ArrayList<Integer> members, ArrayList<Integer> admins) {
+    public Group(int groupID, String groupName, ArrayList<Integer> members, ArrayList<Integer> adminIDs) {
         this.groupID = groupID;
         this.groupName = groupName;
-        this.members = members;
-        this.admins = admins;
+        this.memberIDs = memberIDs;
+        this.adminIDs = adminIDs;
     }
 
     public int getGroupID() {
@@ -41,19 +41,19 @@ public class Group {
         this.groupName = groupName;
     }
 
-    public ArrayList<Integer> getMembers() {
-        return members;
+    public ArrayList<Integer> getMemberIDs() {
+        return memberIDs;
     }
 
-    public void setMembers(ArrayList<Integer> members) {
-        this.members = members;
+    public void setMemberIDs(ArrayList<Integer> memberIDs) {
+        this.memberIDs = memberIDs;
     }
 
-    public ArrayList<Integer> getAdmins() {
-        return admins;
+    public ArrayList<Integer> getAdminIDs() {
+        return adminIDs;
     }
 
-    public void setAdmins(ArrayList<Integer> admins) {
-        this.admins = admins;
+    public void setAdmins(ArrayList<Integer> adminIDs) {
+        this.adminIDs = adminIDs;
     }
 }

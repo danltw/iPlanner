@@ -51,7 +51,6 @@ public class CreateGroupNameFragment extends Fragment {
                 }
                 else {
                     passGrpName(et_newGrpName.getText().toString());
-                    getActivity().getSupportFragmentManager().popBackStack();
                 }
             }
         });
