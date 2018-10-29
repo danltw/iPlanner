@@ -104,7 +104,9 @@ public class RegisterActivity extends Activity {
         final String password = ((EditText)findViewById(R.id.login_password)).getText().toString();
 
         if (!username.isEmpty() && !password.isEmpty()) {
-            registerUser(username, password);
+            //registerUser(username, password);
+            AccountController ac = new AccountController(username, password, RegisterActivity.this);
+            ac.regUser(username, password, "blabal");
         } else {
             Toast.makeText(getApplicationContext(),
                     "Please enter your details!", Toast.LENGTH_LONG)
