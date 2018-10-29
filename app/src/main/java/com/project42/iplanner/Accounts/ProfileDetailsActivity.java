@@ -27,8 +27,8 @@ public class ProfileDetailsActivity extends AppCompatActivity{
                 Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
-                Intent intent = new Intent(ProfileDetailsActivity.this, LoginActivity.class);
-                startActivity(intent);
+                /*Intent intent = new Intent(ProfileDetailsActivity.this, LoginActivity.class);
+                startActivity(intent);*/
             }
         });
     }

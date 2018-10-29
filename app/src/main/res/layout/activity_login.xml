@@ -7,10 +7,17 @@
     tools:context=".Accounts.LoginActivity">
 
     <FrameLayout
-            android:id="@+id/container_test"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-    </FrameLayout>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@drawable/mbs_background"
+        android:backgroundTint="#8CFFFFFF"
+        android:backgroundTintMode="src_over">
 
+    <FrameLayout
+        android:id="@+id/login_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    </FrameLayout>
 </android.support.constraint.ConstraintLayout>
