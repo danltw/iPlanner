@@ -1,6 +1,7 @@
 package com.project42.iplanner.POIs;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.media.Rating;
 import android.os.Bundle;
@@ -13,9 +14,24 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.project42.iplanner.AppConfig;
 import com.project42.iplanner.Itineraries.ItineraryDetailsActivity;
 import com.project42.iplanner.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,9 +61,10 @@ public class POIDetailsFragment extends Fragment {
         TextView close = (TextView) view.findViewById(R.id.poi_details_end);
         TextView days = (TextView) view.findViewById(R.id.poi_details_openingdays);
 
-        String poiname, add, des, start, end, day;
+        String username,poiname, add, des, start, end, day;
         Double cst, rate;
         Integer poiid, post;
+        username = "1";
         poiid = getArguments().getInt("selected_poi_id");
         poiname = getArguments().getString("selected_poi_name");
         add = getArguments().getString("selected_poi_address");
@@ -83,6 +100,7 @@ public class POIDetailsFragment extends Fragment {
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 sendData();
             }
         });
@@ -92,7 +110,8 @@ public class POIDetailsFragment extends Fragment {
         bookmarkBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //bookmarkData();
+
+                bookmarkData(username,poiid.toString(),poiname,add,des);
             }
         });
 
@@ -129,5 +148,41 @@ public class POIDetailsFragment extends Fragment {
 
         //START ACTIVITY
         getActivity().startActivity(i);
+    }
+
+    private void bookmarkData(String userId, String poiId,String loc_name, String loc_address,String loc_desc) {
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, AppConfig.URL_ADDBOOKMARKS, new Response.Listener<String>()
+        {
+            @Override
+            public void onResponse(String response)
+            {
+                Toast.makeText(getActivity(), "Bookmark Added", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Volley", error.toString());
+                Toast.makeText(getActivity(), "Error adding bookmark, please try again", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
+        }){
+            @Override
+            protected Map<String,String> getParams()
+            {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("uid", userId);
+                params.put("pid", poiId);
+                params.put("lname", loc_name);
+                params.put("ladd", loc_address);
+                params.put("ldesc", loc_desc);
+                return params;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
     }
 }
