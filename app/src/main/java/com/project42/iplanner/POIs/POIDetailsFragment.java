@@ -25,6 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.project42.iplanner.AppConfig;
 import com.project42.iplanner.Itineraries.ItineraryDetailsActivity;
 import com.project42.iplanner.R;
+import com.project42.iplanner.Utilities.SharedManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,7 +39,7 @@ import java.util.Map;
  */
 public class POIDetailsFragment extends Fragment {
 
-
+    private POIController poiController;
 
     public POIDetailsFragment() {
         // Required empty public constructor
@@ -64,7 +65,7 @@ public class POIDetailsFragment extends Fragment {
         String username,poiname, add, des, start, end, day;
         Double cst, rate;
         Integer poiid, post;
-        username = "1";
+        username = SharedManager.getInstance(getActivity()).getUser();
         poiid = getArguments().getInt("selected_poi_id");
         poiname = getArguments().getString("selected_poi_name");
         add = getArguments().getString("selected_poi_address");
@@ -110,8 +111,8 @@ public class POIDetailsFragment extends Fragment {
         bookmarkBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                bookmarkData(username,poiid.toString(),poiname,add,des);
+                poiController = new POIController().getInstance(getContext());
+                poiController.bookmarkData(username,poiid.toString(),poiname,add,des);
             }
         });
 
@@ -148,41 +149,5 @@ public class POIDetailsFragment extends Fragment {
 
         //START ACTIVITY
         getActivity().startActivity(i);
-    }
-
-    private void bookmarkData(String userId, String poiId,String loc_name, String loc_address,String loc_desc) {
-        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, AppConfig.URL_ADDBOOKMARKS, new Response.Listener<String>()
-        {
-            @Override
-            public void onResponse(String response)
-            {
-                Toast.makeText(getActivity(), "Bookmark Added", Toast.LENGTH_SHORT).show();
-                progressDialog.dismiss();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("Volley", error.toString());
-                Toast.makeText(getActivity(), "Error adding bookmark, please try again", Toast.LENGTH_SHORT).show();
-                progressDialog.dismiss();
-            }
-        }){
-            @Override
-            protected Map<String,String> getParams()
-            {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("uid", userId);
-                params.put("pid", poiId);
-                params.put("lname", loc_name);
-                params.put("ladd", loc_address);
-                params.put("ldesc", loc_desc);
-                return params;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        requestQueue.add(stringRequest);
     }
 }
