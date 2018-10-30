@@ -16,6 +16,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.project42.iplanner.AppConfig;
@@ -39,8 +40,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,9 +56,7 @@ public class ItineraryDetailsActivity extends AppCompatActivity  implements
         View.OnClickListener{
 
     Spinner spinner;
-    ArrayList<String> CountryName;
-
-
+    ArrayList<String> itineraryName;
     private TextView idTxt,nameTxt;
     Button btnDatePicker,btnSubmit;
     EditText txtDate;
@@ -64,21 +67,19 @@ public class ItineraryDetailsActivity extends AppCompatActivity  implements
     int currentHour;
     int currentMinute;
     String amPm;
+    TextView serverResp;
 
         // Creating Volley RequestQueue.
         RequestQueue requestQueue;
 
         // Create string variable to hold the EditText Value.
-        String FirstNameHolder, LastNameHolder, EmailHolder ;
+        String ItineraryNameHolder, POIidHolder, GroupIdHolder, TimeHolder,DateHolder,UserIdHolder;
 
         // Creating Progress dialog.
         ProgressDialog progressDialog;
-
+        static final String REQ_TAG = "http://project42-iplanner.000webhostapp.com/postItinerary.php";
         // Storing server url into String variable.
         String HttpUrl = "http://project42-iplanner.000webhostapp.com/postItinerary.php";
-
-
-
 
 
     @Override
@@ -94,7 +95,7 @@ public class ItineraryDetailsActivity extends AppCompatActivity  implements
         nameTxt=(TextView) findViewById(R.id.nameTxt);
         btnSubmit=(Button)findViewById(R.id.submitBtn);
 
-
+        serverResp = (TextView)findViewById(R.id.server_resp);
         // Assigning ID's to Button.
         btnSubmit = (Button) findViewById(R.id.submitBtn);
 
@@ -121,7 +122,7 @@ public class ItineraryDetailsActivity extends AppCompatActivity  implements
                         } else {
                             amPm = "AM";
                         }
-                        chooseTime.setText(String.format("%02d:%02d", hourOfDay, minutes) + amPm);
+                        chooseTime.setText(String.format("%02d:%02d", hourOfDay, minutes)+ ":" +"00" );
                     }
                 }, currentHour, currentMinute, false);
 
@@ -130,7 +131,7 @@ public class ItineraryDetailsActivity extends AppCompatActivity  implements
         });
 
 
-        CountryName=new ArrayList<>();
+        itineraryName=new ArrayList<>();
         spinner=(Spinner)findViewById(R.id.country_Name);
         loadSpinnerData(AppConfig.URL_ITINERARYSPINNER);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -147,75 +148,138 @@ public class ItineraryDetailsActivity extends AppCompatActivity  implements
 
 
 
+
+
         // Adding click listener to button.
         btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
+            TextView serverResp;
             public void onClick(View view) {
 
-                // Showing progress dialog at user registration time.
-                progressDialog.setMessage("Please Wait, We are Inserting Your Data on Server");
-                progressDialog.show();
+                serverResp = (TextView)findViewById(R.id.server_resp);
+                TimeHolder = chooseTime.getText().toString().trim();
+                ItineraryNameHolder= spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString();
+                POIidHolder = idTxt.getText().toString().trim();
+                GroupIdHolder = idTxt.getText().toString().trim();
+                DateHolder=txtDate.getText().toString().trim();
+                UserIdHolder = idTxt.getText().toString().trim();
+                                             JSONObject json = new JSONObject();
+                                             try {
 
-                // Calling method to get value from EditText.
-                GetValueFromEditText();
+                                                 json.put("user_id",UserIdHolder);
+                                                 json.put("itinerary_name",ItineraryNameHolder);
+                                                 json.put("POI_id", POIidHolder);
+                                                 json.put("group_id", GroupIdHolder);
+                                                 json.put("created", TimeHolder);
+                                                 json.put("visit_date", DateHolder);
 
-                // Creating string request with post method.
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpUrl,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String ServerResponse) {
 
-                                // Hiding the progress dialog after all task complete.
-                                progressDialog.dismiss();
+                                             } catch (JSONException e) {
+                                                 e.printStackTrace();
+                                             }
 
-                                // Showing response message coming from server.
-                                Toast.makeText(ItineraryDetailsActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError volleyError) {
 
-                                // Hiding the progress dialog after all task complete.
-                                progressDialog.dismiss();
 
-                                // Showing error message if something goes wrong.
-                                Toast.makeText(ItineraryDetailsActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
-                            }
-                        }) {
-                    @Override
-                    protected Map<String, String> getParams() {
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, HttpUrl, json,
+                                                     new Response.Listener<JSONObject>() {
+                                                         @Override
+                                                         public void onResponse(JSONObject response) {
+                                                             serverResp.setText("String Response : "+ response.toString());
+                                                         }
+                                                     }, new Response.ErrorListener() {
+                                                 @Override
+                                                 public void onErrorResponse(VolleyError error) {
 
-                        // Creating Map String Params.
-                        Map<String, String> params = new HashMap<String, String>();
+                                                     serverResp.setText("Error getting response");
+                                                 }
 
-                        // Adding All values to Params.
-                        params.put("itinerary_name", FirstNameHolder);
-                      //  params.put("POI_id", LastNameHolder);
+                                             });
+                                             jsonObjectRequest.setTag(REQ_TAG);
+                                             requestQueue.add(jsonObjectRequest);
+                                         }
 
-                        return params;
-                    }
-
-                };
-
-                // Creating RequestQueue.
-                RequestQueue requestQueue = Volley.newRequestQueue(ItineraryDetailsActivity.this);
-
-                // Adding the StringRequest object into requestQueue.
-                requestQueue.add(stringRequest);
-
-            }
-        });
+//            @Override
+//            public void onClick(View view) {
+//
+//                // Showing progress dialog at user registration time.
+//                progressDialog.setMessage("Please Wait, We are Inserting Your Data on Server");
+//                progressDialog.show();
+//
+//                // Calling method to get value from EditText.
+//                try {
+//                    GetValueFromEditText();
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                // Creating string request with post method.
+//                StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpUrl,
+//                        new Response.Listener<String>() {
+//                            @Override
+//                            public void onResponse(String ServerResponse) {
+//
+//                                // Hiding the progress dialog after all task complete.
+//                                progressDialog.dismiss();
+//
+//                                // Showing response message coming from server.
+//                                Toast.makeText(ItineraryDetailsActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
+//                            }
+//                        },
+//                        new Response.ErrorListener() {
+//                            @Override
+//                            public void onErrorResponse(VolleyError volleyError) {
+//
+//                                // Hiding the progress dialog after all task complete.
+//                                progressDialog.dismiss();
+//
+//                                // Showing error message if something goes wrong.
+//                                Toast.makeText(ItineraryDetailsActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+//                            }
+//                        }) {
+//                    @Override
+//                    protected Map<String, String> getParams() {
+//
+//                        // Creating Map String Params.
+//                        Map<String, String> params = new HashMap<String, String>();
+//
+//                        // Adding All values to Params.
+//                        params.put("itinerary_name", ItineraryNameHolder);
+//                        params.put("POI_id", POIidHolder);
+//                        params.put("group_id", GroupIdHolder);
+//                        params.put("created", TimeHolder);
+//                        params.put("visit_date", DateHolder);
+//                        params.put("user_id", UserIdHolder);
+//                        return params;
+//                    }
+//
+//                };
+//
+//                // Creating RequestQueue.
+//                RequestQueue requestQueue = Volley.newRequestQueue(ItineraryDetailsActivity.this);
+//
+//                // Adding the StringRequest object into requestQueue.
+//                requestQueue.add(stringRequest);
+//
+//            }
+  });
     }
 
+
+
+
     // Creating method to get value from EditText.
-    public void GetValueFromEditText(){
+    public void GetValueFromEditText() throws ParseException {
 
+        TimeHolder = chooseTime.getText().toString().trim();
+        //DateFormat formatter = new SimpleDateFormat("hh:mm:ss a");
+        //Date time = formatter.parse(TimeHolder);
+        ItineraryNameHolder= spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString();
+        POIidHolder = idTxt.getText().toString().trim();
+        GroupIdHolder = idTxt.getText().toString().trim();
 
-        FirstNameHolder = spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString();
-      //  LastNameHolder = idTxt.getText().toString().trim();
-
-
+        DateHolder=txtDate.getText().toString().trim();
+        //DateFormat Dateformatter = new SimpleDateFormat("yyyy-mm-dd");
+        //Date date = Dateformatter.parse(TimeHolder);
+        UserIdHolder = idTxt.getText().toString().trim();
     }
 
         @Override
@@ -237,7 +301,7 @@ public class ItineraryDetailsActivity extends AppCompatActivity  implements
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
-                                txtDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                                txtDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
 
                             }
                         }, mYear, mMonth, mDay);
@@ -305,10 +369,10 @@ public class ItineraryDetailsActivity extends AppCompatActivity  implements
                         for(int i=0;i<jsonarray.length();i++){
                             JSONObject jsonObject1=jsonarray.getJSONObject(i);
                             String country=jsonObject1.getString("itinerary_name");
-                            CountryName.add(country);
+                            itineraryName.add(country);
                         }
 
-                    spinner.setAdapter(new ArrayAdapter<String>(ItineraryDetailsActivity.this, android.R.layout.simple_spinner_dropdown_item, CountryName));
+                    spinner.setAdapter(new ArrayAdapter<String>(ItineraryDetailsActivity.this, android.R.layout.simple_spinner_dropdown_item, itineraryName));
                 }catch (JSONException e){e.printStackTrace();}
             }
         }, new Response.ErrorListener() {
