@@ -2,8 +2,10 @@ package com.project42.iplanner.Accounts;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.service.autofill.RegexValidator;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,12 +70,19 @@ public class RegisterFragment extends Fragment {
                     Toast.makeText(getActivity(), "Passwords do not match", Toast.LENGTH_LONG).show();
                 else {
                     AccountController ac = new AccountController(username, password, getActivity());
-                    if (!TextUtils.isEmpty(et_email.getText().toString())) {
-                        email = et_email.getText().toString();
-                        ac.regUser(username, password, email);
+                    String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])(?=\\S+$).{8,}";
+                    if (!password.matches(pattern)) {
+                        Toast.makeText(getActivity(), "Password does not meet requirements", Toast.LENGTH_LONG).show();
                     }
-                    else
-                        ac.regUser(username, password, email);
+                    /*Log.d("REGEX CHECK", Boolean.toString(password.matches(pattern)));
+                    Log.d("Password", password);*/
+                    else {
+                        if (!TextUtils.isEmpty(et_email.getText().toString())) {
+                            email = et_email.getText().toString();
+                            ac.regUser(username, password, email);
+                        } else
+                            ac.regUser(username, password, email);
+                    }
                 }
             }
         });

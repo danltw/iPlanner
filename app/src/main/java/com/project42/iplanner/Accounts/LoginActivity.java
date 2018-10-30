@@ -44,9 +44,14 @@ public class LoginActivity extends AppCompatActivity implements AccountControlle
     }
 
     @Override
-    public void onRegResponse() {
-        Toast.makeText(LoginActivity.this, "Successfully Registered!", Toast.LENGTH_LONG).show();
-        getSupportFragmentManager().popBackStack();
+    public void onRegResponse(String response) {
+        if (response != null) {
+            Toast.makeText(LoginActivity.this, response, Toast.LENGTH_LONG).show();
+        }
+        else {
+            Toast.makeText(LoginActivity.this, "Successfully Registered!", Toast.LENGTH_LONG).show();
+            getSupportFragmentManager().popBackStack();
+        }
     }
 
     @Override

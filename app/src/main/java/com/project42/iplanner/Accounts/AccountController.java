@@ -64,7 +64,7 @@ public class AccountController extends AppCompatActivity {
     OnCallbackResponse callback;
 
     interface OnCallbackResponse {
-        public void onRegResponse();
+        public void onRegResponse(String response);
         public void onLoginResponse(String username);
     }
 
@@ -166,11 +166,12 @@ public class AccountController extends AppCompatActivity {
                     boolean error = errResponse.has("error");
                     if (error) {
                         Log.d("Register Error: ", errResponse.getString("error"));
+                        callback.onRegResponse(errResponse.get("error").toString());
                         return;
                     }
                     else {
                         // Direct user to home acitivity screen
-                        callback.onRegResponse();
+                        callback.onRegResponse(null);
                     }
 
                 } catch (JSONException e) {
