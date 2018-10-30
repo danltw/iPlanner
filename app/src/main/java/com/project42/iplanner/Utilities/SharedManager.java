@@ -15,11 +15,14 @@ public class SharedManager {
     private SharedManager() {
     }
 
-    public static SharedManager getInstance(@Nullable Context context) {
+    public void initialize(Context context) {
+        if (context !=null)
+            mCtx = context;
+    }
+
+    public static SharedManager getInstance() {
         if (mInstance == null)
             mInstance = new SharedManager();
-        if (context != null)
-            mCtx = context;
         return mInstance;
     }
 
