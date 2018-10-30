@@ -179,7 +179,7 @@ public class InviteMemberActivity extends AppCompatActivity{
                                     admins.add(u.getUserId());
 
                                 // update current group details in database
-                                updateGroup(groupUrl, members, admins);
+                                GroupController.getInstance(InviteMemberActivity.this).updateGroup(groupUrl, members, admins);
                             }
                         });
                         finish();
@@ -187,71 +187,6 @@ public class InviteMemberActivity extends AppCompatActivity{
                 });
             }
         });
-    }
-
-    // Update a single group record
-    public void updateGroup(final String channelUrl, final ArrayList<String> memberNames, final ArrayList<String> adminNames) {
-        // Tag used to cancel the request
-        String tag_string_req = "req_update_group";
-
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                AppConfig.URL_GROUP, new Response.Listener<String>() {
-
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "Group Update Response: " + response.toString());
-
-                // Process the JSON
-                try {
-                    JSONArray jsonResponse = new JSONArray(response);
-
-                    // If some errors occurred, return
-                    JSONObject errResponse = jsonResponse.getJSONObject(0);
-                    boolean error = errResponse.has("error");
-                    if (error) {
-                        Log.d("Group Update Error: ", errResponse.getString("error"));
-                        return;
-                    }
-                    else {
-                        // Todo: If successful: display message to inform user that group is updated
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Group Update Error: " + error.getMessage());
-            }
-        }) {
-            // method to pass user input to php page
-            @Override
-            protected Map<String, String> getParams() {
-                // Posting params to php page
-                Map<String, String> params = new HashMap<String, String>();
-                if (!TextUtils.isEmpty(channelUrl) && memberNames != null &&
-                        adminNames != null) {
-                    try {
-                        params.put("method", "updateGroup");
-                        params.put("grpUrl", channelUrl);
-                        params.put("memberNames", ListUtils.getStrNames(memberNames));
-                        params.put("adminNames", ListUtils.getStrNames(adminNames));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                return params;
-            }
-
-        };
-
-        // Adding request to request queue
-        RequestQueue queue = Volley.newRequestQueue(InviteMemberActivity.this);
-        queue.add(strReq);
     }
 
     /**

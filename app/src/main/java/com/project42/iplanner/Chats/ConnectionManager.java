@@ -7,7 +7,7 @@ import com.sendbird.android.User;
 
 public class ConnectionManager {
 
-    private static String user = SharedManager.getInstance(null).getUser();
+    private static String user = SharedManager.getInstance().getUser();
 
         public static void login(String userId, final SendBird.ConnectHandler handler) {
             SendBird.connect(user, new SendBird.ConnectHandler() {

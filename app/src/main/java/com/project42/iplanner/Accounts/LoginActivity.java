@@ -14,6 +14,10 @@ public class LoginActivity extends AppCompatActivity implements AccountControlle
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Initialize SharedManager
+        SharedManager.getInstance().initialize(this.getApplicationContext());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -34,7 +38,7 @@ public class LoginActivity extends AppCompatActivity implements AccountControlle
     }
 
     private boolean isUserLoggedIn() {
-        if (SharedManager.getInstance(LoginActivity.this).getUser() != null)
+        if (SharedManager.getInstance().getUser() != null)
             return true;
         return false;
     }
@@ -52,7 +56,7 @@ public class LoginActivity extends AppCompatActivity implements AccountControlle
             Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_LONG).show();
         }
         else {
-            SharedManager.getInstance(LoginActivity.this).setUser(username); // save user into SP
+            SharedManager.getInstance().setUser(username); // save user into SP
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(intent);
             finish();
