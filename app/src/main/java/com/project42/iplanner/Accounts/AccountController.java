@@ -97,24 +97,27 @@ public class AccountController extends AppCompatActivity {
                     JSONObject errResponse = jsonResponse.getJSONObject(0);
                     boolean error = errResponse.has("error");
                     if (error) {
+                        hideDialog();
                         Log.d("Login Error: ", errResponse.getString("error"));
                         callback.onLoginResponse("error");
                         return;
                     }
                     else {
+                        hideDialog();
                         // Direct user to home acitivity screen
                         callback.onLoginResponse(username);
                     }
 
                 } catch (JSONException e) {
+                    hideDialog();
                     e.printStackTrace();
                 }
-                hideDialog();
             }
         }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                hideDialog();
                 Log.e(TAG, "Login Error: " + error.getMessage());
             }
         }) {

@@ -2,6 +2,7 @@ package com.project42.iplanner.Utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -14,10 +15,11 @@ public class SharedManager {
     private SharedManager() {
     }
 
-    public static SharedManager getInstance(Context context) {
+    public static SharedManager getInstance(@Nullable Context context) {
         if (mInstance == null)
             mInstance = new SharedManager();
-        mCtx = context;
+        if (context != null)
+            mCtx = context;
         return mInstance;
     }
 

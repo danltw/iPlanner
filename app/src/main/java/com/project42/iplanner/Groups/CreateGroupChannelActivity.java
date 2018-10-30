@@ -206,8 +206,8 @@ public class CreateGroupChannelActivity extends AppCompatActivity implements
                     .addUserIds(userIds)
                     .setOperatorUserIds(admins)
                     .setName(grpName)
-                    .setCoverImage(null)
-                    .setCoverUrl(null)
+                    //.setCoverImage(null)
+                    //.setCoverUrl(null)
                     .setData(null)
                     .setCustomType(null);
         }
@@ -222,8 +222,8 @@ public class CreateGroupChannelActivity extends AppCompatActivity implements
                     .addUserIds(userIds)
                     .setOperatorUserIds(admins)
                     .setName(null)
-                    .setCoverImage(null)
-                    .setCoverUrl(null)
+                    //.setCoverImage(null)
+                    //.setCoverUrl(null)
                     .setData(null)
                     .setCustomType(null);
         }
