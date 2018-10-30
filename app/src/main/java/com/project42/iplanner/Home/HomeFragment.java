@@ -98,6 +98,7 @@ public class HomeFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private DividerItemDecoration dividerItemDecoration;
     private List<POI> poiList;
+    TextView weatherdetails;
     private RecyclerView.Adapter adapter;
     private POIAdapter mAdapter;
     LinearLayout linearLayout1;
@@ -133,6 +134,8 @@ public class HomeFragment extends Fragment {
         currentpsi = 0.0;
         getAllUVI();
         Log.d("Response",poiList.toString());
+
+        weatherdetails = (TextView) view.findViewById(R.id.weather_details);
 
         adapter = new POIAdapter(getActivity(), poiList);
 
@@ -646,6 +649,7 @@ public class HomeFragment extends Fragment {
                                 }
                             }
                             currentpsi = psiList.get(psiList.size()-1);
+                            weatherdetails.setText("Current PSI: " + currentpsi + "\nCurrent UVI: " + currentuvi);
                             getData(currentuvi,currentpsi);
                         } catch (JSONException e) {
                             e.printStackTrace();

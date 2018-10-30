@@ -1,12 +1,13 @@
 package com.project42.iplanner.Chats;
 
+import com.project42.iplanner.Utilities.SharedManager;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
 
 public class ConnectionManager {
 
-    private static String user = "hardcoded user";
+    private static String user = SharedManager.getInstance().getUser();
 
         public static void login(String userId, final SendBird.ConnectHandler handler) {
             SendBird.connect(user, new SendBird.ConnectHandler() {

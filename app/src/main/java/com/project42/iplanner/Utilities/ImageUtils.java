@@ -1,7 +1,9 @@
 package com.project42.iplanner.Utilities;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -13,6 +15,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
+import java.io.File;
 
 public class ImageUtils {
 
@@ -27,6 +30,7 @@ public class ImageUtils {
     public static void displayRoundImageFromUrl(final Context context, final String url, final ImageView imageView) {
         RequestOptions myOptions = new RequestOptions()
                 .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .dontAnimate();
 
         Glide.with(context)

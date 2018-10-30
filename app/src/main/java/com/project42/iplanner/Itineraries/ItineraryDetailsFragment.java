@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 
 import com.project42.iplanner.R;
 
+//import com.project42.iplanner.R;
+
 /**
  * A simple {@link Fragment} subclass.
  */

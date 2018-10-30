@@ -37,6 +37,7 @@
             android:id="@+id/poi_details_cost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="10pt"
             android:layout_gravity="right" />
 
         <RatingBar

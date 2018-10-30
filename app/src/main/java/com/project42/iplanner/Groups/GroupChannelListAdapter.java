@@ -2,6 +2,7 @@ package com.project42.iplanner.Groups;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -9,11 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.project42.iplanner.R;
 import com.project42.iplanner.Utilities.DateUtils;
+import com.project42.iplanner.Utilities.ImageUtils;
 import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
@@ -23,6 +27,7 @@ import com.sendbird.android.GroupChannelListQuery;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.UserMessage;
+import com.stfalcon.multiimageview.MultiImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,6 +130,7 @@ public class GroupChannelListAdapter extends RecyclerView.Adapter<RecyclerView.V
     private class ChannelHolder extends RecyclerView.ViewHolder {
 
         TextView topicText, lastMessageText, unreadCountText, dateText, memberCountText;
+        ImageView grpImg;
         LinearLayout typingIndicatorContainer;
 
         ChannelHolder(View itemView) {
@@ -135,6 +141,8 @@ public class GroupChannelListAdapter extends RecyclerView.Adapter<RecyclerView.V
             unreadCountText = (TextView) itemView.findViewById(R.id.text_group_channel_list_unread_count);
             dateText = (TextView) itemView.findViewById(R.id.text_group_channel_list_date);
             memberCountText = (TextView) itemView.findViewById(R.id.text_group_channel_list_member_count);
+            grpImg = (ImageView) itemView.findViewById(R.id.image_group_channel_list_cover);
+            //grpImg.setShape(MultiImageView.Shape.CIRCLE);
 
             //typingIndicatorContainer = (LinearLayout) itemView.findViewById(R.id.container_group_channel_list_typing_indicator);
         }
@@ -153,18 +161,30 @@ public class GroupChannelListAdapter extends RecyclerView.Adapter<RecyclerView.V
 
             String me = SendBird.getCurrentUser().getUserId();
             if (channel.getMemberCount() == 2) {
-                if (me.equals(channel.getMembers().get(0).getUserId()))
+                if (me.equals(channel.getMembers().get(0).getUserId())) {
                     topicText.setText(channel.getMembers().get(1).getUserId());
+                    if (channel.getCoverUrl() != null) {
+                        ImageUtils.displayRoundImageFromUrl(context, channel.getMembers().get(1).getProfileUrl(), grpImg);
+                    }
+                }
 
-                else if (!me.equals(channel.getMembers().get(0).getUserId()))
-                    topicText.setText(channel.getMembers().get(0).getUserId());
+                else if (!me.equals(channel.getMembers().get(0).getUserId())) {
+                    if (channel.getCoverUrl() != null) {
+                        topicText.setText(channel.getMembers().get(0).getUserId());
+                        ImageUtils.displayRoundImageFromUrl(context, channel.getMembers().get(0).getProfileUrl(), grpImg);
+                    }
+                }
 
-                else
+                else {
                     topicText.setText(me);
+                }
 
                 memberCountText.setVisibility(View.GONE);
             }
             else {
+                if (channel.getCoverUrl() != null) {
+                    ImageUtils.displayRoundImageFromUrl(context, channel.getCoverUrl(), grpImg);
+                }
                 topicText.setText(channel.getName());
                 memberCountText.setText(String.valueOf(channel.getMemberCount()));
                 memberCountText.setVisibility(View.VISIBLE);

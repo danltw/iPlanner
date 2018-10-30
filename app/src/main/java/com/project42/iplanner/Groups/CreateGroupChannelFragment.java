@@ -64,17 +64,6 @@ public class CreateGroupChannelFragment extends Fragment {
                     userIds.add(dummyUser);
                     userIds.add("a1");
 
-                    /*UserListQuery userQuery = SendBird.createUserListQuery();
-                    userQuery.next(new UserListQuery.UserListQueryResultHandler() {
-
-                                       @Override
-                                       public void onResult(List<User> list, SendBirdException e) {
-                                            for (User u : list) {
-                                                userIds.add(u.getUserId());
-                                            }
-                                       }
-                                   });*/
-
                     SendBird.connect(
                             "a1", new SendBird.ConnectHandler() {
                                 @Override
