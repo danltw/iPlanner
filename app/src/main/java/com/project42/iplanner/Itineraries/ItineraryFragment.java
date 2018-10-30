@@ -62,7 +62,7 @@ public class ItineraryFragment extends Fragment {
         recyclerView = view.findViewById(R.id.itinerary_recylcerView);
         itineraryList = new ArrayList<>();
 
-        loadProducts();
+        loadItinerary();
         Log.d("Response",itineraryList.toString());
         adapter = new ItineraryAdapter(getActivity(), itineraryList);
 
@@ -104,7 +104,7 @@ public class ItineraryFragment extends Fragment {
         transaction.addToBackStack(null);
         transaction.commit();
     }
-    private void loadProducts() {
+    private void loadItinerary() {
 
         /*
          * Creating a String Request
