@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment {
 
     // Progress Dialog
     private ProgressDialog pDialog;
-    private RadioGroup sortGrp;
+    private RadioGroup sortGrp,filterGrp;
 
     public static final int CONNECTION_TIMEOUT = 10000;
     public static final int READ_TIMEOUT = 15000;
@@ -98,6 +98,7 @@ public class HomeFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private DividerItemDecoration dividerItemDecoration;
     private List<POI> poiList;
+    TextView weatherdetails;
     private RecyclerView.Adapter adapter;
     private POIAdapter mAdapter;
     LinearLayout linearLayout1;
@@ -133,6 +134,8 @@ public class HomeFragment extends Fragment {
         currentpsi = 0.0;
         getAllUVI();
         Log.d("Response",poiList.toString());
+
+        weatherdetails = (TextView) view.findViewById(R.id.weather_details);
 
         adapter = new POIAdapter(getActivity(), poiList);
 
@@ -180,6 +183,90 @@ public class HomeFragment extends Fragment {
 
         ImageButton sortBtn = (ImageButton) view.findViewById(R.id.floatingActionButtonSort);
         ImageButton filterBtn = (ImageButton) view.findViewById(R.id.floatingActionButtonFilter);
+
+        filterBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater inflater1 = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+                // Inflate the custom layout/view
+                View customView = inflater1.inflate(R.layout.filter_layout,null);
+                mPopupWindow = new PopupWindow(customView,ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+                mPopupWindow.showAtLocation(linearLayout1,Gravity.CENTER,0,0);
+                if(Build.VERSION.SDK_INT>=21){
+                    mPopupWindow.setElevation(5.0f);
+                }
+
+                filterGrp = (RadioGroup) customView.findViewById(R.id.priceGrp);
+
+                final RadioButton free = (RadioButton) customView.findViewById(R.id.price_free);
+                final RadioButton b10 = (RadioButton) customView.findViewById(R.id.price_belowten);
+                final RadioButton b50 = (RadioButton) customView.findViewById(R.id.price_belowfifty);
+                final RadioButton b70 = (RadioButton) customView.findViewById(R.id.price_belowseventy);
+                final RadioButton b100 = (RadioButton) customView.findViewById(R.id.price_belowhundred);
+                final RadioButton none = (RadioButton) customView.findViewById(R.id.no_filter);
+
+                Button applyBtn = (Button) customView.findViewById(R.id.filter_apply);
+
+                applyBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int selectedId = filterGrp.getCheckedRadioButtonId();
+                        String filterType = "default";
+                        if(selectedId == free.getId())
+                        {
+                            filterType = "free";
+                            filterList(poiList,filterType);
+                            mPopupWindow.dismiss();
+                        }
+                        else if(selectedId == b10.getId())
+                        {
+                            filterType = "10";
+                            filterList(poiList,filterType);
+                            mPopupWindow.dismiss();
+                        }
+                        else if(selectedId == b50.getId())
+                        {
+                            filterType = "50";
+                            filterList(poiList,filterType);
+                            mPopupWindow.dismiss();
+                        }
+                        else if(selectedId == b70.getId())
+                        {
+                            filterType = "70";
+                            filterList(poiList,filterType);
+                            mPopupWindow.dismiss();
+                        }
+                        else if(selectedId == b100.getId())
+                        {
+                            filterType = "100";
+                            filterList(poiList,filterType);
+                            mPopupWindow.dismiss();
+                        }
+                        else if(selectedId == none.getId())
+                        {
+                            filterType = "none";
+                            filterList(poiList,filterType);
+                            mPopupWindow.dismiss();
+                        }
+                        else
+                        {
+                            filterType = "default";
+                            filterList(poiList,filterType);
+                            mPopupWindow.dismiss();
+                        }
+                    }
+                });
+
+                Button cancelBtn = (Button) customView.findViewById(R.id.filter_cancel);
+                cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mPopupWindow.dismiss();
+                    }
+                });
+            }
+        });
 
         sortBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -395,6 +482,81 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    public void filterList(List<POI> unsortedList, String type)
+    {
+        if(type.equals("free"))
+        {
+//            for(int i = 0; i<unsortedList.size();i++)
+//            {
+//                if(unsortedList.get(i).getCost() >= 0.01)
+//                {
+//                    unsortedList.remove(i);
+//                }
+//            }
+            poiList = unsortedList;
+            adapter.notifyDataSetChanged();
+        }
+        else if(type.equals("10"))
+        {
+//            for(int i = 0; i<unsortedList.size();i++)
+//            {
+//                if(unsortedList.get(i).getCost() >= 10.0)
+//                {
+//                    unsortedList.remove(i);
+//                }
+//            }
+//            poiList = unsortedList;
+            adapter.notifyDataSetChanged();
+        }
+        else if(type.equals("50"))
+        {
+//            for(int i = 0; i<unsortedList.size();i++)
+//            {
+//                if(unsortedList.get(i).getCost() >= 30.0)
+//                {
+//                    unsortedList.remove(i);
+//                }
+//            }
+//            poiList = unsortedList;
+            adapter.notifyDataSetChanged();
+        }
+        else if(type.equals("70"))
+        {
+//            for(int i = 0; i<unsortedList.size();i++)
+//            {
+//                if(unsortedList.get(i).getCost() >= 70.0)
+//                {
+//                    unsortedList.remove(i);
+//                }
+//            }
+            poiList = unsortedList;
+            adapter.notifyDataSetChanged();
+        }
+        else if(type.equals("100"))
+        {
+//            for(int i = 0; i<unsortedList.size();i++)
+//            {
+//                if(unsortedList.get(i).getCost() >= 100.0)
+//                {
+//                    unsortedList.remove(i);
+//                }
+//            }
+            poiList = unsortedList;
+            adapter.notifyDataSetChanged();
+        }
+        else if(type.equals("none"))
+        {
+            getAllUVI();
+            poiList = unsortedList;
+            adapter.notifyDataSetChanged();
+        }
+        else {
+            getAllUVI();
+            poiList = unsortedList;
+            adapter.notifyDataSetChanged();
+        }
+    }
+
     private void getAllUVI()
     {
         Date now = new Date();
@@ -487,6 +649,7 @@ public class HomeFragment extends Fragment {
                                 }
                             }
                             currentpsi = psiList.get(psiList.size()-1);
+                            weatherdetails.setText("Current PSI: " + currentpsi + "\nCurrent UVI: " + currentuvi);
                             getData(currentuvi,currentpsi);
                         } catch (JSONException e) {
                             e.printStackTrace();

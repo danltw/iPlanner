@@ -11,6 +11,9 @@ public class AppConfig {
 
     public static final String URL_LOGIN = "http://10.0.2.2/iplanner/login_account.php";
     public static final String URL_REGISTER = "http://10.0.2.2/iplanner/register_account.php";
+
+    public static final String URL_LOGGIN = "http://project42-iplanner.000webhostapp.com/account.php";
+    public static final String URL_REG = "http://project42-iplanner.000webhostapp.com/account.php";
     // If: app is tested within an emulator, change host of ip to 10.0.2.2
     // Else: change host of ip to host of server accordingly
     public static final String CONN_TESTER = "http://project42-iplanner.000webhostapp.com/conntester.php";

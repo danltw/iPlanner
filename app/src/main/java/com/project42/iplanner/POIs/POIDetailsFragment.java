@@ -1,6 +1,7 @@
 package com.project42.iplanner.POIs;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.media.Rating;
 import android.os.Bundle;
@@ -13,16 +14,32 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.project42.iplanner.AppConfig;
 import com.project42.iplanner.Itineraries.ItineraryDetailsActivity;
 import com.project42.iplanner.R;
+import com.project42.iplanner.Utilities.SharedManager;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class POIDetailsFragment extends Fragment {
 
-
+    private POIController poiController;
 
     public POIDetailsFragment() {
         // Required empty public constructor
@@ -45,9 +62,10 @@ public class POIDetailsFragment extends Fragment {
         TextView close = (TextView) view.findViewById(R.id.poi_details_end);
         TextView days = (TextView) view.findViewById(R.id.poi_details_openingdays);
 
-        String poiname, add, des, start, end, day;
+        String username,poiname, add, des, start, end, day;
         Double cst, rate;
         Integer poiid, post;
+        username = SharedManager.getInstance(getActivity()).getUser();
         poiid = getArguments().getInt("selected_poi_id");
         poiname = getArguments().getString("selected_poi_name");
         add = getArguments().getString("selected_poi_address");
@@ -83,6 +101,7 @@ public class POIDetailsFragment extends Fragment {
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 sendData();
             }
         });
@@ -92,7 +111,8 @@ public class POIDetailsFragment extends Fragment {
         bookmarkBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //bookmarkData();
+                poiController = new POIController().getInstance(getContext());
+                poiController.bookmarkData(username,poiid.toString(),poiname,add,des);
             }
         });
 

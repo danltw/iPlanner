@@ -25,6 +25,14 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:src="@drawable/baseline_filter_list_black_18dp" />
+            <TextView
+                android:id="@+id/weather_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="6pt"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/floatingActionButtonSort"

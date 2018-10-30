@@ -333,8 +333,8 @@ public class GroupChannelListFragment extends Fragment {
                     return;
                 }
 
-                //mChannelListAdapter.clearMap();
                 mChannelListAdapter.setGroupChannelList(list);
+                mChannelListAdapter.notifyDataSetChanged();
             }
         });
 

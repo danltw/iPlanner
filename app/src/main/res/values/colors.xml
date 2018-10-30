@@ -3,6 +3,9 @@
     <color name="colorPrimary">#7b4bff</color>
     <color name="colorPrimaryDark">#6539ba</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorRegButton">#4BAFC0</color>
+    <color name="colorRegButtonTint">#4BAF1A</color>
+    <!--<color name="colorBgTint">##AAFFFFFF</color>-->
     <color name="bgBottomNavigation">#fe485a</color>
 
     <!-- Group Channel List -->
