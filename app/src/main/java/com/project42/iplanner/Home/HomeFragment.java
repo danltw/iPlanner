@@ -136,6 +136,7 @@ public class HomeFragment extends Fragment {
         Log.d("Response",poiList.toString());
 
         weatherdetails = (TextView) view.findViewById(R.id.weather_details);
+        weatherdetails.setText("Current PSI: " + currentpsi + "\nCurrent UVI: " + currentuvi);
 
         adapter = new POIAdapter(getActivity(), poiList);
 
@@ -348,6 +349,9 @@ public class HomeFragment extends Fragment {
 
 
     private void getData(Double cuvi, Double cpsi) {
+        Log.d("uvi", cuvi.toString());
+        Log.d("psi", cpsi.toString());
+        weatherdetails.setText("Current PSI: " + cpsi + "\nCurrent UVI: " + cuvi);
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Loading...");
         progressDialog.show();
@@ -571,6 +575,7 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onResponse(String response) {
                         try {
+                            Log.d("UVIlist", response);
                             List<Double> uviList = new ArrayList<>();
                             //getting the whole json object from the response
                             JSONObject obj = new JSONObject(response);
@@ -590,7 +595,8 @@ public class HomeFragment extends Fragment {
                                     uviList.add(uv);
                                 }
                             }
-                            currentuvi = uviList.get(uviList.size()-1);
+                            Log.d("UVI List", uviList.toString());
+                            currentuvi = uviList.get(uviList.size()-1).doubleValue();
                             getAllPSI();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -649,7 +655,6 @@ public class HomeFragment extends Fragment {
                                 }
                             }
                             currentpsi = psiList.get(psiList.size()-1);
-                            weatherdetails.setText("Current PSI: " + currentpsi + "\nCurrent UVI: " + currentuvi);
                             getData(currentuvi,currentpsi);
                         } catch (JSONException e) {
                             e.printStackTrace();
