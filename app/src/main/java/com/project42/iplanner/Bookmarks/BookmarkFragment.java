@@ -78,7 +78,7 @@ public class BookmarkFragment extends Fragment
         recyclerView = view.findViewById(R.id.recyclerView);
         coordinatorLayout = view.findViewById(R.id.coordinatorLayout);
         bookmarkList = new ArrayList<>();
-        String userName1 = SharedManager.getInstance(getActivity()).getUser();
+        String userName1 = SharedManager.getInstance().getUser();
         getData(userName1);
 
         //populateRecyclerView();

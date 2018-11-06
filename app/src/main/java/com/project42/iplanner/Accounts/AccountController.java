@@ -2,6 +2,7 @@ package com.project42.iplanner.Accounts;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -47,30 +48,20 @@ import java.util.Map;
 import static com.android.volley.VolleyLog.TAG;
 
 public class AccountController extends AppCompatActivity {
-    private static ArrayList<String> accountList = new ArrayList<String>();
-    private static final int SUCCESS = 0;
-    private static final int USERNAME_OCCUPIED = 1;
-    private static final int USERNAME_INVALID = 2;
-    private static final int PASSWORD_INCORRECT = 3;
-    private static final int UNKNOWN_ERROR = 4;
+
     private static final String TAG = AccountController.class.getSimpleName();
     private ProgressDialog pDialog;
 
-
-    private String username;
-    private String password;
     private Context mCtx;
-    private ArrayList<String> profileSettings = new ArrayList<String>();
     OnCallbackResponse callback;
 
-    interface OnCallbackResponse {
+    public interface OnCallbackResponse {
         public void onRegResponse(String response);
-        public void onLoginResponse(String username);
+        public void onLoginResponse(Account user);
+        public void onUpdateResponse(String response);
     }
 
-    public AccountController(String username, String password, Context context){
-        this.username = username;
-        this.password = password;
+    public AccountController(Context context) {
         mCtx = context;
         callback = (OnCallbackResponse) mCtx;
         pDialog = new ProgressDialog(mCtx);
@@ -99,13 +90,14 @@ public class AccountController extends AppCompatActivity {
                     if (error) {
                         hideDialog();
                         Log.d("Login Error: ", errResponse.getString("error"));
-                        callback.onLoginResponse("error");
+                        callback.onLoginResponse(null);
                         return;
                     }
                     else {
                         hideDialog();
                         // Direct user to home acitivity screen
-                        callback.onLoginResponse(username);
+                        Account a = new Account(username, jsonResponse.getJSONObject(0).getString("email"));
+                        callback.onLoginResponse(a);
                     }
 
                 } catch (JSONException e) {
@@ -197,6 +189,76 @@ public class AccountController extends AppCompatActivity {
                         params.put("username", username);
                         params.put("password", password);
                         params.put("email", email);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                return params;
+            }
+
+        };
+
+        // Adding request to request queue
+        RequestQueue queue = Volley.newRequestQueue(mCtx);
+        queue.add(strReq);
+    }
+
+    // Update a user
+    public void updateUser(final String username, final String oldPassword, final String newPassword, final String email) {
+        // Tag used to cancel the request
+        String tag_string_req = "req_update_user";
+
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                AppConfig.URL_UPDATE, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "User Update Response: " + response.toString());
+
+                // Process the JSON
+                try {
+                    JSONArray jsonResponse = new JSONArray(response);
+
+                    // If some errors occurred, return
+                    JSONObject errResponse = jsonResponse.getJSONObject(0);
+                    boolean error = errResponse.has("error");
+                    if (error) {
+                        Log.d("Update Error: ", errResponse.getString("error"));
+                        callback.onUpdateResponse(errResponse.get("error").toString());
+                        return;
+                    }
+                    else {
+                        // Direct user to home acitivity screen
+                        callback.onUpdateResponse(null);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Update Error: " + error.getMessage());
+            }
+        }) {
+            // method to pass user input to php page
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting params to php page
+                Map<String, String> params = new HashMap<String, String>();
+                if (!TextUtils.isEmpty(username)) {
+                    try {
+                        params.put("method", "update");
+                        params.put("username", username);
+                        if (!TextUtils.isEmpty(oldPassword) && !TextUtils.isEmpty(newPassword)) {
+                            params.put("oldPass", oldPassword);
+                            params.put("newPass", newPassword);
+                        }
+                        if (!TextUtils.isEmpty(email))
+                            params.put("email", email);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

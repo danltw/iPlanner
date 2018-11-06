@@ -32,7 +32,7 @@ public class RegisterFragment extends Fragment {
     }
 
     // TODO: Rename and change types and number of parameters
-    public static RegisterFragment newInstance(String param1, String param2) {
+    public static RegisterFragment newInstance() {
         RegisterFragment fragment = new RegisterFragment();
         return fragment;
     }
@@ -69,9 +69,9 @@ public class RegisterFragment extends Fragment {
                 else if (!password.equals(cfmPassword))
                     Toast.makeText(getActivity(), "Passwords do not match", Toast.LENGTH_LONG).show();
                 else {
-                    AccountController ac = new AccountController(username, password, getActivity());
-                    String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])(?=\\S+$).{8,}";
-                    if (!password.matches(pattern)) {
+                    AccountController ac = new AccountController(getActivity());
+
+                    if (!TextUtils.passReqValidator(password)) {
                         Toast.makeText(getActivity(), "Password does not meet requirements", Toast.LENGTH_LONG).show();
                     }
                     /*Log.d("REGEX CHECK", Boolean.toString(password.matches(pattern)));

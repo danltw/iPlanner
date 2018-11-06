@@ -1,13 +1,11 @@
 package com.project42.iplanner.Home;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,20 +15,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.project42.iplanner.Accounts.Account;
+import com.project42.iplanner.Accounts.AccountController;
+import com.project42.iplanner.Accounts.LoginActivity;
+import com.project42.iplanner.Accounts.ProfileFragment;
 import com.project42.iplanner.Chats.ConnectionManager;
 import com.project42.iplanner.Groups.CreateGroupChannelActivity;
-import com.project42.iplanner.Groups.Group;
 import com.project42.iplanner.Groups.GroupChannelActivity;
-import com.project42.iplanner.Groups.GroupController;
 import com.project42.iplanner.POIs.POISearchFragment;
 import com.project42.iplanner.AppConfig;
-import com.project42.iplanner.Groups.CreateGroupChannelFragment;
 import com.project42.iplanner.R;
 
-import com.project42.iplanner.Accounts.ProfileFragment;
 import com.project42.iplanner.Bookmarks.BookmarkFragment;
 import com.project42.iplanner.Itineraries.ItineraryFragment;
+import com.project42.iplanner.Utilities.SharedManager;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.GroupChannelListQuery;
 import com.sendbird.android.SendBird;
@@ -38,12 +38,10 @@ import com.project42.iplanner.Settings.SettingsFragment;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
-public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AccountController.OnCallbackResponse{
 
     private ActionBar toolbar;
 
@@ -71,7 +69,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         // Initialise Sendbird SDK
         SendBird.init(AppConfig.SBAPP_ID, this.getApplicationContext());
-
     }
 
     @Override
@@ -231,5 +228,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         // If current user has no existing chats, then force user to start chat
 
+    }
+
+    @Override
+    public void onRegResponse(String response) {
+
+    }
+
+    @Override
+    public void onLoginResponse(Account user) {
+
+    }
+
+    @Override
+    public void onUpdateResponse(String response) {
+
+        if (response == null) {
+            Toast.makeText(HomeActivity.this, "User Details Updated Successfully", Toast.LENGTH_LONG).show();
+        } else
+            Toast.makeText(HomeActivity.this, "User Details Not Updated", Toast.LENGTH_LONG).show();
     }
 }
