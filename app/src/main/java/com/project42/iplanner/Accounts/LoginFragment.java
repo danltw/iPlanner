@@ -69,6 +69,7 @@ public class LoginFragment extends Fragment {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.addToBackStack(LoginFragment.class.getSimpleName());
                 ft.replace(R.id.login_container, new RegisterFragment());
+                LoginActivity.currentState = LoginActivity.REG_STATE;
                 ft.commit();
             }
         });

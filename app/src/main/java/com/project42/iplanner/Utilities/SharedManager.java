@@ -51,5 +51,9 @@ public class SharedManager {
     public void clearUser() {
         SharedPreferences.Editor sp = mCtx.getSharedPreferences("username", MODE_PRIVATE).edit();
         sp.remove("username");
+        SharedPreferences.Editor sp1 = mCtx.getSharedPreferences("email", MODE_PRIVATE).edit();
+        sp1.remove("email");
+        sp.apply();
+        sp1.apply();
     }
 }

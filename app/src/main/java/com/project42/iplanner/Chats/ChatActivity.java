@@ -1,8 +1,10 @@
 package com.project42.iplanner.Chats;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.os.Handler;
 
 import com.project42.iplanner.Groups.CreateGroupChannelActivity;
 import com.project42.iplanner.Groups.GroupChannelActivity;
@@ -85,6 +88,8 @@ public class ChatActivity extends AppCompatActivity {
 
     private Button mSendButton;
     private Context mCtx;
+
+    private final Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -313,10 +318,10 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onTypingStatusUpdated(GroupChannel channel) {
-                if (channel.getUrl().equals(mChannelUrl)) {
+                /*if (channel.getUrl().equals(mChannelUrl)) {
                     List<Member> typingUsers = channel.getTypingMembers();
                     displayTyping(typingUsers);
-                }
+                }*/
             }
 
         });
@@ -355,12 +360,13 @@ public class ChatActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         //inflater.inflate(R.menu.menu_group_chat, menu);
         getMenuInflater().inflate(R.menu.menu_group_chat, menu);
-        if (mChannel.getMemberCount() <= 2) {
-            return false;
-        }
-        else if (mChannel.getMyRole().equals(Member.Role.NONE)) {
-            MenuItem item = menu.findItem(R.id.action_group_channel_invite);
-            item.setVisible(false);
+        if (mChannel != null) {
+            if (mChannel.getMemberCount() <= 2) {
+                return false;
+            } else if (mChannel.getMyRole().equals(Member.Role.NONE)) {
+                MenuItem item = menu.findItem(R.id.action_group_channel_invite);
+                item.setVisible(false);
+            }
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -384,10 +390,39 @@ public class ChatActivity extends AppCompatActivity {
                     intent1.putExtra(EXTRA_CHANNEL_TITLE, mChannelTitle);
                     startActivity(intent1);
                     return true;
+                case R.id.action_leave_group:
+                    AlertDialog.Builder leaveGrpAlert = new AlertDialog.Builder(ChatActivity.this)
+                            .setTitle("Confirm Leave Group?")
+                            .setPositiveButton("Yups", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // what to do when user selects OK
+                                    leaveGroup();
+                                }
+                            })
+                            .setCancelable(true);
+                    leaveGrpAlert.create().show();
+                    return true;
             }
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void leaveGroup() {
+        mChannel.leave(new GroupChannel.GroupChannelLeaveHandler() {
+            @Override
+            public void onResult(SendBirdException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                    return;
+                }
+                // User left group successfully
+                // Redirect user to Chat Channel list
+                finish();
+            }
+        });
+    }
+
 
     private void setUpRecyclerView() {
         mLayoutManager = new LinearLayoutManager(this);
@@ -562,5 +597,4 @@ public class ChatActivity extends AppCompatActivity {
             mChannel.endTyping();
         }
     }
-
 }

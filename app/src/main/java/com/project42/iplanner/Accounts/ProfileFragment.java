@@ -1,23 +1,33 @@
 package com.project42.iplanner.Accounts;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.project42.iplanner.Chats.ChatActivity;
 import com.project42.iplanner.R;
+import com.project42.iplanner.Utilities.ImageUtils;
 import com.project42.iplanner.Utilities.SharedManager;
 import com.project42.iplanner.Utilities.TextUtils;
+import com.sendbird.android.SendBird;
 
 public class ProfileFragment extends Fragment {
+
+    private ImageView profileImg;
     private EditText et_username;
     private EditText et_email;
     private EditText et_oldPassword;
@@ -29,6 +39,7 @@ public class ProfileFragment extends Fragment {
     private Button btn_edit;
     private Button btn_save;
     private Button btn_cancel;
+    private Button btn_logout;
 
     private String oldEmail;
 
@@ -51,6 +62,9 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        profileImg = view.findViewById(R.id.profile_img);
+        if (SendBird.getCurrentUser() != null)
+            ImageUtils.displayRoundImageFromUrl(getActivity(), SendBird.getCurrentUser().getProfileUrl(), profileImg);
         oldEmail = SharedManager.getInstance().getEmail();
         et_username = view.findViewById(R.id.username_et);
         et_email = view.findViewById(R.id.email_et);
@@ -63,11 +77,29 @@ public class ProfileFragment extends Fragment {
         btn_edit = view.findViewById(R.id.edit_btn);
         btn_save = view.findViewById(R.id.save_btn);
         btn_cancel = view.findViewById(R.id.cancel_btn);
+        btn_logout = view.findViewById(R.id.logout_btn);
 
         et_email.setText(SharedManager.getInstance().getEmail());
         et_username.setText(SharedManager.getInstance().getUser());
 
         setViewableState();
+
+        btn_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder leaveGrpAlert = new AlertDialog.Builder(getActivity())
+                        .setTitle("Confirm Logout?")
+                        .setPositiveButton("Yups", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // what to do when user selects OK
+                                logout();
+                            }
+                        })
+                        .setCancelable(true);
+                leaveGrpAlert.create().show();
+            }
+        });
 
         // What happens when edit button is pressed
         btn_edit.setOnClickListener(new View.OnClickListener() {
@@ -191,6 +223,13 @@ public class ProfileFragment extends Fragment {
         btn_save.setVisibility(View.GONE);
         btn_cancel.setVisibility(View.GONE);
         btn_edit.setVisibility(View.VISIBLE);
+    }
+
+    private void logout() {
+        SharedManager.getInstance().clearUser();
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        startActivity(intent);
+        getActivity().finish();
     }
 
     @Override

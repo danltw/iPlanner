@@ -12,6 +12,9 @@ import com.project42.iplanner.Utilities.SharedManager;
 
 public class LoginActivity extends AppCompatActivity implements AccountController.OnCallbackResponse{
 
+    public static final String LOGIN_STATE = "LOGIN_STATE";
+    public static final String REG_STATE = "REG_STATE";
+    public static String currentState = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -28,6 +31,7 @@ public class LoginActivity extends AppCompatActivity implements AccountControlle
         else {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.login_container, new LoginFragment());
+            currentState = LOGIN_STATE;
             ft.commit();
         }
     }
@@ -41,6 +45,14 @@ public class LoginActivity extends AppCompatActivity implements AccountControlle
         if (SharedManager.getInstance().getUser() != null)
             return true;
         return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (currentState.equals(LOGIN_STATE)) {
+            finish();
+        }
+        super.onBackPressed();
     }
 
     @Override

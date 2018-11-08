@@ -78,7 +78,6 @@ public class CreateGroupChannelActivity extends AppCompatActivity implements
             FragmentManager manager = getSupportFragmentManager();
             manager.beginTransaction()
                     .replace(R.id.container_create_group_channel, fragment)
-                    .addToBackStack(null)
                     .commit();
         }
 

@@ -69,6 +69,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         // Initialise Sendbird SDK
         SendBird.init(AppConfig.SBAPP_ID, this.getApplicationContext());
+
+        ConnectionManager.login("", new SendBird.ConnectHandler() {
+            @Override
+            public void onConnected(User user, SendBirdException e) {
+
+                if (e != null) {
+                    e.printStackTrace(); // error
+                }
+            }
+        });
     }
 
     @Override
@@ -194,40 +204,28 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private void showOrCreateChats() {
 
-        ConnectionManager.login("", new SendBird.ConnectHandler() {
-            @Override
-            public void onConnected(User user, SendBirdException e) {
+        GroupChannelListQuery channelListQuery = GroupChannel.createMyGroupChannelListQuery();
+        channelListQuery.setIncludeEmpty(true);
+        channelListQuery.next(new GroupChannelListQuery.GroupChannelListQueryResultHandler() {
 
-                if (e != null) {
-                    e.printStackTrace(); // error
+            @Override
+            public void onResult(List<GroupChannel> list, SendBirdException e) {
+                if (e != null) {    // Error.
+                    e.printStackTrace();
+                    return;
                 }
 
-                GroupChannelListQuery channelListQuery = GroupChannel.createMyGroupChannelListQuery();
-                channelListQuery.setIncludeEmpty(true);
-                channelListQuery.next(new GroupChannelListQuery.GroupChannelListQueryResultHandler() {
-
-                    @Override
-                    public void onResult(List<GroupChannel> list, SendBirdException e) {
-                        if (e != null) {    // Error.
-                            e.printStackTrace();
-                            return;
-                        }
-
-                        if (list.isEmpty()) {
-                            Intent intent = new Intent(HomeActivity.this, CreateGroupChannelActivity.class);
-                            startActivity(intent);
-                        } else if (!list.isEmpty()) {
-                            Intent intent = new Intent(HomeActivity.this, GroupChannelActivity.class);
-                            startActivity(intent);
-                        }
-                    }
-                });
-
+                if (list.isEmpty()) {
+                    Intent intent = new Intent(HomeActivity.this, CreateGroupChannelActivity.class);
+                    startActivity(intent);
+                } else if (!list.isEmpty()) {
+                    Intent intent = new Intent(HomeActivity.this, GroupChannelActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
         // If current user has no existing chats, then force user to start chat
-
     }
 
     @Override
