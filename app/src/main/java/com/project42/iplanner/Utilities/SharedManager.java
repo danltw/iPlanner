@@ -37,6 +37,17 @@ public class SharedManager {
         return sp.getString("username", null);
     }
 
+    public void setEmail(String email) {
+        SharedPreferences.Editor sp = mCtx.getSharedPreferences("email", MODE_PRIVATE).edit();
+        sp.putString("email", email);
+        sp.apply();
+    }
+
+    public String getEmail() {
+        SharedPreferences sp = mCtx.getSharedPreferences("email", MODE_PRIVATE);
+        return sp.getString("email", null);
+    }
+
     public void clearUser() {
         SharedPreferences.Editor sp = mCtx.getSharedPreferences("username", MODE_PRIVATE).edit();
         sp.remove("username");

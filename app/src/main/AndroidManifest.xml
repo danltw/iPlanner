@@ -57,7 +57,6 @@
         <!-- <activity android:name=".Itineraries.ViewItinerariesActivity" /> -->
         <activity android:name=".Itineraries.ItineraryDetailsActivity" />
         <!-- <activity android:name=".Bookmarks.ViewBookmarksActivity" /> -->
-        <!-- <activity android:name=".Accounts.ProfileDetailsActivity" /> -->
         <!-- <activity android:name=".Accounts.RegisterActivity" /> -->
         <activity
             android:name=".Chats.ChatActivity"

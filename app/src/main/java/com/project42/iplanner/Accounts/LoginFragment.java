@@ -57,7 +57,7 @@ public class LoginFragment extends Fragment {
                     Toast.makeText(getActivity(), "Please fill in both username and password", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    AccountController ac = new AccountController(username, password, getActivity());
+                    AccountController ac = new AccountController(getActivity());
                     ac.loginUser(username, password);
                 }
             }

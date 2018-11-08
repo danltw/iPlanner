@@ -55,16 +55,24 @@ public class LoginActivity extends AppCompatActivity implements AccountControlle
     }
 
     @Override
-    public void onLoginResponse(String username) {
-        if (username.equals("error"))
+    public void onLoginResponse(Account a) {
+        if (a == null)
         {
             Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_LONG).show();
         }
         else {
-            SharedManager.getInstance().setUser(username); // save user into SP
+            SharedManager.getInstance().setUser(a.getUsername()); // save user into SP
+            SharedManager.getInstance().setEmail(a.getEmail()); // save email into SP
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(intent);
             finish();
+        }
+    }
+
+    @Override
+    public void onUpdateResponse(String response) {
+        if (response != null) {
+            Toast.makeText(LoginActivity.this, "Updated Successfully", Toast.LENGTH_LONG).show();
         }
     }
 }

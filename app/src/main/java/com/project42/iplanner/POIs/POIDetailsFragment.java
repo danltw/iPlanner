@@ -66,6 +66,7 @@ public class POIDetailsFragment extends Fragment {
         Double cst, rate;
         Integer poiid, post;
         username = SharedManager.getInstance().getUser();
+        Log.d("Username", username);
         poiid = getArguments().getInt("selected_poi_id");
         poiname = getArguments().getString("selected_poi_name");
         add = getArguments().getString("selected_poi_address");
