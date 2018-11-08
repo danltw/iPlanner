@@ -73,7 +73,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
     public void removeItem(int position) {
-        poiList.remove(position);
+        //poiList.remove(position);
+        poiList.remove(poiList.get(position));
         //String URL = "http://project42-iplanner.000webhostapp.com/bookmark.php";
         notifyItemRemoved(position);
 

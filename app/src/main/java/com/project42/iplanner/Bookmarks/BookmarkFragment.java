@@ -1,4 +1,6 @@
 package com.project42.iplanner.Bookmarks;
+import com.project42.iplanner.AppConfig;
+import com.project42.iplanner.Groups.Group;
 import com.project42.iplanner.POIs.POI;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -15,12 +17,15 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import static android.support.design.widget.BaseTransientBottomBar.LENGTH_LONG;
+import static com.android.volley.VolleyLog.TAG;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.project42.iplanner.Utilities.ListUtils;
 import com.project42.iplanner.Utilities.SharedManager;
 import com.project42.iplanner.Utilities.TextUtils;
 
@@ -41,7 +46,8 @@ public class BookmarkFragment extends Fragment
     RecyclerView recyclerView;
     RecyclerViewAdapter mAdapter;
    // ArrayList<String> stringArrayList = new ArrayList<>();
-    ArrayList<POI> bookmarkList;
+    ArrayList<Bookmark> bookmarkList;
+    //Bookmark bookmarkInfo;
     CoordinatorLayout coordinatorLayout;
 
     //private ProgressDialog pDialog;
@@ -78,8 +84,10 @@ public class BookmarkFragment extends Fragment
         recyclerView = view.findViewById(R.id.recyclerView);
         coordinatorLayout = view.findViewById(R.id.coordinatorLayout);
         bookmarkList = new ArrayList<>();
-        String userName1 = SharedManager.getInstance(getActivity()).getUser();
-        getData(userName1);
+        //bookmarkInfo = new Bookmark();
+        String userName1 = SharedManager.getInstance().getUser();
+
+        getBookmark(userName1);
 
         //populateRecyclerView();
         enableSwipeToDeleteAndUndo();
@@ -87,81 +95,68 @@ public class BookmarkFragment extends Fragment
         return view;
     }
 
-    private void getData(String userName)
-    {
-        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();
-        //final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
-        final StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, URL, new Response.Listener<String>()  {
+
+    public void getBookmark(final String userName1) {
+        // Tag used to cancel the request
+        String tag_string_req = "req_get_bookmark";
+
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                "http://project42-iplanner.000webhostapp.com/bookmark.php", new Response.Listener<String>() {
+
             @Override
-            public void onResponse(String response)
-            {
+            public void onResponse(String response) {
+
+                // Process the JSON
                 try {
-                    Log.d("Bookmark Response", response);
-                    //JSONObject obj = response;
+                    JSONArray jsonResponse = new JSONArray(response);
 
-                    /*JSONObject obj = response;
-                    String bmID = obj.get("bookmark_id").toString();
-                    String locName = obj.get("location_name").toString();
-                    String userID = obj.get("location_name").toString();
-                    Log.d("Data: ", bmID + " " + locName + " " + userID);*/
-
-                    JSONArray array = new JSONArray(response);
-                    //JSONArray array = (JSONArray) response;
-                    for(int i=0; i< array.length();i++)
-                    {
-                        JSONObject jsonObject = array.getJSONObject(i);
-                        POI bookmark1 = new POI(0,null,null,0,0.0,0,null,null,null,null, 0.0, 0.0);
-
-                        int location_id = jsonObject.getInt("POI_id");
-                        String location_name = jsonObject.getString("location_name");
-                        String location_address = jsonObject.getString("location_address");
-                        //int location_postalCode = jsonObject.getInt("location_postalcode");
-                        /*double rating = jsonObject.getDouble("location_rating");
-                        double cost = jsonObject.getDouble("location_cost");
-                        String start_hrs = jsonObject.getString("start_hrs");
-                        String end_hrs = jsonObject.getString("end_hrs");
-                        String opening_days = jsonObject.getString("opening_days");
-
-                        double uvi = jsonObject.getDouble("UVI");
-                        double psi = jsonObject.getDouble("PSI");*/
-                        //bookmark1.setPoi(new POI(location_id,location_name,location_address,location_postalCode,rating,cost,start_hrs,end_hrs,opening_days,location_desc,uvi,psi));
-
-                        //String location_desc = jsonObject.getString("location_desc");
-                        bookmark1.setLocationID(location_id);
-                        bookmark1.setLocationName(location_name);
-                        bookmark1.setAddress(location_address);
-                        bookmark1.setPostalCode(0);
-                        bookmark1.setRating(0);
-                        bookmark1.setCost(0);
-                        bookmark1.setStartHrs(null);
-                        bookmark1.setEndHrs(null);
-                        bookmark1.setOpeningDays(null);
-                        bookmark1.setDescription(null);
-                        bookmark1.setUVI(0);
-                        bookmark1.setPSI(0);
-
-                        bookmarkList.add(bookmark1);
+                    // If no results or some errors occurred, return
+                    JSONObject errResponse = jsonResponse.getJSONObject(0);
+                    boolean error = errResponse.has("error");
+                    if (error) {
+                        Log.d("BM Retrieval Error: ", errResponse.getString("error"));
+                        return;
                     }
-                    RecyclerViewAdapter adapter1 = new RecyclerViewAdapter(getActivity(), bookmarkList);
-                    recyclerView.setAdapter(adapter1);
+                    else {
+                        Log.d(TAG, "Bookmark Retrieval Response: " + response.toString());
+                        ArrayList<POI> retrievedPOI = new ArrayList();
+                        // If successful: Loop through the array elements
+                        for (int i = 0; i < jsonResponse.length(); i++) {
+                            JSONObject obj = jsonResponse.getJSONObject(i);
 
-                }
+                            //String userName = userName1;
+                            int location_id = obj.getInt("POI_id");
+                            String location_name = obj.getString("location_name");
+                            String location_address = obj.getString("location_address");
+                            int BMID = obj.getInt("bookmark_id");
 
-                catch (JSONException e)
-                {
+                            /*String grpID = grp.getString("group_id");
+                            String groupName = grp.getString("group_name");
+                            String memberIDs = grp.getString("member_ids");
+                            String adminIDs = grp.getString("admin_ids");*/
+                            POI poi = new POI(Integer.valueOf(location_id),
+                                    location_name, location_address,0 ,0.0,0.0,null,null,null,null,0.0,0);
+                            retrievedPOI.add(poi);
+                            Bookmark bm1 = new Bookmark(0,null);
+                            bm1.setPoi(poi);
+                            bm1.setBookmarkID(BMID);
+                           bookmarkList.add(bm1);
+                        }
+                        mAdapter = new RecyclerViewAdapter(getActivity(), retrievedPOI);
+                        mAdapter.notifyDataSetChanged();
+                        recyclerView.setAdapter(mAdapter);
+                    }
+
+                } catch (JSONException e) {
                     e.printStackTrace();
-                    progressDialog.dismiss();
                 }
-                //mAdapter.notifyDataSetChanged();
-                progressDialog.dismiss();
+
             }
         }, new Response.ErrorListener() {
+
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("Volley", error.toString());
-                progressDialog.dismiss();
+                Log.e(TAG, "BM Retrieval Error: " + error.getMessage());
             }
         }) {
             // method to pass user input to php page
@@ -169,19 +164,20 @@ public class BookmarkFragment extends Fragment
             protected Map<String, String> getParams() {
                 // Posting params to php page
                 Map<String, String> params = new HashMap<String, String>();
-                if (!TextUtils.isEmpty(userName)) {
-                    try {
-                        params.put("method", "getBookmark");
-                        params.put("userName", String.valueOf(userName));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                params.put("method", "getBookmark");
+                Log.d("method POST", "getBookmark");
+                if (userName1 != null)
+                    params.put("userName1", String.valueOf(userName1));
+                Log.d("Username POST", String.valueOf(userName1));
+
                 return params;
             }
+
         };
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        requestQueue.add(jsonObjectRequest);
+
+        // Adding request to request queue
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        queue.add(strReq);
     }
 
     private void enableSwipeToDeleteAndUndo(){
@@ -192,10 +188,14 @@ public class BookmarkFragment extends Fragment
 
                 final int position = viewHolder.getAdapterPosition();
                 //final String item = mAdapter.getData().get(position);
-                POI item = mAdapter.getData().get(position);
+                //POI item = mAdapter.getData().get(position);
+
+                //mAdapter.removeItem(viewHolder.getAdapterPosition());
+                mAdapter.removeItem(position);
+                int index = bookmarkList.get(position).getBookmarkID();
+                deleteBookmark(index);
 
 
-                mAdapter.removeItem(viewHolder.getAdapterPosition());
 
                 Snackbar snackbar = Snackbar.make(coordinatorLayout, "Item was removed from the list.", LENGTH_LONG);
 
@@ -212,15 +212,13 @@ public class BookmarkFragment extends Fragment
                 snackbar.setActionTextColor(Color.YELLOW).show();
                 //snackbar.show();
                 //Toast.makeText(getActivity(), "undo", Toast.LENGTH_LONG).show();
-                deleteBookmark(position);
+
 
             }
         };
 
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
         itemTouchhelper.attachToRecyclerView(recyclerView);
-
-
 
     }
 
