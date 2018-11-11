@@ -102,6 +102,7 @@ public class POISearchFragment extends Fragment {
                         args.putString("selected_poi_desc",poiList.get(position).getDescription());
                         args.putDouble("selected_poi_uvi",poiList.get(position).getUVI());
                         args.putDouble("selected_poi_psi",poiList.get(position).getPSI());
+                        args.putString("selected_poi_imgpath",poiList.get(position).getImg());
                         fragment.setArguments(args);
                         Log.d("Passing Values", args.toString());
                         loadFragment(fragment);
@@ -143,6 +144,10 @@ public class POISearchFragment extends Fragment {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
                     Log.i("onQueryTextSubmit", query);
+                    for(int i = 0; i < poiList.size();i++)
+                    {
+                        poiList.remove(i);
+                    }
                     search(query);
                     Log.d("list", poiList.toString());
                     return true;

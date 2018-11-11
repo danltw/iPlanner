@@ -361,6 +361,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(String response)
             {
+                Log.d("response", response);
                 try {
                     JSONArray poiarray = new JSONArray(response);
                     for (int i = 0; i < response.length(); i++)
