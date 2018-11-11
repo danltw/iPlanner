@@ -30,8 +30,10 @@ public class POI {
 
     private double PSI;
 
+    private String img;
+
     public POI(int locationID, String locationName, String address, int postalCode, double rating, double cost, String startHrs,
-               String endHrs, String openingDays, String description, double UVI, double PSI) {
+               String endHrs, String openingDays, String description, double UVI, double PSI, String img) {
         this.locationID = locationID;
         this.locationName = locationName;
         this.address = address;
@@ -44,6 +46,7 @@ public class POI {
         this.description = description;
         this.UVI = UVI;
         this.PSI = PSI;
+        this.img = img;
     }
 
     public int getLocationID() {
@@ -140,6 +143,15 @@ public class POI {
 
     public void setPSI(double PSI) {
         this.PSI = PSI;
+    }
+
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 
 }

@@ -190,7 +190,8 @@ public class POIController {
                         String desc = poi.getString("description");
                         Double uvi = poi.getDouble("UVI");
                         Double psi = poi.getDouble("PSI");
-                        POI poiObject = new POI(id,name,address,postalcode,rating,cost,startHrs,endHrs,open,desc,uvi,psi);
+                        String imgpath = poi.getString("imgpath");
+                        POI poiObject = new POI(id,name,address,postalcode,rating,cost,startHrs,endHrs,open,desc,uvi,psi,imgpath);
                         poiList.add(poiObject);
                         Log.d("JSON Data", poi.toString());
                     }

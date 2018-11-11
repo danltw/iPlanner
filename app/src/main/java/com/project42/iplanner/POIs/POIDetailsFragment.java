@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.project42.iplanner.AppConfig;
 import com.project42.iplanner.Itineraries.ItineraryDetailsActivity;
 import com.project42.iplanner.R;
@@ -51,6 +53,7 @@ public class POIDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_poidetails, container, false);
+        ImageView img = (ImageView) view.findViewById(R.id.imageView);
         TextView id = (TextView) view.findViewById(R.id.poi_details_id);
         TextView name = (TextView) view.findViewById(R.id.poi_details_name);
         TextView address = (TextView) view.findViewById(R.id.poi_details_address);
@@ -67,6 +70,7 @@ public class POIDetailsFragment extends Fragment {
         Integer poiid, post;
         username = SharedManager.getInstance().getUser();
         Log.d("Username", username);
+
         poiid = getArguments().getInt("selected_poi_id");
         poiname = getArguments().getString("selected_poi_name");
         add = getArguments().getString("selected_poi_address");
@@ -77,6 +81,7 @@ public class POIDetailsFragment extends Fragment {
         start = getArguments().getString("selected_poi_starthrs");
         end = getArguments().getString("selected_poi_endhrs");
         day = getArguments().getString("selected_poi_openingdays");
+        Glide.with(this).load(getArguments().getString("selected_poi_imgpath")).into(img);
 
         float ratingvalue = rate.floatValue();
 

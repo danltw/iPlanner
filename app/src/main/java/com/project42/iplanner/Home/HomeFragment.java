@@ -164,6 +164,7 @@ public class HomeFragment extends Fragment {
                         args.putString("selected_poi_starthrs",poiList.get(position).getStartHrs());
                         args.putString("selected_poi_endhrs",poiList.get(position).getEndHrs());
                         args.putString("selected_poi_openingdays",poiList.get(position).getOpeningDays());
+                        args.putString("selected_poi_imgpath",poiList.get(position).getImg());
                         if(poiList.get(position).getDescription().equals(""))
                         {
                             poiList.get(position).setDescription("No Description");
@@ -377,7 +378,8 @@ public class HomeFragment extends Fragment {
                         String desc = poi.getString("description");
                         Double uvi = poi.getDouble("UVI");
                         Double psi = poi.getDouble("PSI");
-                        POI poiObject = new POI(id,name,address,postalcode,rating,cost,startHrs,endHrs,open,desc,uvi,psi);
+                        String imgpath = poi.getString("imgpath");
+                        POI poiObject = new POI(id,name,address,postalcode,rating,cost,startHrs,endHrs,open,desc,uvi,psi,imgpath);
                         poiList.add(poiObject);
                         Log.d("JSON Data", poi.toString());
                     }
