@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -148,6 +149,9 @@ public class POISearchFragment extends Fragment {
                     {
                         poiList.remove(i);
                     }
+                    InputMethodManager inputMethodManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(recyclerView.getWindowToken(),
+                            InputMethodManager.RESULT_UNCHANGED_SHOWN);
                     search(query);
                     Log.d("list", poiList.toString());
                     return true;
