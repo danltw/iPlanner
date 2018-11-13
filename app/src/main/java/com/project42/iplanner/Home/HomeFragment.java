@@ -88,10 +88,7 @@ public class HomeFragment extends Fragment {
     public static final int READ_TIMEOUT = 15000;
 
     private static final String TAG = HomeFragment.class.getSimpleName();
-    private static final String URL = AppConfig.URL_RECOMMENDED;
-    private static final String URL_UVI = AppConfig.URL_UVI;
-    private static final String URL_PSI = AppConfig.URL_PSI;
-
+    private int opentag = 0;
     private Double currentpsi;
     private Double currentuvi;
     private RecyclerView recyclerView;
@@ -189,6 +186,16 @@ public class HomeFragment extends Fragment {
         filterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(opentag == 0)
+                {
+                    opentag = 1;
+                }
+                else
+                {
+                    opentag = 0;
+                    mPopupWindow.dismiss();
+                    return;
+                }
                 LayoutInflater inflater1 = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
                 // Inflate the custom layout/view
@@ -273,6 +280,17 @@ public class HomeFragment extends Fragment {
         sortBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(opentag == 0)
+                {
+                    opentag = 1;
+                }
+                else
+                {
+                    opentag = 0;
+                    mPopupWindow.dismiss();
+                    return;
+                }
                 LayoutInflater inflater1 = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
                 // Inflate the custom layout/view
@@ -295,6 +313,7 @@ public class HomeFragment extends Fragment {
                 applyBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         int selectedId = sortGrp.getCheckedRadioButtonId();
                         String sortType = "default";
                         if(selectedId == atoz.getId())
@@ -356,7 +375,7 @@ public class HomeFragment extends Fragment {
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Loading...");
         progressDialog.show();
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>()
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, AppConfig.URL_RECOMMENDED, new Response.Listener<String>()
         {
             @Override
             public void onResponse(String response)
@@ -415,6 +434,11 @@ public class HomeFragment extends Fragment {
 
     private void loadFragment(Fragment fragment) {
         // load fragment
+        if(opentag == 1)
+        {
+            opentag = 0;
+            mPopupWindow.dismiss();
+        }
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_container, fragment);
         transaction.addToBackStack(null);
@@ -570,10 +594,10 @@ public class HomeFragment extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateStr = sdf.format(now);
         Log.d("Date", dateStr);
-        Log.d("URL", URL_UVI+dateStr);
+        Log.d("URL", AppConfig.URL_UVI+dateStr);
         //String URL = URL_PSI + sdf.format(dateStr).toString();
         //creating a string request to send request to the url
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_UVI+dateStr,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, AppConfig.URL_UVI+dateStr,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -626,10 +650,10 @@ public class HomeFragment extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateStr = sdf.format(now);
         Log.d("Date", dateStr);
-        Log.d("URL", URL_PSI+dateStr);
+        Log.d("URL", AppConfig.URL_PSI+dateStr);
         //String URL = URL_PSI + sdf.format(dateStr).toString();
         //creating a string request to send request to the url
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_PSI+dateStr,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, AppConfig.URL_PSI+dateStr,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
