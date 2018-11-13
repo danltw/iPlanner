@@ -29,4 +29,5 @@
     <color name="btn_create_disabled">#c1acff</color>
     <color name="btn_edit">#ffffff</color>
     <color name="btn_edit_disabled">#c1acff</color>
+    <color name="item_name">#535353</color>
 </resources>
