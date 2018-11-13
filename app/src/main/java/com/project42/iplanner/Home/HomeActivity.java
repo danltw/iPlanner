@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.project42.iplanner.Accounts.Account;
@@ -30,6 +31,7 @@ import com.project42.iplanner.R;
 
 import com.project42.iplanner.Bookmarks.BookmarkFragment;
 import com.project42.iplanner.Itineraries.ItineraryFragment;
+import com.project42.iplanner.Utilities.ImageUtils;
 import com.project42.iplanner.Utilities.SharedManager;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.GroupChannelListQuery;
@@ -49,6 +51,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        // Initialise Sendbird SDK
+        SendBird.init(AppConfig.SBAPP_ID, this.getApplicationContext());
         toolbar = getSupportActionBar();
         Toolbar toolbar1 = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar1);
@@ -57,6 +61,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar1, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -67,9 +72,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         loadFragment(new HomeFragment());
 
-        // Initialise Sendbird SDK
-        SendBird.init(AppConfig.SBAPP_ID, this.getApplicationContext());
-
         ConnectionManager.login("", new SendBird.ConnectHandler() {
             @Override
             public void onConnected(User user, SendBirdException e) {
@@ -77,6 +79,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 if (e != null) {
                     e.printStackTrace(); // error
                 }
+                ImageView profilePic = drawer.findViewById(R.id.profile_nav);
+                ImageUtils.displayRoundImageFromUrl(getApplicationContext(), SendBird.getCurrentUser().getProfileUrl(), profilePic);
             }
         });
     }
