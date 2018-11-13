@@ -1,4 +1,5 @@
 package com.project42.iplanner.Bookmarks;
+import com.project42.iplanner.Accounts.LoginActivity;
 import com.project42.iplanner.AppConfig;
 import com.project42.iplanner.Groups.Group;
 import com.project42.iplanner.POIs.POI;
@@ -16,6 +17,8 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.widget.Toast;
+
 import static android.support.design.widget.BaseTransientBottomBar.LENGTH_LONG;
 import static com.android.volley.VolleyLog.TAG;
 
@@ -135,7 +138,7 @@ public class BookmarkFragment extends Fragment
                             String memberIDs = grp.getString("member_ids");
                             String adminIDs = grp.getString("admin_ids");*/
                             POI poi = new POI(Integer.valueOf(location_id),
-                                    location_name, location_address,0 ,0.0,0.0,null,null,null,null,0.0,0);
+                                    location_name, location_address,0 ,0.0,0.0,null,null,null,null,0.0,0,null);
                             retrievedPOI.add(poi);
                             Bookmark bm1 = new Bookmark(0,null);
                             bm1.setPoi(poi);
@@ -197,7 +200,8 @@ public class BookmarkFragment extends Fragment
 
 
 
-                Snackbar snackbar = Snackbar.make(coordinatorLayout, "Item was removed from the list.", LENGTH_LONG);
+
+                /*Snackbar snackbar = Snackbar.make(coordinatorLayout, "Item was removed from the list.", LENGTH_LONG);
 
                 snackbar.setAction("UNDO", new View.OnClickListener()
                 {
@@ -211,7 +215,7 @@ public class BookmarkFragment extends Fragment
 
                 snackbar.setActionTextColor(Color.YELLOW).show();
                 //snackbar.show();
-                //Toast.makeText(getActivity(), "undo", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getActivity(), "undo", Toast.LENGTH_LONG).show();*/
 
 
             }
@@ -245,6 +249,8 @@ public class BookmarkFragment extends Fragment
                         return;
                     }
                     else {
+                            Toast.makeText(getActivity(), "Bookmark was removed from the list.", LENGTH_LONG).show();
+
                         // Todo: If successful: display message to inform user that group is deleted
                     }
 
