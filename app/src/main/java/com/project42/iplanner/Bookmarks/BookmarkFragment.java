@@ -56,7 +56,7 @@ public class BookmarkFragment extends Fragment
     //private ProgressDialog pDialog;
 
     private static final String TAG = BookmarkFragment.class.getSimpleName();
-    private static final String URL = "http://project42-iplanner.000webhostapp.com/bookmark.php";
+    private static final String URL = AppConfig.URL_BOOKING;
 
     /*public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
@@ -103,8 +103,7 @@ public class BookmarkFragment extends Fragment
         // Tag used to cancel the request
         String tag_string_req = "req_get_bookmark";
 
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                "http://project42-iplanner.000webhostapp.com/bookmark.php", new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
@@ -230,8 +229,7 @@ public class BookmarkFragment extends Fragment
         // Tag used to cancel the request
         String tag_string_req = "Delete Bookmark";
 
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                "http://project42-iplanner.000webhostapp.com/bookmark.php", new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
