@@ -137,7 +137,7 @@ public class BookmarkFragment extends Fragment
                             String memberIDs = grp.getString("member_ids");
                             String adminIDs = grp.getString("admin_ids");*/
                             POI poi = new POI(Integer.valueOf(location_id),
-                                    location_name, location_address,0 ,0.0,0.0,null,null,null,null,0.0,0,null);
+                                    location_name, location_address,null ,0.0,0.0,null,null,null,null,0.0,0,null);
                             retrievedPOI.add(poi);
                             Bookmark bm1 = new Bookmark(0,null);
                             bm1.setPoi(poi);

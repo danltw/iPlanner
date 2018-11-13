@@ -181,7 +181,7 @@ public class POIController {
                         Integer id = poi.getInt("locationID");
                         String name = poi.getString("locationName");
                         String address = poi.getString("address");
-                        Integer postalcode = poi.getInt("postalCode");
+                        String postalcode = poi.getString("postalCode");
                         Double rating = poi.getDouble("rating");
                         Double cost = poi.getDouble("cost");
                         String startHrs = poi.getString("startHrs");

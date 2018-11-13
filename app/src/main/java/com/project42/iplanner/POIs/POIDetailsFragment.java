@@ -66,16 +66,16 @@ public class POIDetailsFragment extends Fragment {
         TextView close = (TextView) view.findViewById(R.id.poi_details_end);
         TextView days = (TextView) view.findViewById(R.id.poi_details_openingdays);
 
-        String username,poiname, add, des, start, end, day;
+        String username,poiname, add, des, start, end, day,post;
         Double cst, rate;
-        Integer poiid, post;
+        Integer poiid;
         username = SharedManager.getInstance().getUser();
         Log.d("Username", username);
 
         poiid = getArguments().getInt("selected_poi_id");
         poiname = getArguments().getString("selected_poi_name");
         add = getArguments().getString("selected_poi_address");
-        post = getArguments().getInt("selected_poi_postalcode");
+        post = getArguments().getString("selected_poi_postalcode");
         rate = getArguments().getDouble("selected_poi_rating");
         des = getArguments().getString("selected_poi_desc");
         cst = getArguments().getDouble("selected_poi_cost");

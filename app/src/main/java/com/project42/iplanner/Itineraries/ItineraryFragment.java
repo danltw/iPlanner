@@ -2,12 +2,15 @@ package com.project42.iplanner.Itineraries;
 
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +29,8 @@ import com.project42.iplanner.POIs.POIAdapter;
 import com.project42.iplanner.POIs.POIDetailsFragment;
 import com.project42.iplanner.POIs.RecyclerItemClickListener;
 import com.project42.iplanner.R;
+import com.project42.iplanner.Utilities.SharedManager;
+import com.project42.iplanner.Utilities.TextUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,8 +39,16 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import android.app.ActionBar;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,16 +66,24 @@ public class ItineraryFragment extends Fragment {
     }
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_itinerary, container, false);
 
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+
+
+
+        ButterKnife.bind(this,view);
+
         recyclerView = view.findViewById(R.id.itinerary_recylcerView);
         itineraryList = new ArrayList<>();
 
-        loadItinerary();
+        //loadItinerary();
         Log.d("Response",itineraryList.toString());
         adapter = new ItineraryAdapter(getActivity(), itineraryList);
 
@@ -83,7 +104,9 @@ public class ItineraryFragment extends Fragment {
                         Bundle args = new Bundle();
                         args.putInt("selected_itinerary_id",itineraryList.get(position).getItineraryID());
                         args.putString("selected_itinerary_name",itineraryList.get(position).getItineraryName());
-                        args.putString("selected_poi_address",itineraryList.get(position).getVisitDate().toString());
+                        args.putString("selected_visit_date",itineraryList.get(position).getVisitDate().toString());
+                        args.putString("selected_POI_id",itineraryList.get(position).getPOIID());
+                        args.putString("selected_visit_time",itineraryList.get(position).getVisitTime().toString());
                         fragment.setArguments(args);
                         Log.d("Passing Values", args.toString());
                         loadFragment(fragment);
@@ -94,7 +117,8 @@ public class ItineraryFragment extends Fragment {
                     }
                 })
         );
-
+        String userName = SharedManager.getInstance().getUser();
+        loadItinerary(userName);
         return view;
     }
     private void loadFragment(Fragment fragment)
@@ -104,7 +128,7 @@ public class ItineraryFragment extends Fragment {
         transaction.addToBackStack(null);
         transaction.commit();
     }
-    private void loadItinerary() {
+    private void loadItinerary(String userName) {
 
         /*
          * Creating a String Request
@@ -116,11 +140,11 @@ public class ItineraryFragment extends Fragment {
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Loading...");
         progressDialog.show();
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, AppConfig.URL_ITINERARY ,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, AppConfig.URL_ITINERARY ,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
+                        Log.d("Return response", response);
                         try {
                             //converting the string to json array object
                             JSONArray array = new JSONArray(response);
@@ -136,11 +160,16 @@ public class ItineraryFragment extends Fragment {
                                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                                 Date birthDate = sdf.parse(dateStr);
 
+
+
+
                                 //adding the product to product list
                                 itineraryList.add(new Itinerary(
                                         result.getInt("itinerary_id"),
+                                        result.getString("POI_id"),
                                         result.getString("itinerary_name"),
-                                        birthDate
+                                        birthDate,
+                                        result.getString("visit_time")
                                         // result.getString("created").toString()
 //                                        product.getDouble("rating"),
 //                                        product.getDouble("price"),
@@ -174,9 +203,28 @@ public class ItineraryFragment extends Fragment {
 
                         progressDialog.dismiss();
                     }
-                });
+                })
+
+        {
+            // method to pass user input to php page
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting params to php page
+                Map<String, String> params = new HashMap<String, String>();
+                if (userName != null) {
+                    try {
+                        params.put("userName", String.valueOf(userName));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                return params;
+            }}
+            ;
 
         //adding our stringrequest to queue
         Volley.newRequestQueue(getActivity()).add(stringRequest);
     }
+
+
 }

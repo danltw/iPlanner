@@ -8,7 +8,7 @@ public class POI {
 
     private String address;
 
-    private int postalCode;
+    private String postalCode;
 
     public enum EvnType {INDOOR, OUTDOOR};
 
@@ -32,7 +32,7 @@ public class POI {
 
     private String img;
 
-    public POI(int locationID, String locationName, String address, int postalCode, double rating, double cost, String startHrs,
+    public POI(int locationID, String locationName, String address, String postalCode, double rating, double cost, String startHrs,
                String endHrs, String openingDays, String description, double UVI, double PSI, String img) {
         this.locationID = locationID;
         this.locationName = locationName;
@@ -73,11 +73,11 @@ public class POI {
         this.address = address;
     }
 
-    public int getPostalCode() {
+    public String getPostalCode() {
         return postalCode;
     }
 
-    public void setPostalCode(int postalCode) {
+    public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
     }
 
