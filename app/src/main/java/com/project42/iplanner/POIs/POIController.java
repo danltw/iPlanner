@@ -25,7 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/** Represents a POI controller.
+ * @author Team42
+ * @version 1.0
+ */
 public class POIController {
     private static POIController mInstance;
     private static Context mCtx;
@@ -35,14 +38,18 @@ public class POIController {
     private List<POI> poiList;
     private RecyclerView.Adapter adapter;
 
+    /**
+     * Creates an empty POI controller with no property initialized
+     */
     public POIController() {
 
     }
 
-    public POIController(RecyclerView.Adapter adapter) {
-        this.adapter = adapter;
-    }
-
+    /** Obtains the POI controller singleton reference by passing it the current activity to be used in.
+     * If the _mCtx parameter is null, the current context of this class will be used instead.
+     * @param _mCtx The current activity for the group controller to be used in.
+     * @return The current instance of the POI controller singleton class
+     */
     public static POIController getInstance(Context _mCtx) {
         mCtx = _mCtx;
         if (mInstance == null)
@@ -50,6 +57,10 @@ public class POIController {
         return mInstance;
     }
 
+    /** The method to get UVI for the current time from GovTech's API.
+     * Retrieval of UVI at the current time instance.
+     * @return A list of UVIs.
+     */
     public List getAllUVI()
     {
         poiList = new ArrayList<>();
@@ -106,6 +117,9 @@ public class POIController {
         return poiList;
     }
 
+    /** The method to get PSI for the current time from GovTech's PSI.
+     * Retrieval of PSI at the current time instance.
+     */
     public void getAllPSI()
     {
         Date now = new Date();
@@ -164,6 +178,12 @@ public class POIController {
         requestQueue.add(stringRequest);
     }
 
+    /** The method to get all POIs, based on the UVI and PSI.
+     * Retrieval of POIs which match the UVI and PSI criteria.
+     * @param cuvi The UVI at current time instance.
+     * @param cpsi The PSI at current time instance.
+     * @param poiid The ID of the POI which matches the UVI and PSi values.
+     */
     public void getData(Double cuvi, Double cpsi, String poiid) {
         final ProgressDialog progressDialog = new ProgressDialog(mCtx);
         progressDialog.setMessage("Loading...");
@@ -181,7 +201,7 @@ public class POIController {
                         Integer id = poi.getInt("locationID");
                         String name = poi.getString("locationName");
                         String address = poi.getString("address");
-                        String postalcode = poi.getString("postalCode");
+                        int postalcode = poi.getInt("postalCode");
                         Double rating = poi.getDouble("rating");
                         Double cost = poi.getDouble("cost");
                         String startHrs = poi.getString("startHrs");
@@ -226,6 +246,13 @@ public class POIController {
         requestQueue.add(stringRequest);
     }
 
+    /** The method to add a POI into bookmarks.
+     * Bookmarking of a POI requires all the parameters to be non-empty.
+     * @param userId The ID of the user whom adds the bookmark.
+     * @param poiId The ID of the POI that is selected to be bookmarked.
+     * @param loc_name The name of the POI that is selected to be bookmarked.
+     * @param loc_address The address of the POI that is selected to be bookmarked.
+     */
     public void bookmarkData(String userId, String poiId,String loc_name, String loc_address,String loc_desc) {
         final ProgressDialog progressDialog = new ProgressDialog(mCtx);
         progressDialog.setMessage("Loading...");

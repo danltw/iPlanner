@@ -47,6 +47,10 @@ import java.util.Map;
 
 import static com.android.volley.VolleyLog.TAG;
 
+/** Represents a account controller.
+ * @author Team42
+ * @version 1.0
+ */
 public class AccountController extends AppCompatActivity {
 
     private static final String TAG = AccountController.class.getSimpleName();
@@ -61,12 +65,20 @@ public class AccountController extends AppCompatActivity {
         public void onUpdateResponse(String response);
     }
 
+    /** Creates an account controller using the current activity.
+     * @param context The activity which requires a reference of the account controller.
+     */
     public AccountController(Context context) {
         mCtx = context;
         callback = (OnCallbackResponse) mCtx;
         pDialog = new ProgressDialog(mCtx);
     }
 
+    /** The method to validate a user.
+     * Validation of a user requires all the parameters to be non-empty.
+     * @param username The username of the account to be logged in.
+     * @param password The password of the acocunt to be logged in.
+     */
     // Login a user
     public void loginUser(final String username, final String password) {
         showDialog(); // display loading icon
@@ -137,6 +149,12 @@ public class AccountController extends AppCompatActivity {
         queue.add(strReq);
     }
 
+    /** The method to register a user.
+     * Registration of a user requires requires ths username and password fields to be filled.
+     * @param username The username as desired by the user, which will be associated with the account.
+     * @param password The password as desired by the user, which will be associated with the account.
+     * @param email The email as desired by the user, which will be associated with the account but is optional.
+     */
     // Register a user
     public void regUser(final String username, final String password, final String email) {
         // Tag used to cancel the request
@@ -203,6 +221,13 @@ public class AccountController extends AppCompatActivity {
         queue.add(strReq);
     }
 
+    /** The method to update an account information.
+     * Updating of an account information requires ths username and password fields to be filled.
+     * @param username The username of the account whom's account details are to be changed.
+     * @param oldPassword The current password of the account.
+     * @param newPassword The new password as desired by the user.
+     * @param email The email to be changed, as desired by the user.
+     */
     // Update a user
     public void updateUser(final String username, final String oldPassword, final String newPassword, final String email) {
         // Tag used to cancel the request

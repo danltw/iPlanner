@@ -90,7 +90,7 @@ public class POISearchFragment extends Fragment {
                         args.putInt("selected_poi_id",poiList.get(position).getLocationID());
                         args.putString("selected_poi_name",poiList.get(position).getLocationName());
                         args.putString("selected_poi_address",poiList.get(position).getAddress());
-                        args.putString("selected_poi_postalcode",poiList.get(position).getPostalCode());
+                        args.putInt("selected_poi_postalcode",poiList.get(position).getPostalCode());
                         args.putDouble("selected_poi_rating",poiList.get(position).getRating());
                         args.putDouble("selected_poi_cost",poiList.get(position).getCost());
                         args.putString("selected_poi_starthrs",poiList.get(position).getStartHrs());
@@ -192,7 +192,7 @@ public class POISearchFragment extends Fragment {
                         Integer id = poi.getInt("locationID");
                         String name = poi.getString("locationName");
                         String address = poi.getString("address");
-                        String postalcode = poi.getString("postalCode");
+                        int postalcode = poi.getInt("postalCode");
                         Double rating = poi.getDouble("rating");
                         Double cost = poi.getDouble("cost");
                         String startHrs = poi.getString("startHrs");

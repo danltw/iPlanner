@@ -23,6 +23,10 @@ import java.util.Map;
 
 import static com.android.volley.VolleyLog.TAG;
 
+/** Represents a group controller.
+ * @author Team42
+ * @version 1.0
+ */
 public class GroupController {
 
     private static GroupController mInstance;
@@ -32,6 +36,11 @@ public class GroupController {
 
     }
 
+    /** Obtains the group controller singleton reference by passing it the current activity to be used in.
+     * If the _mCtx parameter is null, the current context of this class will be used instead.
+     * @param _mCtx The current activity for the group controller to be used in.
+     * @return The current instance of the group controller singleton class
+     */
     public static GroupController getInstance(Context _mCtx) {
         if (mInstance == null) {
             mInstance = new GroupController();
@@ -40,7 +49,11 @@ public class GroupController {
             mCtx = _mCtx;
         return mInstance;
     }
-    
+
+    /** The method to delete a group.
+     * Deletion of a group requires its ID property.
+     * @param grpID The ID of the group which is to be deleted.
+     */
     public void deleteGroup(final int grpID) {
         // Tag used to cancel the request
         String tag_string_req = "req_delete_group";
@@ -102,6 +115,10 @@ public class GroupController {
         queue.add(strReq);
     }
 
+    /** The method to get either a group or groups.
+     * Retrieval of a group or groups requires the group object.
+     * @param group The group object with its groupName property set.
+     */
     // Get a single / multiple group records
     public void getGroup(final Group group) {
         // Tag used to cancel the request
@@ -170,6 +187,13 @@ public class GroupController {
         queue.add(strReq);
     }
 
+    /** The method to create a group.
+     * Creation of a new group requires all the parameters to be non-empty.
+     * @param groupName The group name as entered by the user.
+     * @param channelUrl A string of randomly generated characters that is used to distinguish each group chat channel, as assigned by Sendbird API.
+     * @param memberNames A list of member's names required to track members in each group.
+     * @param adminNames A list of admin's names required to track admins in each group.
+     */
     // Add a single group record
     public void addGroup(final String groupName, final String channelUrl, final ArrayList<String> memberNames, final ArrayList<String> adminNames) {
         // Tag used to cancel the request
@@ -236,6 +260,13 @@ public class GroupController {
         queue.add(strReq);
     }
 
+    /** The method to add new members or admins to a group.
+     * This method accepts the updated list of member's or admin's names, depending on which role is to be added.
+     * Adding of new members or admins requires all the parameters to be non-empty.
+     * @param channelUrl A string of randomly generated characters that is used to distinguish each group chat channel, as assigned by Sendbird API.
+     * @param memberNames A list of member's names required to track members in each group.
+     * @param adminNames A list of admin's names required to track admins in each group.
+     */
     // Update a single group record
     public void updateGroup(final String channelUrl, final ArrayList<String> memberNames, final ArrayList<String> adminNames) {
         // Tag used to cancel the request

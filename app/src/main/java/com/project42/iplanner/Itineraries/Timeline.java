@@ -5,11 +5,11 @@ import android.os.Parcelable;
 
 import java.util.Date;
 
+/** Represents an timeline.
+ * @author Team42
+ * @version 1.0
+ */
 public class Timeline implements Parcelable {
-
-
-
-
 
     private int POI_id;
 
@@ -17,12 +17,11 @@ public class Timeline implements Parcelable {
 
     private String visit_time;
 
-
-
-    public Timeline() {
-
-    }
-
+    /** Creates a timeline for an itinerary with the POI_id, poi_name, visit_time..
+     * @param POI_id The POI_id of the intended POI.
+     * @param poi_name The name of the to-be visited poi.
+     * @param visit_time The time of visit for the POI.
+     */
     public Timeline(int POI_id, String poi_name,String visit_time) {
 
         this.POI_id = POI_id;
@@ -31,33 +30,21 @@ public class Timeline implements Parcelable {
 
     }
 
-
-
-    public int getPOIID() {
-        return POI_id;
-    }
-
-    public void setPOI_id(int POI_id) {
-        this.POI_id = POI_id;
-    }
-
-
-
+    /**
+     * Get the current timeline's poi_name property.
+     * The poi_name property is essential to keep track of every POI in each itinerary created.
+     * @return The current timeline's poi_name.
+     */
     public String getPOIName() {
         return poi_name;
     }
 
-    public void setPOIName(String poi_name) {
-        this.poi_name = poi_name;
-    }
-
+    /**
+     * Get the current itinerary's visit_time property.
+     * The visit_time property is associated with each itinerary record.
+     * @return The current itinerary's visit time.
+     */
     public String getVisitTime() { return visit_time; }
-
-    public void setVisitTime(String visit_time) {
-        this.visit_time = visit_time;
-    }
-
-
 
     @Override
     public int describeContents() {
