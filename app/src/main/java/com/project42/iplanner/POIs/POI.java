@@ -12,7 +12,7 @@ public class POI {
 
     private String address;
 
-    private int postalCode;
+    private String postalCode;
 
     public enum EvnType {INDOOR, OUTDOOR};
 
@@ -51,7 +51,7 @@ public class POI {
      * @param PSI A environment-related metric which indicates the extent of the pollution.
      * @param img The image path associated with the POI.
      */
-    public POI(int locationID, String locationName, String address, int postalCode, double rating, double cost, String startHrs,
+    public POI(int locationID, String locationName, String address, String postalCode, double rating, double cost, String startHrs,
                String endHrs, String openingDays, String description, double UVI, double PSI, String img) {
         this.locationID = locationID;
         this.locationName = locationName;
@@ -127,7 +127,7 @@ public class POI {
      * The postalCode property is essential to pinpoint the exact location of every POI record.
      * @return The current location's postalCode.
      */
-    public int getPostalCode() {
+    public String getPostalCode() {
         return postalCode;
     }
 
@@ -136,7 +136,7 @@ public class POI {
      * The postalCode property is associated with every POI record.
      * @param postalCode The current location's postalCode.
      */
-    public void setPostalCode(int postalCode) {
+    public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
     }
 
